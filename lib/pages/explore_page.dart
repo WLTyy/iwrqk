@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:iwrqk/l10n.dart';
+import '../common/theme.dart';
+import '../common/global.dart';
 
 import '../widgets/appbarx.dart';
 
@@ -26,9 +29,7 @@ class _ExplorePageState extends State<ExplorePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade200,
-      body: NestedScrollView(
+    return NestedScrollView(
         body: Center(),
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
@@ -44,8 +45,6 @@ class _ExplorePageState extends State<ExplorePage>
               tabController: _tabController,
             )
           ];
-        },
-      ),
-    );
+        });
   }
 }

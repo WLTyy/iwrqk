@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class VideoPreview extends StatelessWidget {
   final String imageSrc;
   final String title;
-  final String uperName;
+  final String uploaderName;
   final String plays;
   final String likes;
   final String duration;
@@ -11,7 +11,7 @@ class VideoPreview extends StatelessWidget {
   const VideoPreview(
       {required this.imageSrc,
       required this.title,
-      required this.uperName,
+      required this.uploaderName,
       required this.plays,
       required this.likes,
       required this.duration,
@@ -115,7 +115,7 @@ class VideoPreview extends StatelessWidget {
                                 ),
                                 Container(
                                     margin: EdgeInsets.only(left: 2),
-                                    child: Text(uperName,
+                                    child: Text(uploaderName,
                                         style: TextStyle(
                                             fontSize: 11, color: Colors.grey)))
                               ]))

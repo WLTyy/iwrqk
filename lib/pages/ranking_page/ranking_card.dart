@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iwrqk/l10n.dart';
 
+import '../../common/global.dart';
+import '../../common/theme.dart';
+
 class RankingCard extends StatelessWidget {
   final String title;
   final Map<int, List<String>> itemMap;
@@ -11,19 +14,21 @@ class RankingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            offset: Offset(5, 5),
-            blurRadius: 10,
-            color: Colors.grey,
-          )
-        ]),
+        decoration: Global.isDarkMode
+            ? null
+            : BoxDecoration(boxShadow: [
+                BoxShadow(
+                  offset: Offset(5, 5),
+                  blurRadius: 10,
+                  color: IwrTheme.gray,
+                )
+              ]),
         child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Container(
               height: 340,
               width: 360,
-              color: Colors.white,
+              color: IwrTheme.boxBackColor,
               padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -33,7 +38,10 @@ class RankingCard extends StatelessWidget {
                       child: Row(children: [
                         Text(
                           title,
-                          style: TextStyle(fontSize: 25),
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: IwrTheme.fontColor,
+                          ),
                         )
                       ]),
                     ),
@@ -89,13 +97,15 @@ class RankingCard extends StatelessWidget {
                           children: [
                             Text(
                               L10n.of(context).more,
-                              style:
-                                  TextStyle(fontSize: 17.5, color: Colors.grey),
+                              style: TextStyle(
+                                fontSize: 17.5,
+                                color: IwrTheme.fontColor2,
+                              ),
                             ),
                             Icon(
                               Icons.arrow_forward_ios_rounded,
                               size: 17.5,
-                              color: Colors.grey,
+                              color: IwrTheme.fontColor2,
                             )
                           ]),
                     )
@@ -128,12 +138,12 @@ class RankingItem extends StatelessWidget {
     }
 
     return Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              offset: Offset(2, 2),
-              blurRadius: 5,
-              color: Colors.grey,
+              offset: Offset(3, 3),
+              blurRadius: 10,
+              color: IwrTheme.shadowColor,
             )
           ],
         ),
@@ -142,7 +152,7 @@ class RankingItem extends StatelessWidget {
             child: Stack(
               children: [
                 Container(
-                  color: Colors.white,
+                  color: IwrTheme.cardBackColor,
                   width: 100,
                   height: 85,
                   child: Column(
@@ -156,8 +166,8 @@ class RankingItem extends StatelessWidget {
                         Container(
                           margin: EdgeInsets.only(top: 5),
                           child: Text(name,
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.black)),
+                              style: TextStyle(
+                                  fontSize: 15, color: IwrTheme.fontColor)),
                         ),
                       ]),
                 ),

@@ -11,5 +11,11 @@
     "hottest_uploader": "人气 UP",
     "hottest_tag": "人气标签",
     "more": "更多",
-    "data_origin": "数据来自 Oreno3D.com"
+    "data_origin": "数据来自 Oreno3D.com",
+    "friends": "好友",
+    "history": "历史记录",
+    "download": "缓存",
+    "favorite": "收藏",
+    "playlists": "播放列表",
+    "settings": "设置"
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../common/global.dart';
+import '../common/theme.dart';
+import '../pages/user_page/user_page.dart';
 import '../component/tab_indicator.dart';
 
 class AppBarX extends StatelessWidget {
@@ -43,9 +46,9 @@ class AppBarX extends StatelessWidget {
                       child: MaterialButton(
                           minWidth: 25,
                           onPressed: () {},
-                          child: const Icon(
+                          child: Icon(
                             Icons.tune_rounded,
-                            color: Colors.grey,
+                            color: IwrTheme.gray,
                             size: 25,
                           )),
                     ),
@@ -81,7 +84,26 @@ class AppBarX extends StatelessWidget {
               children: [
                 MaterialButton(
                   minWidth: 25,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const UserPage(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(-1, 0);
+                        const end = Offset.zero;
+                        const curve = Curves.ease;
+
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
+
+                        return SlideTransition(
+                          position: animation.drive(tween),
+                          child: child,
+                        );
+                      },
+                    ));
+                  },
                   child: ClipOval(
                       child: Image.network(
                           "https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png",
@@ -95,12 +117,12 @@ class AppBarX extends StatelessWidget {
                   height: 30,
                   focusColor: Colors.transparent,
                   onPressed: () {},
-                  shape: const RoundedRectangleBorder(
+                  shape: RoundedRectangleBorder(
                     side: BorderSide(
-                      color: Colors.grey,
+                      color: IwrTheme.gray,
                       width: 1.5,
                     ),
-                    borderRadius: BorderRadius.all(
+                    borderRadius: const BorderRadius.all(
                       Radius.circular(50),
                     ),
                   ),
@@ -118,15 +140,17 @@ class AppBarX extends StatelessWidget {
                 )),
                 MaterialButton(
                     minWidth: 27.5,
-                    onPressed: () {},
-                    child: const Icon(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/video");
+                    },
+                    child: Icon(
                       Icons.email_outlined,
-                      color: Colors.grey,
+                      color: IwrTheme.gray,
                       size: 27.5,
                     )),
               ],
             )),
-        backgroundColor: Colors.white,
+        backgroundColor: IwrTheme.barBackColor,
         foregroundColor: Colors.black,
         pinned: true,
         floating: true,

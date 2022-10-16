@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:iwrqk/common/theme.dart';
 import 'package:iwrqk/l10n.dart';
 
+import '../common/global.dart';
 import '../pages/images_page.dart';
-import '../pages/ranking_page.dart';
+import '../pages/ranking_page/ranking_page.dart';
 import '../pages/explore_page.dart';
 import '../pages/videos_page.dart';
 
@@ -15,33 +18,38 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   int _selectedIndex = 0;
-  List<Widget> _pageList = [];
+  final List<Widget> _pageList = [];
 
   @override
   void initState() {
     _pageList
-      ..add(ExplorePage())
-      ..add(RankingPage())
-      ..add(VideosPage())
-      ..add(ImagesPage());
+      ..add(const ExplorePage())
+      ..add(const RankingPage())
+      ..add(const VideosPage())
+      ..add(const ImagesPage());
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.grey.shade200,
+    Widget body = Scaffold(
+        backgroundColor: IwrTheme.scaffoldBackColor,
         body: _pageList[_selectedIndex],
+        extendBody: true,
         bottomNavigationBar: Theme(
             data: ThemeData(
                 splashColor: Colors.transparent,
                 hoverColor: Colors.transparent,
                 highlightColor: Colors.transparent),
             child: BottomNavigationBar(
+                backgroundColor: IwrTheme.barBackColor,
+                unselectedItemColor: IwrTheme.gray,
                 items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                      icon: const Icon(Icons.rocket_launch_rounded),
+                      icon: const Icon(
+                        Icons.rocket_launch_rounded,
+                      ),
                       label: L10n.of(context).explore,
                       tooltip: ''),
                   BottomNavigationBarItem(
@@ -65,5 +73,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
                     _selectedIndex = index;
                   });
                 }))));
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: Global.getOverlayStyle(),
+      child: body,
+    );
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import '../common/global.dart';
+import '../common/theme.dart';
 import '../l10n.dart';
 import '../widgets/appbarx.dart';
 
@@ -26,25 +29,22 @@ class _VideosPageState extends State<VideosPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade200,
-      body: NestedScrollView(
-        body: Center(),
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            AppBarX(
-              innerBoxIsScrolled: innerBoxIsScrolled,
-              showFilter: true,
-              tabList: [
-                L10n.of(context).latest,
-                L10n.of(context).toplist,
-                L10n.of(context).popular
-              ],
-              tabController: _tabController,
-            )
-          ];
-        },
-      ),
+    return NestedScrollView(
+      body: Center(),
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [
+          AppBarX(
+            innerBoxIsScrolled: innerBoxIsScrolled,
+            showFilter: true,
+            tabList: [
+              L10n.of(context).latest,
+              L10n.of(context).toplist,
+              L10n.of(context).popular
+            ],
+            tabController: _tabController,
+          )
+        ];
+      },
     );
   }
 }

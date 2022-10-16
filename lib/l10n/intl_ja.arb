@@ -11,5 +11,11 @@
     "hottest_uploader": "人気作者",
     "hottest_tag": "人気タブ",
     "more": "もっと見る",
-    "data_origin": "データは Oreno3D.com から"
+    "data_origin": "データは Oreno3D.com から",
+    "friends": "友達",
+    "history": "閲覧履歴",
+    "download": "ダウンロード",
+    "favorite": "お気に入り",
+    "playlists": "プレイリスト",
+    "settings": "設定"
 }

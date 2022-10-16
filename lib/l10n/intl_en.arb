@@ -11,5 +11,11 @@
     "hottest_uploader": "Hottest Uploader",
     "hottest_tag": "Hottest Tag",
     "more": "More",
-    "data_origin": "Data from Oreno3D.com"
+    "data_origin": "Data from Oreno3D.com",
+    "friends": "Friends",
+    "history": "History",
+    "download": "Download",
+    "favorite": "Favorite",
+    "playlists": "Playlists",
+    "settings": "Settings"
 }
