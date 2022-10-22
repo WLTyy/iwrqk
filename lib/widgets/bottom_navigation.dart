@@ -1,7 +1,9 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iwrqk/common/theme.dart';
 import 'package:iwrqk/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../common/global.dart';
 import '../pages/images_page.dart';
@@ -34,7 +36,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     Widget body = Scaffold(
-        backgroundColor: IwrTheme.scaffoldBackColor,
+        backgroundColor: IwrTheme.backColor,
         body: _pageList[_selectedIndex],
         extendBody: true,
         bottomNavigationBar: Theme(
@@ -43,25 +45,34 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 hoverColor: Colors.transparent,
                 highlightColor: Colors.transparent),
             child: BottomNavigationBar(
-                backgroundColor: IwrTheme.barBackColor,
+                selectedFontSize: 15.sp,
+                unselectedFontSize: 13.5.sp,
+                backgroundColor: IwrTheme.backColor2,
                 unselectedItemColor: IwrTheme.gray,
                 items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                      icon: const Icon(
-                        Icons.rocket_launch_rounded,
-                      ),
+                      icon: Icon(FluentIcons.bookmark_16_regular, size: 30.sp),
+                      activeIcon:
+                          Icon(FluentIcons.bookmark_16_filled, size: 30.sp),
                       label: L10n.of(context).explore,
                       tooltip: ''),
                   BottomNavigationBarItem(
-                      icon: const Icon(Icons.sort_rounded),
+                      icon: Icon(FluentIcons.data_bar_vertical_16_regular,
+                          size: 30.sp),
+                      activeIcon: Icon(FluentIcons.data_bar_vertical_16_filled,
+                          size: 30.sp),
                       label: L10n.of(context).ranking,
                       tooltip: ''),
                   BottomNavigationBarItem(
-                      icon: const Icon(Icons.smart_display_rounded),
+                      icon: Icon(FluentIcons.video_16_regular, size: 30.sp),
+                      activeIcon:
+                          Icon(FluentIcons.video_16_filled, size: 30.sp),
                       label: L10n.of(context).videos,
                       tooltip: ''),
                   BottomNavigationBarItem(
-                      icon: const Icon(Icons.image),
+                      icon: Icon(FluentIcons.image_16_regular, size: 30.sp),
+                      activeIcon:
+                          Icon(FluentIcons.image_16_filled, size: 30.sp),
                       label: L10n.of(context).images,
                       tooltip: ''),
                 ],

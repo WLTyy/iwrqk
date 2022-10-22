@@ -29,22 +29,27 @@ class _VideosPageState extends State<VideosPage>
 
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-      body: Center(),
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return [
-          AppBarX(
-            innerBoxIsScrolled: innerBoxIsScrolled,
-            showFilter: true,
-            tabList: [
-              L10n.of(context).latest,
-              L10n.of(context).toplist,
-              L10n.of(context).popular
-            ],
-            tabController: _tabController,
-          )
-        ];
+    return AppBarX(
+      showFilter: true,
+      tabList: {
+        L10n.of(context).latest: Container(
+            child: Column(
+          children: [
+            Text("1", style: TextStyle(fontSize: 50, color: Colors.white)),
+          ],
+        )),
+        L10n.of(context).toplist: Container(
+          child: Center(
+              child: Text("2",
+                  style: TextStyle(fontSize: 50, color: Colors.white))),
+        ),
+        L10n.of(context).popular: Container(
+          child: Center(
+              child: Text("3",
+                  style: TextStyle(fontSize: 50, color: Colors.white))),
+        ),
       },
+      tabController: _tabController,
     );
   }
 }

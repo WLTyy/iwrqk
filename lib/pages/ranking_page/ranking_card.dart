@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iwrqk/l10n.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../common/global.dart';
 import '../../common/theme.dart';
@@ -18,56 +19,57 @@ class RankingCard extends StatelessWidget {
             ? null
             : BoxDecoration(boxShadow: [
                 BoxShadow(
-                  offset: Offset(5, 5),
-                  blurRadius: 10,
+                  offset: Offset(5.r, 5.r),
+                  blurRadius: 10.r,
                   color: IwrTheme.gray,
                 )
               ]),
         child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
             child: Container(
-              height: 340,
-              width: 360,
-              color: IwrTheme.boxBackColor,
-              padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+              height: 340.h,
+              width: 360.w,
+              color: IwrTheme.backColor3,
+              padding: REdgeInsets.fromLTRB(20, 15, 20, 0),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(bottom: 15),
+                      margin: REdgeInsets.only(bottom: 15),
                       child: Row(children: [
                         Text(
                           title,
                           style: TextStyle(
-                            fontSize: 25,
+                            fontSize: 25.sp,
                             color: IwrTheme.fontColor,
                           ),
                         )
                       ]),
                     ),
-                    Stack(alignment: Alignment.center, children: [
-                      Container(
-                          margin: EdgeInsets.only(left: 220),
-                          child: RankingItem(
-                            name: itemMap[2]![0],
-                            imageScr: itemMap[2]![1],
-                            rank: 3,
-                          )),
-                      Container(
-                          margin: EdgeInsets.only(right: 220),
-                          child: RankingItem(
-                            name: itemMap[1]![0],
-                            imageScr: itemMap[1]![1],
-                            rank: 2,
-                          )),
-                      Container(
-                          margin: EdgeInsets.only(bottom: 50),
-                          child: RankingItem(
-                            name: itemMap[0]![0],
-                            imageScr: itemMap[0]![1],
-                            rank: 1,
-                          ))
-                    ]),
+                    Container(
+                        margin: REdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RankingItem(
+                              name: itemMap[2]![0],
+                              imageScr: itemMap[2]![1],
+                              rank: 2,
+                            ),
+                            Container(
+                                margin: REdgeInsets.fromLTRB(10, 0, 10, 35),
+                                child: RankingItem(
+                                  name: itemMap[1]![0],
+                                  imageScr: itemMap[1]![1],
+                                  rank: 1,
+                                )),
+                            RankingItem(
+                              name: itemMap[3]![0],
+                              imageScr: itemMap[3]![1],
+                              rank: 3,
+                            )
+                          ],
+                        )),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -77,7 +79,7 @@ class RankingCard extends StatelessWidget {
                           rank: 4,
                         ),
                         Container(
-                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            margin: REdgeInsets.symmetric(horizontal: 10),
                             child: RankingItem(
                               name: itemMap[4]![0],
                               imageScr: itemMap[4]![1],
@@ -90,25 +92,24 @@ class RankingCard extends StatelessWidget {
                         )
                       ],
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 15),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              L10n.of(context).more,
-                              style: TextStyle(
-                                fontSize: 17.5,
-                                color: IwrTheme.fontColor2,
-                              ),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 17.5,
+                    Expanded(
+                        child: Center(
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                          Text(
+                            L10n.of(context).more,
+                            style: TextStyle(
+                              fontSize: 17.5.sp,
                               color: IwrTheme.fontColor2,
-                            )
-                          ]),
-                    )
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 17.5.sp,
+                            color: IwrTheme.fontColor2,
+                          )
+                        ])))
                   ]),
             )));
   }
@@ -141,33 +142,36 @@ class RankingItem extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              offset: Offset(3, 3),
-              blurRadius: 10,
+              offset: Offset(3.r, 3.r),
+              blurRadius: 10.r,
               color: IwrTheme.shadowColor,
             )
           ],
         ),
         child: ClipRRect(
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(5.r),
             child: Stack(
               children: [
                 Container(
-                  color: IwrTheme.cardBackColor,
-                  width: 100,
-                  height: 85,
+                  color: IwrTheme.backColor4,
+                  width: 100.w,
+                  height: 85.h,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                            margin: EdgeInsets.only(top: 2.5),
+                            margin: EdgeInsets.only(top: 2.5.sp),
                             child: ClipOval(
                                 child: Image.network(imageScr,
-                                    width: 45, height: 45, fit: BoxFit.cover))),
-                        Container(
-                          margin: EdgeInsets.only(top: 5),
-                          child: Text(name,
-                              style: TextStyle(
-                                  fontSize: 15, color: IwrTheme.fontColor)),
+                                    width: 45.w,
+                                    height: 45.w,
+                                    fit: BoxFit.cover))),
+                        Expanded(
+                          child: Center(
+                              child: Text(name,
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      color: IwrTheme.fontColor))),
                         ),
                       ]),
                 ),
@@ -180,21 +184,21 @@ class RankingItem extends StatelessWidget {
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter),
                           borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(10))),
+                              bottomRight: Radius.circular(10.r))),
                       width: 45,
                       height: 30,
                       child: Container(
-                          margin: EdgeInsets.only(left: 7.5, top: 5),
+                          margin: REdgeInsets.only(left: 7.5, top: 5),
                           child: Text(rank.toString(),
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.bold,
                                 fontStyle: FontStyle.italic,
                                 color: Colors.white,
                                 shadows: [
                                   Shadow(
-                                    offset: Offset(1.5, 1.5),
-                                    blurRadius: 5,
+                                    offset: Offset(1.5.r, 1.5.r),
+                                    blurRadius: 5.r,
                                     color: Colors.grey,
                                   )
                                 ],
@@ -211,11 +215,11 @@ class BackgroundClipper extends CustomClipper<Path> {
     Path path = Path();
 
     path.moveTo(0, 0);
-    path.lineTo(0, size.height);
-    path.lineTo(size.width - 27.5, size.height);
-    path.quadraticBezierTo(
-        size.width - 20, size.height, size.width - 20, size.height - 5);
-    path.quadraticBezierTo(size.width - 12.5, 0, size.width, 0);
+    path.lineTo(0, size.height.h);
+    path.lineTo(size.width.w - 27.5.w, size.height.h);
+    path.quadraticBezierTo(size.width.w - 20.w, size.height.h,
+        size.width.w - 20.w, size.height.h - 5.h);
+    path.quadraticBezierTo(size.width.w - 12.5.w, 0, size.width.w, 0);
     path.close();
 
     return path;

@@ -29,22 +29,15 @@ class _ExplorePageState extends State<ExplorePage>
 
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-        body: Center(),
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            AppBarX(
-              innerBoxIsScrolled: innerBoxIsScrolled,
-              showFilter: false,
-              tabList: [
-                L10n.of(context).hottest,
-                L10n.of(context).popular,
-                L10n.of(context).latest,
-                L10n.of(context).toplist,
-              ],
-              tabController: _tabController,
-            )
-          ];
-        });
+    return AppBarX(
+      showFilter: false,
+      tabList: {
+        L10n.of(context).hottest: Container(),
+        L10n.of(context).popular: Container(),
+        L10n.of(context).latest: Container(),
+        L10n.of(context).toplist: Container(),
+      },
+      tabController: _tabController,
+    );
   }
 }
