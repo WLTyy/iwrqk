@@ -4,13 +4,14 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iwrqk/widgets/reloadable_image.dart';
 
 import '../common/global.dart';
 import '../common/theme.dart';
 import '../pages/user_page/user_page.dart';
 import '../component/tab_indicator.dart';
 
-class AppBarX extends StatelessWidget {
+class AppBarX extends StatefulWidget {
   final bool? showFilter;
   final Map<String, Widget>? tabList;
   final Widget? body;
@@ -20,9 +21,13 @@ class AppBarX extends StatelessWidget {
       {this.showFilter, this.tabList, this.body, this.tabController, Key? key})
       : super(key: key);
 
+  @override
+  State<AppBarX> createState() => _AppBarXState();
+}
+
+class _AppBarXState extends State<AppBarX> {
   Widget getTopTabbar(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         MaterialButton(
           minWidth: 27.5.w,
@@ -48,45 +53,40 @@ class AppBarX extends StatelessWidget {
             ));
           },
           child: ClipOval(
-              child: Image.network(
-                  "https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png",
-                  width: 35.w,
-                  height: 35.w,
-                  fit: BoxFit.cover)),
+              child: ReloadableImage(
+            imageUrl:
+                "https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png",
+            size: Size(35.w, 35.w),
+          )),
         ),
         Expanded(
-            child: MaterialButton(
-          minWidth: 40.w,
-          height: 40.h,
-          focusColor: Colors.transparent,
-          color: IwrTheme.searchBarBackColor,
-          onPressed: () {},
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(50.r),
+            child: SizedBox(
+          height: 40.sp,
+          child: CupertinoSearchTextField(
+            prefixInsets: REdgeInsets.only(left: 10),
+            prefixIcon: Icon(
+              FluentIcons.search_12_regular,
+              size: 20.sp,
+            ),
+            suffixInsets: REdgeInsets.only(right: 10),
+            suffixIcon: Icon(
+              FluentIcons.backspace_24_filled,
+              size: 25.sp,
             ),
           ),
-          child: Container(
-              margin: REdgeInsets.symmetric(vertical: 5),
-              child: Row(
-                children: [
-                  Icon(
-                    FluentIcons.search_16_regular,
-                    size: 25.sp,
-                    color: IwrTheme.gray,
-                  )
-                ],
-              )),
         )),
         MaterialButton(
             minWidth: 30.w,
             onPressed: () {
               Navigator.pushNamed(context, "/video");
             },
-            child: Icon(
-              FluentIcons.mail_48_regular,
-              color: IwrTheme.gray,
-              size: 35.sp,
+            child: Container(
+              margin: EdgeInsets.only(bottom: 2.5.h),
+              child: Icon(
+                FluentIcons.mail_48_regular,
+                size: 35.sp,
+                color: Colors.grey,
+              ),
             )),
       ],
     );
@@ -124,8 +124,8 @@ class AppBarX extends StatelessWidget {
                               onPressed: () {},
                               child: Icon(
                                 FluentIcons.options_24_regular,
-                                color: IwrTheme.gray,
                                 size: 27.5.sp,
+                                color: Colors.grey,
                               )),
                         )),
                   ),
@@ -192,37 +192,30 @@ class AppBarX extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-        data: ThemeData(
-            splashColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            highlightColor: Colors.transparent),
-        child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverOverlapAbsorber(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverAppBar(
-                    titleSpacing: 0,
-                    title: getTopTabbar(context),
-                    backgroundColor: IwrTheme.backColor2,
-                    foregroundColor: Colors.black,
-                    floating: true,
-                    pinned: true,
-                    snap: true,
-                    forceElevated: innerBoxIsScrolled,
-                    bottom: getBottomTabbar(showFilter, tabList, tabController),
-                  ),
-                ),
-              ];
-            },
-            body: tabList == null
-                ? getBodyWidget(body!)
-                : TabBarView(
-                    controller: tabController,
-                    children: getTabWidget(tabList!),
-                  )));
+    return NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverAppBar(
+                titleSpacing: 0,
+                title: getTopTabbar(context),
+                foregroundColor: Colors.black,
+                floating: true,
+                pinned: true,
+                snap: true,
+                forceElevated: innerBoxIsScrolled,
+                bottom: getBottomTabbar(
+                    widget.showFilter, widget.tabList, widget.tabController),
+              ),
+            ),
+          ];
+        },
+        body: widget.tabList == null
+            ? getBodyWidget(widget.body!)
+            : TabBarView(
+                controller: widget.tabController,
+                children: getTabWidget(widget.tabList!),
+              ));
   }
 }

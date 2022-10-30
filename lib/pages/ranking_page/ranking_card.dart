@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iwrqk/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iwrqk/widgets/reloadable_image.dart';
 
 import '../../common/global.dart';
 import '../../common/theme.dart';
@@ -15,21 +16,17 @@ class RankingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: Global.isDarkMode
-            ? null
-            : BoxDecoration(boxShadow: [
-                BoxShadow(
-                  offset: Offset(5.r, 5.r),
-                  blurRadius: 10.r,
-                  color: IwrTheme.gray,
-                )
-              ]),
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+            offset: Offset(5.r, 5.r),
+            blurRadius: 10.r,
+          )
+        ]),
         child: ClipRRect(
             borderRadius: BorderRadius.circular(10.r),
             child: Container(
               height: 340.h,
               width: 360.w,
-              color: IwrTheme.backColor3,
               padding: REdgeInsets.fromLTRB(20, 15, 20, 0),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -41,7 +38,6 @@ class RankingCard extends StatelessWidget {
                           title,
                           style: TextStyle(
                             fontSize: 25.sp,
-                            color: IwrTheme.fontColor,
                           ),
                         )
                       ]),
@@ -101,13 +97,11 @@ class RankingCard extends StatelessWidget {
                             L10n.of(context).more,
                             style: TextStyle(
                               fontSize: 17.5.sp,
-                              color: IwrTheme.fontColor2,
                             ),
                           ),
                           Icon(
                             Icons.arrow_forward_ios_rounded,
                             size: 17.5.sp,
-                            color: IwrTheme.fontColor2,
                           )
                         ])))
                   ]),
@@ -144,7 +138,6 @@ class RankingItem extends StatelessWidget {
             BoxShadow(
               offset: Offset(3.r, 3.r),
               blurRadius: 10.r,
-              color: IwrTheme.shadowColor,
             )
           ],
         ),
@@ -153,7 +146,6 @@ class RankingItem extends StatelessWidget {
             child: Stack(
               children: [
                 Container(
-                  color: IwrTheme.backColor4,
                   width: 100.w,
                   height: 85.h,
                   child: Column(
@@ -162,16 +154,16 @@ class RankingItem extends StatelessWidget {
                         Container(
                             margin: EdgeInsets.only(top: 2.5.sp),
                             child: ClipOval(
-                                child: Image.network(imageScr,
-                                    width: 45.w,
-                                    height: 45.w,
-                                    fit: BoxFit.cover))),
+                                child: ReloadableImage(
+                              imageUrl: imageScr,
+                              size: Size(35.w, 35.w),
+                            ))),
                         Expanded(
                           child: Center(
                               child: Text(name,
                                   style: TextStyle(
-                                      fontSize: 14.sp,
-                                      color: IwrTheme.fontColor))),
+                                    fontSize: 14.sp,
+                                  ))),
                         ),
                       ]),
                 ),

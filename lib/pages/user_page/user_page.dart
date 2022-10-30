@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:iwrqk/common/global.dart';
 import 'package:iwrqk/common/theme.dart';
 import 'package:iwrqk/l10n.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,83 +18,73 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: IwrTheme.backColor4,
+      backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
             Column(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Theme(
-                      data: ThemeData(
-                          splashColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          highlightColor: Colors.transparent),
-                      child: MaterialButton(
+              Container(
+                  margin: EdgeInsets.only(bottom: 10.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      MaterialButton(
                           minWidth: 20.w,
                           height: 20.w,
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Icon(Icons.close_rounded,
-                              color: IwrTheme.fontColor, size: 35.sp)))
-                ],
-              ),
-              Theme(
-                  data: ThemeData(
-                      splashColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent),
-                  child: MaterialButton(
-                      onPressed: () {},
-                      child: Container(
-                        height: 100.h,
-                        width: 360.w,
-                        margin: REdgeInsets.only(top: 5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.r),
-                            color: IwrTheme.backColor3,
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(5.r, 5.r),
-                                blurRadius: 10.r,
-                                color: IwrTheme.shadowColor,
+                          child: Icon(Icons.close_rounded, size: 35.sp))
+                    ],
+                  )),
+              MaterialButton(
+                  onPressed: () {},
+                  child: Container(
+                    height: 100.h,
+                    width: 360.w,
+                    margin: REdgeInsets.only(top: 5),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).canvasColor,
+                        borderRadius: BorderRadius.circular(10.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context).shadowColor,
+                            offset: Offset(5.r, 5.r),
+                            blurRadius: 10.r,
+                          )
+                        ]),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            margin: REdgeInsets.only(left: 20),
+                            child: Row(children: [
+                              ClipOval(
+                                  child: Image.network(
+                                      "https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png",
+                                      width: 60.w,
+                                      height: 60.w,
+                                      fit: BoxFit.cover)),
+                              Container(
+                                margin: REdgeInsets.only(left: 15),
+                                child: Text(
+                                  "Futo",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 30.sp,
+                                  ),
+                                ),
                               )
                             ]),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                margin: REdgeInsets.only(left: 20),
-                                child: Row(children: [
-                                  ClipOval(
-                                      child: Image.network(
-                                          "https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png",
-                                          width: 60.w,
-                                          height: 60.w,
-                                          fit: BoxFit.cover)),
-                                  Container(
-                                    margin: REdgeInsets.only(left: 15),
-                                    child: Text(
-                                      "Futo",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 30.sp,
-                                          color: IwrTheme.fontColor),
-                                    ),
-                                  )
-                                ]),
-                              ),
-                              Container(
-                                  margin: REdgeInsets.only(right: 15),
-                                  child: Icon(
-                                    Icons.arrow_forward_ios_rounded,
-                                    color: IwrTheme.fontColor3,
-                                  ))
-                            ]),
-                      ))),
+                          ),
+                          Container(
+                              margin: REdgeInsets.only(right: 15),
+                              child: Icon(
+                                Icons.arrow_forward_ios_rounded,
+                              ))
+                        ]),
+                  )),
               Container(
                 margin: REdgeInsets.only(top: 20),
                 child: Column(children: [
@@ -102,7 +93,6 @@ class _UserPageState extends State<UserPage> {
                       icon: Icon(
                         FluentIcons.people_16_filled,
                         size: 30.sp,
-                        color: IwrTheme.fontColor3,
                       ),
                       routeName: "/"),
                   UserItem(
@@ -110,7 +100,6 @@ class _UserPageState extends State<UserPage> {
                       icon: Icon(
                         FluentIcons.history_16_filled,
                         size: 30.sp,
-                        color: IwrTheme.fontColor3,
                       ),
                       routeName: "/"),
                   UserItem(
@@ -118,7 +107,6 @@ class _UserPageState extends State<UserPage> {
                       icon: Icon(
                         FluentIcons.arrow_download_16_filled,
                         size: 30.sp,
-                        color: IwrTheme.fontColor3,
                       ),
                       routeName: "/"),
                   UserItem(
@@ -126,7 +114,6 @@ class _UserPageState extends State<UserPage> {
                       icon: Icon(
                         FluentIcons.heart_16_filled,
                         size: 30.sp,
-                        color: IwrTheme.fontColor3,
                       ),
                       routeName: "/"),
                   UserItem(
@@ -134,7 +121,6 @@ class _UserPageState extends State<UserPage> {
                       icon: Icon(
                         FluentIcons.video_clip_multiple_16_filled,
                         size: 30.sp,
-                        color: IwrTheme.fontColor3,
                       ),
                       routeName: "/"),
                 ]),
@@ -142,37 +128,32 @@ class _UserPageState extends State<UserPage> {
             ]),
             Row(
               children: [
-                Theme(
-                    data: ThemeData(
-                        splashColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        highlightColor: Colors.transparent),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.r),
-                        child: MaterialButton(
-                            padding: REdgeInsets.symmetric(vertical: 15),
-                            onPressed: () {},
-                            child: Container(
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Icon(
-                                      FluentIcons.settings_16_filled,
-                                      size: 35.sp,
-                                      color: IwrTheme.fontColor3,
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(10.r),
+                    child: MaterialButton(
+                        padding: REdgeInsets.symmetric(vertical: 15),
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/settings");
+                        },
+                        child: Container(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(
+                                  FluentIcons.settings_16_filled,
+                                  size: 35.sp,
+                                ),
+                                Container(
+                                  margin: REdgeInsets.only(top: 5),
+                                  child: Text(
+                                    L10n.of(context).settings,
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
                                     ),
-                                    Container(
-                                      margin: REdgeInsets.only(top: 5),
-                                      child: Text(
-                                        L10n.of(context).settings,
-                                        style: TextStyle(
-                                          fontSize: 15.sp,
-                                          color: IwrTheme.fontColor,
-                                        ),
-                                      ),
-                                    )
-                                  ]),
-                            ))))
+                                  ),
+                                )
+                              ]),
+                        )))
               ],
             )
           ])),

@@ -17,5 +17,11 @@
     "download": "缓存",
     "favorite": "收藏",
     "playlists": "播放列表",
-    "settings": "设置"
+    "settings": "设置",
+    "about": "关于",
+    "theme" : "主题",
+    "appearance" : "外观",
+    "system" : "跟随系统",
+    "light_mode" : "浅色",
+    "dark_mode" : "暗色"
 }

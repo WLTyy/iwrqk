@@ -1,13 +1,12 @@
-import 'dart:ui';
-
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iwrqk/widgets/reloadable_image.dart';
 
 import '../common/global.dart';
 import '../common/theme.dart';
 
-class VideoPreview extends StatelessWidget {
+class VideoPreview extends StatefulWidget {
   final String imageSrc;
   final String title;
   final String uploaderName;
@@ -26,33 +25,34 @@ class VideoPreview extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<VideoPreview> createState() => _VideoPreviewState();
+}
+
+class _VideoPreviewState extends State<VideoPreview> {
+  @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: Global.isDarkMode
-            ? null
-            : BoxDecoration(boxShadow: [
-                BoxShadow(
-                  offset: Offset(2.5.r, 2.5.r),
-                  blurRadius: 10.r,
-                  color: IwrTheme.gray,
-                )
-              ]),
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor,
+            offset: Offset(2.5.r, 2.5.r),
+            blurRadius: 7.5.r,
+          )
+        ]),
         child: ClipRRect(
-            borderRadius: BorderRadius.circular(10.r),
-            child: SizedBox(
+            borderRadius: BorderRadius.circular(7.5.r),
+            child: Container(
+                color: Theme.of(context).cardColor,
                 width: 180.w,
                 height: 160.h,
                 child: Column(children: [
                   Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
-                      SizedBox(
-                          width: 180.w,
-                          height: 95.h,
-                          child: Image.network(
-                            imageSrc,
-                            fit: BoxFit.cover,
-                          )),
+                      ReloadableImage(
+                        imageUrl: widget.imageSrc,
+                        size: Size(180.w, 95.h),
+                      ),
                       Container(
                         decoration: const BoxDecoration(
                             gradient: LinearGradient(
@@ -79,7 +79,7 @@ class VideoPreview extends StatelessWidget {
                                       margin:
                                           REdgeInsets.only(left: 2, right: 5),
                                       child: Text(
-                                        plays,
+                                        widget.plays,
                                         style: TextStyle(
                                             fontSize: 12.5.sp,
                                             color: Colors.white),
@@ -92,7 +92,7 @@ class VideoPreview extends StatelessWidget {
                                   Container(
                                       margin: REdgeInsets.only(left: 2),
                                       child: Text(
-                                        likes,
+                                        widget.likes,
                                         style: TextStyle(
                                             fontSize: 12.5.sp,
                                             color: Colors.white),
@@ -100,7 +100,7 @@ class VideoPreview extends StatelessWidget {
                                 ],
                               ),
                               Text(
-                                duration,
+                                widget.duration,
                                 style: TextStyle(
                                     fontSize: 12.5.sp, color: Colors.white),
                               )
@@ -111,39 +111,36 @@ class VideoPreview extends StatelessWidget {
                     ],
                   ),
                   Expanded(
-                      child: Container(
-                    color: IwrTheme.backColor4,
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: REdgeInsets.fromLTRB(7.5, 5, 0, 0),
-                            child: Text(
-                              title,
-                              style: TextStyle(
-                                  fontSize: 12.5.sp, color: IwrTheme.fontColor),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        Container(
+                          margin: REdgeInsets.fromLTRB(7.5, 5, 0, 0),
+                          child: Text(
+                            widget.title,
+                            style: TextStyle(
+                              fontSize: 12.5.sp,
                             ),
                           ),
-                          Container(
-                              margin: REdgeInsets.fromLTRB(7.5, 0, 0, 7.5),
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Icon(
-                                      FluentIcons.person_16_filled,
-                                      size: 12.5.sp,
-                                      color: IwrTheme.fontColor2,
-                                    ),
-                                    Container(
-                                        margin: REdgeInsets.only(left: 2),
-                                        child: Text(uploaderName,
-                                            style: TextStyle(
-                                                fontSize: 10.sp,
-                                                color: IwrTheme.fontColor2)))
-                                  ]))
-                        ]),
-                  ))
+                        ),
+                        Container(
+                            margin: REdgeInsets.fromLTRB(7.5, 0, 0, 7.5),
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Icon(
+                                    FluentIcons.person_16_filled,
+                                    size: 12.5.sp,
+                                  ),
+                                  Container(
+                                      margin: REdgeInsets.only(left: 2),
+                                      child: Text(widget.uploaderName,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                          )))
+                                ]))
+                      ]))
                 ]))));
   }
 }

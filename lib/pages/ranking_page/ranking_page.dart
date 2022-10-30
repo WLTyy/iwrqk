@@ -60,29 +60,27 @@ class _RankingPageState extends State<RankingPage>
       showFilter: false,
       tabList: {
         L10n.of(context).hottest: Container(
-            color: IwrTheme.backColor,
             child: Column(
-              children: [
-                RankingCard(
-                    title: L10n.of(context).hottest_character, itemMap: map),
-                Container(
-                  margin: REdgeInsets.symmetric(vertical: 25),
-                  child: RankingCard(
-                      title: L10n.of(context).hottest_uploader, itemMap: map),
+          children: [
+            RankingCard(
+                title: L10n.of(context).hottest_character, itemMap: map),
+            Container(
+              margin: REdgeInsets.symmetric(vertical: 25),
+              child: RankingCard(
+                  title: L10n.of(context).hottest_uploader, itemMap: map),
+            ),
+            RankingCard(title: L10n.of(context).hottest_tag, itemMap: map),
+            Container(
+              margin: REdgeInsets.only(top: 15, bottom: 75),
+              child: Text(
+                L10n.of(context).data_origin,
+                style: TextStyle(
+                  fontSize: 15.sp,
                 ),
-                RankingCard(title: L10n.of(context).hottest_tag, itemMap: map),
-                Container(
-                  margin: REdgeInsets.only(top: 15, bottom: 75),
-                  child: Text(
-                    L10n.of(context).data_origin,
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color: IwrTheme.gray,
-                    ),
-                  ),
-                )
-              ],
-            )),
+              ),
+            )
+          ],
+        )),
         L10n.of(context).popular: Container(),
       },
       tabController: _tabController,

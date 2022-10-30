@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TabIndicator extends Decoration {
   const TabIndicator();
@@ -14,15 +15,14 @@ class TabPainter extends BoxPainter {
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    Rect rect = Offset(offset.dx, (configuration.size!.height - 3)) &
-        Size(configuration.size!.width, 3);
+    Rect rect = Offset(offset.dx, (configuration.size!.height - 3.5)) &
+        Size(configuration.size!.width, 3.5);
     Paint paint = Paint();
     paint.color = Colors.blue;
     paint.style = PaintingStyle.fill;
     canvas.drawRRect(
         RRect.fromRectAndCorners(rect,
-            topRight: const Radius.circular(8),
-            topLeft: const Radius.circular(8)),
+            topRight: Radius.circular(8.r), topLeft: Radius.circular(8.r)),
         paint);
   }
 }

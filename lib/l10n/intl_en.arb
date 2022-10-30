@@ -17,5 +17,11 @@
     "download": "Download",
     "favorite": "Favorite",
     "playlists": "Playlists",
-    "settings": "Settings"
+    "settings": "Settings",
+    "about": "About",
+    "theme" : "Theme",
+    "appearance" : "Appearance",
+    "system" : "System",
+    "light_mode" : "Light",
+    "dark_mode" : "Dark"
 }

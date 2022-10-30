@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:iwrqk/common/theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class UserItem extends StatelessWidget {
+import '../../common/global.dart';
+
+class UserItem extends StatefulWidget {
   final String title;
   final Icon icon;
   final String routeName;
@@ -13,23 +15,29 @@ class UserItem extends StatelessWidget {
       required this.routeName,
       Key? key})
       : super(key: key);
+  @override
+  State<UserItem> createState() => _UserItemState();
+}
 
+class _UserItemState extends State<UserItem> {
   @override
   Widget build(BuildContext context) {
     return Theme(
-        data: ThemeData(
+        data: Theme.of(context).copyWith(
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
+          highlightColor: ThemeData.dark().highlightColor,
         ),
         child: ClipRRect(
             borderRadius: BorderRadius.circular(10.r),
             child: MaterialButton(
+                minWidth: 340.w,
                 onPressed: () {
-                  Navigator.pushNamed(context, routeName);
+                  Navigator.pushNamed(context, widget.routeName);
                 },
                 child: Container(
                     padding: REdgeInsets.fromLTRB(0, 10, 0, 10),
-                    width: 350.w,
+                    width: 340.w,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -40,22 +48,21 @@ class UserItem extends StatelessWidget {
                                 width: 30.w,
                                 height: 35.h,
                                 child: Center(
-                                  child: icon,
+                                  child: widget.icon,
                                 )),
                             Container(
                               margin: REdgeInsets.only(left: 10),
                               child: Text(
-                                title,
+                                widget.title,
                                 style: TextStyle(
-                                    fontSize: 20.sp,
-                                    color: IwrTheme.fontColor3),
+                                  fontSize: 20.sp,
+                                ),
                               ),
                             )
                           ],
                         ),
                         Icon(
                           Icons.arrow_forward_ios_rounded,
-                          color: IwrTheme.fontColor3,
                           size: 20.sp,
                         ),
                       ],

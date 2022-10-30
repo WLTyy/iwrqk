@@ -1,4 +1,5 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iwrqk/common/theme.dart';
@@ -36,54 +37,43 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     Widget body = Scaffold(
-        backgroundColor: IwrTheme.backColor,
         body: _pageList[_selectedIndex],
         extendBody: true,
-        bottomNavigationBar: Theme(
-            data: ThemeData(
-                splashColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent),
-            child: BottomNavigationBar(
-                selectedFontSize: 15.sp,
-                unselectedFontSize: 13.5.sp,
-                backgroundColor: IwrTheme.backColor2,
-                unselectedItemColor: IwrTheme.gray,
-                items: <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                      icon: Icon(FluentIcons.bookmark_16_regular, size: 30.sp),
-                      activeIcon:
-                          Icon(FluentIcons.bookmark_16_filled, size: 30.sp),
-                      label: L10n.of(context).explore,
-                      tooltip: ''),
-                  BottomNavigationBarItem(
-                      icon: Icon(FluentIcons.data_bar_vertical_16_regular,
-                          size: 30.sp),
-                      activeIcon: Icon(FluentIcons.data_bar_vertical_16_filled,
-                          size: 30.sp),
-                      label: L10n.of(context).ranking,
-                      tooltip: ''),
-                  BottomNavigationBarItem(
-                      icon: Icon(FluentIcons.video_16_regular, size: 30.sp),
-                      activeIcon:
-                          Icon(FluentIcons.video_16_filled, size: 30.sp),
-                      label: L10n.of(context).videos,
-                      tooltip: ''),
-                  BottomNavigationBarItem(
-                      icon: Icon(FluentIcons.image_16_regular, size: 30.sp),
-                      activeIcon:
-                          Icon(FluentIcons.image_16_filled, size: 30.sp),
-                      label: L10n.of(context).images,
-                      tooltip: ''),
-                ],
-                currentIndex: _selectedIndex,
-                type: BottomNavigationBarType.fixed,
-                selectedItemColor: Colors.blue,
-                onTap: ((index) {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                }))));
+        bottomNavigationBar: BottomNavigationBar(
+            selectedFontSize: 15.sp,
+            unselectedFontSize: 13.5.sp,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  icon: Icon(FluentIcons.bookmark_16_regular, size: 30.sp),
+                  activeIcon: Icon(FluentIcons.bookmark_16_filled, size: 30.sp),
+                  label: L10n.of(context).explore,
+                  tooltip: ''),
+              BottomNavigationBarItem(
+                  icon: Icon(FluentIcons.data_bar_vertical_16_regular,
+                      size: 30.sp),
+                  activeIcon: Icon(FluentIcons.data_bar_vertical_16_filled,
+                      size: 30.sp),
+                  label: L10n.of(context).ranking,
+                  tooltip: ''),
+              BottomNavigationBarItem(
+                  icon: Icon(FluentIcons.video_16_regular, size: 30.sp),
+                  activeIcon: Icon(FluentIcons.video_16_filled, size: 30.sp),
+                  label: L10n.of(context).videos,
+                  tooltip: ''),
+              BottomNavigationBarItem(
+                  icon: Icon(FluentIcons.image_16_regular, size: 30.sp),
+                  activeIcon: Icon(FluentIcons.image_16_filled, size: 30.sp),
+                  label: L10n.of(context).images,
+                  tooltip: ''),
+            ],
+            currentIndex: _selectedIndex,
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Colors.blue,
+            onTap: ((index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            })));
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: Global.getOverlayStyle(),

@@ -6,7 +6,7 @@ import 'theme.dart';
 
 class Global {
   static bool isFirstOpen = false;
-  static bool isDarkMode = false;
+  static IwrThemeMode themeMode = IwrThemeMode.system;
   static SharedPreferences? _sharedPreferences;
 
   static Future<void> init() async {
@@ -18,10 +18,8 @@ class Global {
       statusBarColor: Colors.transparent,
     ));
 
-    Global.setData('isDarkMode', false);
-    //Global.setData('isDarkMode', true);
-    isDarkMode = Global.getData('isDarkMode');
-    IwrTheme.init(isDarkMode);
+    Global.setData('ThemeMode', IwrThemeMode.system.index);
+    IwrTheme.init(themeMode);
   }
 
   static void setData<T>(String key, T value) {
@@ -52,16 +50,10 @@ class Global {
   }
 
   static SystemUiOverlayStyle getOverlayStyle() {
-    return isDarkMode
-        ? SystemUiOverlayStyle.light.copyWith(
-            statusBarColor: Colors.transparent,
-            systemNavigationBarColor: Colors.transparent,
-            systemNavigationBarDividerColor: Colors.transparent,
-          )
-        : SystemUiOverlayStyle.dark.copyWith(
-            statusBarColor: Colors.transparent,
-            systemNavigationBarColor: Colors.transparent,
-            systemNavigationBarDividerColor: Colors.transparent,
-          );
+    return const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+    );
   }
 }
