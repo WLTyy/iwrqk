@@ -13,12 +13,11 @@ import '../component/tab_indicator.dart';
 
 class AppBarX extends StatefulWidget {
   final bool? showFilter;
-  final Map<String, Widget>? tabList;
-  final Widget? body;
+  final Map<String, Widget> tabList;
   final TabController? tabController;
 
   const AppBarX(
-      {this.showFilter, this.tabList, this.body, this.tabController, Key? key})
+      {this.showFilter, required this.tabList, this.tabController, Key? key})
       : super(key: key);
 
   @override
@@ -150,44 +149,12 @@ class _AppBarXState extends State<AppBarX> {
           top: false,
           bottom: false,
           child: Builder(builder: (BuildContext context) {
-            return CustomScrollView(
-                physics: Platform.isAndroid
-                    ? const NeverScrollableScrollPhysics()
-                    : const AlwaysScrollableScrollPhysics(),
-                slivers: <Widget>[
-                  SliverOverlapInjector(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                        context),
-                  ),
-                  SliverPadding(
-                    padding: EdgeInsets.all(5.w),
-                    sliver: SliverToBoxAdapter(child: list[i]),
-                  )
-                ]);
+            return Container(
+              margin: REdgeInsets.only(top: 100.h, bottom: 100.h),
+              child: list[i]!,
+            );
           }));
     }));
-  }
-
-  Widget getBodyWidget(Widget body) {
-    return SafeArea(
-        top: false,
-        bottom: false,
-        child: Builder(builder: (BuildContext context) {
-          return CustomScrollView(
-              physics: Platform.isAndroid
-                  ? const NeverScrollableScrollPhysics()
-                  : const AlwaysScrollableScrollPhysics(),
-              slivers: <Widget>[
-                SliverOverlapInjector(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                ),
-                SliverPadding(
-                  padding: EdgeInsets.all(5.w),
-                  sliver: SliverToBoxAdapter(child: body),
-                )
-              ]);
-        }));
   }
 
   @override
@@ -211,11 +178,9 @@ class _AppBarXState extends State<AppBarX> {
             ),
           ];
         },
-        body: widget.tabList == null
-            ? getBodyWidget(widget.body!)
-            : TabBarView(
-                controller: widget.tabController,
-                children: getTabWidget(widget.tabList!),
-              ));
+        body: TabBarView(
+          controller: widget.tabController,
+          children: getTabWidget(widget.tabList!),
+        ));
   }
 }

@@ -42,16 +42,16 @@ class _VideoPreviewState extends State<VideoPreview> {
         child: ClipRRect(
             borderRadius: BorderRadius.circular(7.5.r),
             child: Container(
-                color: Theme.of(context).cardColor,
-                width: 180.w,
-                height: 160.h,
+                color: Theme.of(context).canvasColor,
+                width: 190.w,
+                height: 170.h,
                 child: Column(children: [
                   Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
                       ReloadableImage(
                         imageUrl: widget.imageSrc,
-                        size: Size(180.w, 95.h),
+                        size: Size(190.w, 100.h),
                       ),
                       Container(
                         decoration: const BoxDecoration(
@@ -59,7 +59,7 @@ class _VideoPreviewState extends State<VideoPreview> {
                                 colors: [Colors.transparent, Colors.black45],
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter)),
-                        width: 180.w,
+                        width: 200.w,
                         height: 25.h,
                         child: Container(
                           alignment: Alignment.bottomCenter,
@@ -116,14 +116,16 @@ class _VideoPreviewState extends State<VideoPreview> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                         Container(
-                          margin: REdgeInsets.fromLTRB(7.5, 5, 0, 0),
-                          child: Text(
-                            widget.title,
-                            style: TextStyle(
-                              fontSize: 12.5.sp,
-                            ),
-                          ),
-                        ),
+                            margin: REdgeInsets.fromLTRB(5, 7.5, 0, 0),
+                            child: SizedBox(
+                              width: 180.w,
+                              child: Text(
+                                widget.title,
+                                style: TextStyle(
+                                  fontSize: 12.5.sp,
+                                ),
+                              ),
+                            )),
                         Container(
                             margin: REdgeInsets.fromLTRB(7.5, 0, 0, 7.5),
                             child: Row(

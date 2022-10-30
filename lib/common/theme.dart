@@ -36,7 +36,7 @@ class IwrTheme {
               backgroundColor: CupertinoColors.darkBackgroundGray),
           backgroundColor: CupertinoColors.black,
           scaffoldBackgroundColor: CupertinoColors.black,
-          canvasColor: const Color.fromARGB(255, 35, 35, 35),
+          canvasColor: const Color.fromARGB(255, 40, 40, 40),
           shadowColor: Colors.transparent,
           splashColor: Colors.transparent,
           hoverColor: Colors.transparent,
