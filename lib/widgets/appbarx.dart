@@ -150,7 +150,7 @@ class _AppBarXState extends State<AppBarX> {
           bottom: false,
           child: Builder(builder: (BuildContext context) {
             return Container(
-              margin: REdgeInsets.only(top: 100.h, bottom: 100.h),
+              margin: REdgeInsets.only(top: 100, bottom: 100),
               child: list[i]!,
             );
           }));

@@ -32,9 +32,11 @@ class _ReloadableImageState extends State<ReloadableImage> {
         successLoad = progress.downloaded == progress.totalSize;
         return Center(
             child: SizedBox(
-          width: minDistance,
-          height: minDistance,
-          child: const CircularProgressIndicator(),
+          width: minDistance * 0.75,
+          height: minDistance * 0.75,
+          child: const CircularProgressIndicator(
+            strokeWidth: 3,
+          ),
         ));
       },
       errorWidget: (_, __, dynamic ___) {
@@ -43,7 +45,7 @@ class _ReloadableImageState extends State<ReloadableImage> {
           child: Center(
             child: Icon(
               FluentIcons.arrow_clockwise_16_regular,
-              size: 35.sp * minDistance / 100,
+              size: 45.sp,
               color: Colors.blue,
             ),
           ),

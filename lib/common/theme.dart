@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'global.dart';
 
-enum IwrThemeMode { light, dark, system }
+enum IwrThemeMode { system, light, dark }
 
 class ThemeModeProvider with ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.values[Global.getData('ThemeMode')];
