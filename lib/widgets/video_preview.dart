@@ -1,10 +1,9 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:iwrqk/widgets/reloadable_image.dart';
 
 import '../common/global.dart';
 import '../common/theme.dart';
+import 'reloadable_image.dart';
 
 class VideoPreview extends StatefulWidget {
   final String imageSrc;
@@ -35,23 +34,23 @@ class _VideoPreviewState extends State<VideoPreview> {
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
             color: Theme.of(context).shadowColor,
-            offset: Offset(2.5.r, 2.5.r),
-            blurRadius: 7.5.r,
+            offset: Offset(2.5, 2.5),
+            blurRadius: 7.5,
           )
         ]),
         child: ClipRRect(
-            borderRadius: BorderRadius.circular(7.5.r),
+            borderRadius: BorderRadius.circular(7.5),
             child: Container(
                 color: Theme.of(context).canvasColor,
-                width: 190.w,
-                height: 170.h,
+                width: 190,
+                height: 170,
                 child: Column(children: [
                   Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
                       ReloadableImage(
                         imageUrl: widget.imageSrc,
-                        size: Size(190.w, 100.h),
+                        size: Size(190, 100),
                       ),
                       Container(
                         decoration: const BoxDecoration(
@@ -59,11 +58,11 @@ class _VideoPreviewState extends State<VideoPreview> {
                                 colors: [Colors.transparent, Colors.black45],
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter)),
-                        width: 200.w,
-                        height: 25.h,
+                        width: 200,
+                        height: 25,
                         child: Container(
                           alignment: Alignment.bottomCenter,
-                          margin: REdgeInsets.fromLTRB(7.5, 0, 7.5, 5),
+                          margin: EdgeInsets.fromLTRB(7.5, 0, 7.5, 5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -71,30 +70,30 @@ class _VideoPreviewState extends State<VideoPreview> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(
-                                    FluentIcons.play_16_filled,
-                                    size: 12.5.sp,
+                                    CupertinoIcons.play_fill,
+                                    size: 12.5,
                                     color: Colors.white,
                                   ),
                                   Container(
                                       margin:
-                                          REdgeInsets.only(left: 2, right: 5),
+                                          EdgeInsets.only(left: 2, right: 5),
                                       child: Text(
                                         widget.plays,
                                         style: TextStyle(
-                                            fontSize: 12.5.sp,
+                                            fontSize: 12.5,
                                             color: Colors.white),
                                       )),
                                   Icon(
-                                    FluentIcons.thumb_like_16_filled,
-                                    size: 12.5.sp,
+                                    CupertinoIcons.hand_thumbsup_fill,
+                                    size: 12.5,
                                     color: Colors.white,
                                   ),
                                   Container(
-                                      margin: REdgeInsets.only(left: 2),
+                                      margin: EdgeInsets.only(left: 2),
                                       child: Text(
                                         widget.likes,
                                         style: TextStyle(
-                                            fontSize: 12.5.sp,
+                                            fontSize: 12.5,
                                             color: Colors.white),
                                       ))
                                 ],
@@ -102,7 +101,7 @@ class _VideoPreviewState extends State<VideoPreview> {
                               Text(
                                 widget.duration,
                                 style: TextStyle(
-                                    fontSize: 12.5.sp, color: Colors.white),
+                                    fontSize: 12.5, color: Colors.white),
                               )
                             ],
                           ),
@@ -116,30 +115,30 @@ class _VideoPreviewState extends State<VideoPreview> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                         Container(
-                            margin: REdgeInsets.fromLTRB(5, 7.5, 0, 0),
+                            margin: EdgeInsets.fromLTRB(5, 7.5, 0, 0),
                             child: SizedBox(
-                              width: 180.w,
+                              width: 180,
                               child: Text(
                                 widget.title,
                                 style: TextStyle(
-                                  fontSize: 12.5.sp,
+                                  fontSize: 12.5,
                                 ),
                               ),
                             )),
                         Container(
-                            margin: REdgeInsets.fromLTRB(7.5, 0, 0, 7.5),
+                            margin: EdgeInsets.fromLTRB(7.5, 0, 0, 7.5),
                             child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Icon(
-                                    FluentIcons.person_16_filled,
-                                    size: 12.5.sp,
+                                    CupertinoIcons.person_fill,
+                                    size: 12.5,
                                   ),
                                   Container(
-                                      margin: REdgeInsets.only(left: 2),
+                                      margin: EdgeInsets.only(left: 2),
                                       child: Text(widget.uploaderName,
                                           style: TextStyle(
-                                            fontSize: 10.sp,
+                                            fontSize: 10,
                                           )))
                                 ]))
                       ]))

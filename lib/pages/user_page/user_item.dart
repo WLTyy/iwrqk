@@ -1,6 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:iwrqk/common/theme.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../common/global.dart';
 
@@ -29,15 +28,15 @@ class _UserItemState extends State<UserItem> {
           highlightColor: ThemeData.dark().highlightColor,
         ),
         child: ClipRRect(
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(10),
             child: MaterialButton(
-                minWidth: 340.w,
+                minWidth: 340,
                 onPressed: () {
                   Navigator.pushNamed(context, widget.routeName);
                 },
                 child: Container(
-                    padding: REdgeInsets.fromLTRB(0, 10, 0, 10),
-                    width: 340.w,
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                    width: 340,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -45,25 +44,25 @@ class _UserItemState extends State<UserItem> {
                         Row(
                           children: [
                             SizedBox(
-                                width: 30.w,
-                                height: 35.h,
+                                width: 30,
+                                height: 35,
                                 child: Center(
                                   child: widget.icon,
                                 )),
                             Container(
-                              margin: REdgeInsets.only(left: 10),
+                              margin: EdgeInsets.only(left: 10),
                               child: Text(
                                 widget.title,
                                 style: TextStyle(
-                                  fontSize: 20.sp,
+                                  fontSize: 20,
                                 ),
                               ),
                             )
                           ],
                         ),
                         Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 20.sp,
+                          CupertinoIcons.forward,
+                          size: 20,
                         ),
                       ],
                     )))));

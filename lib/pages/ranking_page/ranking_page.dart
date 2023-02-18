@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:iwrqk/l10n.dart';
-import 'package:iwrqk/pages/ranking_page/ranking_card.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../common/global.dart';
 import '../../common/theme.dart';
-import '../../widgets/appbarx.dart';
+import '../../l10n.dart';
+import '../../widgets/iwr_appbar.dart';
 
 class RankingPage extends StatefulWidget {
   const RankingPage({super.key});
@@ -56,31 +54,10 @@ class _RankingPageState extends State<RankingPage>
 
   @override
   Widget build(BuildContext context) {
-    return AppBarX(
+    return IwrAppBar(
       showFilter: false,
       tabList: {
-        L10n.of(context).hottest: Container(
-            child: Column(
-          children: [
-            RankingCard(
-                title: L10n.of(context).hottest_character, itemMap: map),
-            Container(
-              margin: REdgeInsets.symmetric(vertical: 25),
-              child: RankingCard(
-                  title: L10n.of(context).hottest_uploader, itemMap: map),
-            ),
-            RankingCard(title: L10n.of(context).hottest_tag, itemMap: map),
-            Container(
-              margin: REdgeInsets.only(top: 15, bottom: 75),
-              child: Text(
-                L10n.of(context).data_origin,
-                style: TextStyle(
-                  fontSize: 15.sp,
-                ),
-              ),
-            )
-          ],
-        )),
+        L10n.of(context).hottest: Container(),
         L10n.of(context).popular: Container(),
       },
       tabController: _tabController,

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:iwrqk/l10n.dart';
+
+import '../widgets/iwr_appbar.dart';
 import '../common/theme.dart';
 import '../common/global.dart';
+import '../l10n.dart';
 
-import '../widgets/appbarx.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -29,7 +30,7 @@ class _ExplorePageState extends State<ExplorePage>
 
   @override
   Widget build(BuildContext context) {
-    return AppBarX(
+    return IwrAppBar(
       showFilter: false,
       tabList: {
         L10n.of(context).hottest: Container(),

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ReloadableImage extends StatefulWidget {
   final String imageUrl;
@@ -44,8 +43,8 @@ class _ReloadableImageState extends State<ReloadableImage> {
           onPressed: () {},
           child: Center(
             child: Icon(
-              FluentIcons.arrow_clockwise_16_regular,
-              size: 45.sp,
+              CupertinoIcons.arrow_clockwise,
+              size: 45,
               color: Colors.blue,
             ),
           ),

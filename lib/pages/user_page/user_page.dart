@@ -1,10 +1,7 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:iwrqk/common/global.dart';
-import 'package:iwrqk/common/theme.dart';
-import 'package:iwrqk/l10n.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../l10n.dart';
 import 'user_item.dart';
 
 class UserPage extends StatefulWidget {
@@ -18,109 +15,108 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
             Column(children: [
               Container(
-                  margin: EdgeInsets.only(bottom: 10.h),
+                  margin: EdgeInsets.only(bottom: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      MaterialButton(
-                          minWidth: 20.w,
-                          height: 20.w,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(Icons.close_rounded, size: 35.sp))
+                      IconButton(
+                        icon: Icon(CupertinoIcons.xmark, size: 35),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      )
                     ],
                   )),
-              MaterialButton(
-                  onPressed: () {},
-                  child: Container(
-                    height: 100.h,
-                    width: 360.w,
-                    margin: REdgeInsets.only(top: 5),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).canvasColor,
-                        borderRadius: BorderRadius.circular(10.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Theme.of(context).shadowColor,
-                            offset: Offset(5.r, 5.r),
-                            blurRadius: 10.r,
-                          )
-                        ]),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            margin: REdgeInsets.only(left: 20),
-                            child: Row(children: [
-                              ClipOval(
-                                  child: Image.network(
-                                      "https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png",
-                                      width: 60.w,
-                                      height: 60.w,
-                                      fit: BoxFit.cover)),
-                              Container(
-                                margin: REdgeInsets.only(left: 15),
-                                child: Text(
-                                  "Futo",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 30.sp,
-                                  ),
+              GestureDetector(
+                onTap: (){},
+                child: Container(
+                  height: 100,
+                  width: 360,
+                  margin: EdgeInsets.only(top: 5),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).shadowColor,
+                          offset: Offset(5, 5),
+                          blurRadius: 10,
+                        )
+                      ]),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 20),
+                          child: Row(children: [
+                            ClipOval(
+                                child: Image.network(
+                                    "https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png",
+                                    width: 60,
+                                    height: 60,
+                                    fit: BoxFit.cover)),
+                            Container(
+                              margin: EdgeInsets.only(left: 15),
+                              child: Text(
+                                "Futo",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30,
                                 ),
-                              )
-                            ]),
-                          ),
-                          Container(
-                              margin: REdgeInsets.only(right: 15),
-                              child: Icon(
-                                Icons.arrow_forward_ios_rounded,
-                              ))
-                        ]),
-                  )),
+                              ),
+                            )
+                          ]),
+                        ),
+                        Container(
+                            margin: EdgeInsets.only(right: 15),
+                            child: Icon(
+                              CupertinoIcons.forward,
+                            ))
+                      ]),
+                ),
+              ),
               Container(
-                margin: REdgeInsets.only(top: 20),
+                margin: EdgeInsets.only(top: 20),
                 child: Column(children: [
                   UserItem(
                       title: L10n.of(context).friends,
                       icon: Icon(
-                        FluentIcons.people_16_filled,
-                        size: 30.sp,
+                        CupertinoIcons.person_2_fill,
+                        size: 30,
                       ),
                       routeName: "/"),
                   UserItem(
                       title: L10n.of(context).history,
                       icon: Icon(
-                        FluentIcons.history_16_filled,
-                        size: 30.sp,
+                        CupertinoIcons.time,
+                        size: 30,
                       ),
                       routeName: "/"),
                   UserItem(
                       title: L10n.of(context).download,
                       icon: Icon(
-                        FluentIcons.arrow_download_16_filled,
-                        size: 30.sp,
+                        CupertinoIcons.arrow_down_to_line,
+                        size: 30,
                       ),
                       routeName: "/"),
                   UserItem(
                       title: L10n.of(context).favorite,
                       icon: Icon(
-                        FluentIcons.heart_16_filled,
-                        size: 30.sp,
+                        CupertinoIcons.heart_fill,
+                        size: 30,
                       ),
                       routeName: "/"),
                   UserItem(
                       title: L10n.of(context).playlists,
                       icon: Icon(
-                        FluentIcons.video_clip_multiple_16_filled,
-                        size: 30.sp,
+                        CupertinoIcons.list_dash,
+                        size: 30,
                       ),
                       routeName: "/"),
                 ]),
@@ -129,9 +125,9 @@ class _UserPageState extends State<UserPage> {
             Row(
               children: [
                 ClipRRect(
-                    borderRadius: BorderRadius.circular(10.r),
+                    borderRadius: BorderRadius.circular(10),
                     child: MaterialButton(
-                        padding: REdgeInsets.symmetric(vertical: 15),
+                        padding: EdgeInsets.symmetric(vertical: 15),
                         onPressed: () {
                           Navigator.pushNamed(context, "/settings");
                         },
@@ -140,15 +136,15 @@ class _UserPageState extends State<UserPage> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Icon(
-                                  FluentIcons.settings_16_filled,
-                                  size: 35.sp,
+                                  CupertinoIcons.gear_alt_fill,
+                                  size: 35,
                                 ),
                                 Container(
-                                  margin: REdgeInsets.only(top: 5),
+                                  margin: EdgeInsets.only(top: 5),
                                   child: Text(
                                     L10n.of(context).settings,
                                     style: TextStyle(
-                                      fontSize: 15.sp,
+                                      fontSize: 15,
                                     ),
                                   ),
                                 )

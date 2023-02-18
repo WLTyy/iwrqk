@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../widgets/iwr_appbar.dart';
 import '../common/global.dart';
 import '../common/theme.dart';
 import '../l10n.dart';
-import '../widgets/appbarx.dart';
 
 class VideosPage extends StatefulWidget {
   const VideosPage({super.key});
@@ -29,7 +29,7 @@ class _VideosPageState extends State<VideosPage>
 
   @override
   Widget build(BuildContext context) {
-    return AppBarX(
+    return IwrAppBar(
       showFilter: true,
       tabList: {
         L10n.of(context).latest: Container(

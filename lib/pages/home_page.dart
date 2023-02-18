@@ -1,25 +1,22 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:iwrqk/common/theme.dart';
-import 'package:iwrqk/l10n.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../common/global.dart';
-import '../pages/images_page.dart';
-import '../pages/ranking_page/ranking_page.dart';
-import '../pages/explore_page.dart';
-import '../pages/videos_page.dart';
+import '../l10n.dart';
+import 'images_page.dart';
+import 'explore_page.dart';
+import 'ranking_page/ranking_page.dart';
+import 'videos_page.dart';
 
-class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<BottomNavigation> createState() => _BottomNavigationState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _BottomNavigationState extends State<BottomNavigation> {
+class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   final List<Widget> _pageList = [];
 
@@ -40,29 +37,29 @@ class _BottomNavigationState extends State<BottomNavigation> {
         body: _pageList[_selectedIndex],
         extendBody: true,
         bottomNavigationBar: BottomNavigationBar(
-            selectedFontSize: 15.sp,
-            unselectedFontSize: 13.5.sp,
+            selectedFontSize: 15,
+            unselectedFontSize: 13.5,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                  icon: Icon(FluentIcons.bookmark_16_regular, size: 30.sp),
-                  activeIcon: Icon(FluentIcons.bookmark_16_filled, size: 30.sp),
+                  icon: Icon(CupertinoIcons.rocket, size: 30),
+                  activeIcon: Icon(CupertinoIcons.rocket_fill, size: 30),
                   label: L10n.of(context).explore,
                   tooltip: ''),
               BottomNavigationBarItem(
-                  icon: Icon(FluentIcons.data_bar_vertical_16_regular,
-                      size: 30.sp),
-                  activeIcon: Icon(FluentIcons.data_bar_vertical_16_filled,
-                      size: 30.sp),
+                  icon: Icon(CupertinoIcons.chart_bar,
+                      size: 30),
+                  activeIcon: Icon(CupertinoIcons.chart_bar_fill,
+                      size: 30),
                   label: L10n.of(context).ranking,
                   tooltip: ''),
               BottomNavigationBarItem(
-                  icon: Icon(FluentIcons.video_16_regular, size: 30.sp),
-                  activeIcon: Icon(FluentIcons.video_16_filled, size: 30.sp),
+                  icon: Icon(CupertinoIcons.play_rectangle, size: 30),
+                  activeIcon: Icon(CupertinoIcons.play_rectangle_fill, size: 30),
                   label: L10n.of(context).videos,
                   tooltip: ''),
               BottomNavigationBarItem(
-                  icon: Icon(FluentIcons.image_16_regular, size: 30.sp),
-                  activeIcon: Icon(FluentIcons.image_16_filled, size: 30.sp),
+                  icon: Icon(CupertinoIcons.photo, size: 30),
+                  activeIcon: Icon(CupertinoIcons.photo_fill, size: 30),
                   label: L10n.of(context).images,
                   tooltip: ''),
             ],

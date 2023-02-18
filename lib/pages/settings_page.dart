@@ -1,16 +1,13 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:iwrqk/widgets/video_preview.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 import '../common/global.dart';
 import '../common/theme.dart';
 import '../l10n.dart';
-import '../widgets/appbarx.dart';
+
+
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -26,13 +23,11 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: MaterialButton(
-              minWidth: 20.w,
-              height: 20.w,
+          leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Icon(Icons.arrow_back_ios_rounded, size: 30.sp)),
+              icon: Icon(CupertinoIcons.back, size: 30)),
           centerTitle: true,
           title: Text(
             L10n.of(context).settings,

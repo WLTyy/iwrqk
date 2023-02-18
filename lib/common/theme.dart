@@ -17,7 +17,7 @@ class ThemeModeProvider with ChangeNotifier {
   }
 }
 
-class IwrTheme {
+class IwrAppTheme {
   static void init(IwrThemeMode type) {
     reloadTheme(type);
   }
@@ -28,13 +28,11 @@ class IwrTheme {
     if (isDarkMode) {
       return ThemeData.dark().copyWith(
           appBarTheme: const AppBarTheme(
-            color: CupertinoColors.darkBackgroundGray,
+            color: Color.fromARGB(255, 40, 40, 40),
             foregroundColor: Colors.white,
             shadowColor: Colors.transparent,
           ),
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-              backgroundColor: CupertinoColors.darkBackgroundGray),
-          backgroundColor: CupertinoColors.black,
+          bottomNavigationBarTheme: BottomNavigationBarThemeData().copyWith(backgroundColor: Color.fromARGB(255, 40, 40, 40),),
           scaffoldBackgroundColor: CupertinoColors.black,
           canvasColor: const Color.fromARGB(255, 40, 40, 40),
           shadowColor: Colors.transparent,
@@ -48,10 +46,8 @@ class IwrTheme {
             foregroundColor: Colors.black,
             shadowColor: Colors.transparent,
           ),
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-              backgroundColor: CupertinoColors.white),
+          tabBarTheme: TabBarTheme().copyWith(labelColor: Colors.black,unselectedLabelColor: Colors.grey),
           scaffoldBackgroundColor: CupertinoColors.systemGroupedBackground,
-          backgroundColor: CupertinoColors.white,
           canvasColor: CupertinoColors.white,
           shadowColor: Colors.grey,
           splashColor: Colors.transparent,

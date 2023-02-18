@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'theme.dart';
 
 class Global {
-  static bool isFirstOpen = false;
+  static bool isFirstRun = false;
   static IwrThemeMode themeMode = IwrThemeMode.system;
   static SharedPreferences? _sharedPreferences;
 
@@ -19,7 +19,7 @@ class Global {
     ));
 
     Global.setData('ThemeMode', IwrThemeMode.system.index);
-    IwrTheme.init(themeMode);
+    IwrAppTheme.init(themeMode);
   }
 
   static void setData<T>(String key, T value) {
