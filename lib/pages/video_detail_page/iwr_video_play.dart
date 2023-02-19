@@ -130,6 +130,8 @@ class _IwrVideoPlayerState extends State<IwrVideoPlayer> {
 
   @override
   void dispose() {
+    _controller.dispose();
+    _hideTimer?.cancel();
     if (_isFullScreen) {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
           overlays: SystemUiOverlay.values);
@@ -139,8 +141,6 @@ class _IwrVideoPlayerState extends State<IwrVideoPlayer> {
           overlays: SystemUiOverlay.values);
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
-    _controller.dispose();
-    _hideTimer?.cancel();
     super.dispose();
   }
 
@@ -198,7 +198,7 @@ class _IwrVideoPlayerState extends State<IwrVideoPlayer> {
                                               size: 30, color: Colors.white))),
                                 ),
                                 Container(
-                                  padding: EdgeInsets.only(bottom: 10),
+                                  padding: EdgeInsets.only(bottom: 15),
                                   decoration: const BoxDecoration(
                                       gradient: LinearGradient(
                                           colors: [

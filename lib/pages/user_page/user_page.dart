@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n.dart';
+import '../../widgets/reloadable_image.dart';
 import 'user_item.dart';
 
 class UserPage extends StatefulWidget {
@@ -34,7 +35,7 @@ class _UserPageState extends State<UserPage> {
                     ],
                   )),
               GestureDetector(
-                onTap: (){},
+                onTap: () {},
                 child: Container(
                   height: 100,
                   width: 360,
@@ -56,11 +57,12 @@ class _UserPageState extends State<UserPage> {
                           margin: EdgeInsets.only(left: 20),
                           child: Row(children: [
                             ClipOval(
-                                child: Image.network(
-                                    "https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png",
-                                    width: 60,
-                                    height: 60,
-                                    fit: BoxFit.cover)),
+                              child: ReloadableImage(
+                                imageUrl: 'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
+                                width: 60,
+                                height: 60,
+                              ),
+                            ),
                             Container(
                               margin: EdgeInsets.only(left: 15),
                               child: Text(

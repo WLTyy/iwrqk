@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../common/classes.dart';
 import '../../component/iwr_tab_indicator.dart';
+import '../../l10n.dart';
+import '../../widgets/reloadable_image.dart';
 import 'iwr_video_play.dart';
+import 'user_comment.dart';
 
 class VideoDetailPage extends StatefulWidget {
   @override
@@ -57,9 +61,9 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                     unselectedLabelColor: Colors.grey,
                     indicatorColor: Colors.blue,
                     tabs: [
-                      Tab(text: "Details"),
+                      Tab(text: L10n.of(context).details),
                       Tab(
-                        text: "Comments",
+                        text: L10n.of(context).comments,
                       )
                     ],
                     controller: _tabController,
@@ -82,25 +86,38 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8.0),
+                      ListTile(
+                        contentPadding: EdgeInsets.all(5),
+                        leading: IconButton(
+                          iconSize: 35,
+                          icon: ClipOval(
+                            child: ReloadableImage(
+                              imageUrl:
+                                  'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
+                              aspectRatio: 1,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/uploader_profile',
+                                arguments: UploaderProfile(
+                                    'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
+                                    'John Smith',
+                                    'I love making videos!',
+                                    '1919',
+                                    '1week'));
+                          },
+                        ),
+                        title: Text(
+                          "14",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        trailing: ElevatedButton(
+                          onPressed: () {},
+                          child: Text(L10n.of(context).follow),
+                        ),
+                      ),
                       Text(
                         '视频描述',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      Text(
-                        '评论区',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        '暂无评论',
                         style: TextStyle(
                           fontSize: 16.0,
                           color: Colors.grey,
@@ -109,7 +126,40 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                     ],
                   ),
                 ),
-                Container(),
+                Column(
+                  children: [
+                    Expanded(
+                        child: Column(
+                      children: [
+                        UserComment(
+                          avatarUrl:
+                              'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
+                          name: 'John Smith',
+                          comment: 'This is a great app!',
+                          likeCount: 10,
+                          time: DateTime.now(),
+                        )
+                      ],
+                    )),
+                    Container(
+                        color: Theme.of(context).canvasColor,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 20),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).cardColor,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(1000))),
+                          child: Text(
+                            "test",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        )),
+                  ],
+                ),
               ]))),
         ],
       ),

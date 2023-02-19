@@ -4,9 +4,18 @@ import 'package:flutter/material.dart';
 
 class ReloadableImage extends StatefulWidget {
   final String imageUrl;
-  final Size size;
+  final double? width;
+  final double? height;
+  final double? aspectRatio;
+  final BoxFit? fit;
 
-  const ReloadableImage({required this.imageUrl, Key? key, required this.size})
+  const ReloadableImage(
+      {required this.imageUrl,
+      Key? key,
+      this.width,
+      this.height,
+      this.fit,
+      this.aspectRatio})
       : super(key: key);
 
   @override
@@ -14,43 +23,65 @@ class ReloadableImage extends StatefulWidget {
 }
 
 class _ReloadableImageState extends State<ReloadableImage> {
+  bool _errorOccurred = false;
+
   @override
   Widget build(BuildContext context) {
-    bool successLoad = true;
-    double minDistance = widget.size.width > widget.size.height
-        ? widget.size.height / 2
-        : widget.size.width / 2;
-    return CachedNetworkImage(
-      key: ValueKey<String>(
-        successLoad ? widget.imageUrl : new DateTime.now().toString(),
-      ),
-      height: widget.size.height,
-      width: widget.size.width,
-      imageUrl: widget.imageUrl,
-      progressIndicatorBuilder: (context, url, progress) {
-        successLoad = progress.downloaded == progress.totalSize;
-        return Center(
-            child: SizedBox(
-          width: minDistance * 0.75,
-          height: minDistance * 0.75,
-          child: const CircularProgressIndicator(
-            strokeWidth: 3,
-          ),
-        ));
-      },
-      errorWidget: (_, __, dynamic ___) {
-        return MaterialButton(
-          onPressed: () {},
-          child: Center(
-            child: Icon(
-              CupertinoIcons.arrow_clockwise,
-              size: 45,
-              color: Colors.blue,
+    return _errorOccurred
+        ? GestureDetector(
+            onTap: () {
+              setState(() {
+                _errorOccurred = false;
+              });
+            },
+            child: Center(
+              child: Icon(
+                CupertinoIcons.arrow_clockwise,
+                size: 45,
+                color: Colors.blue,
+              ),
             ),
-          ),
-        );
-      },
-      fit: BoxFit.cover,
-    );
+          )
+        : widget.aspectRatio != null
+            ? AspectRatio(
+                aspectRatio: widget.aspectRatio!,
+                child: CachedNetworkImage(
+                  imageUrl: widget.imageUrl,
+                  fit: widget.fit,
+                  progressIndicatorBuilder: (context, url, progress) {
+                    return Center(
+                        child: SizedBox(
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 3,
+                      ),
+                    ));
+                  },
+                  errorWidget: (_, __, ___) {
+                    setState(() {
+                      _errorOccurred = true;
+                    });
+                    return Container();
+                  },
+                ))
+            : CachedNetworkImage(
+                imageUrl: widget.imageUrl,
+                width: widget.width,
+                height: widget.height,
+                fit: widget.fit,
+                progressIndicatorBuilder: (context, url, progress) {
+                  return Center(
+                      child: SizedBox(
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 3,
+                    ),
+                  ));
+                },
+                errorWidget: (_, __, ___) {
+                  setState(() {
+                    _errorOccurred = true;
+                  });
+                  return Container();
+                },
+              );
   }
 }

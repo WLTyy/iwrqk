@@ -5,7 +5,7 @@ import '../widgets/iwr_appbar.dart';
 import '../common/theme.dart';
 import '../common/global.dart';
 import '../l10n.dart';
-
+import '../widgets/reloadable_image.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -33,7 +33,11 @@ class _ExplorePageState extends State<ExplorePage>
     return IwrAppBar(
       showFilter: false,
       tabList: {
-        L10n.of(context).hottest: Container(),
+        L10n.of(context).hottest: Container(
+          child: Center(
+            child: ReloadableImage(imageUrl: 'https://picsum.photos/200/300'),
+          ),
+        ),
         L10n.of(context).popular: Container(),
         L10n.of(context).latest: Container(),
         L10n.of(context).toplist: Container(),

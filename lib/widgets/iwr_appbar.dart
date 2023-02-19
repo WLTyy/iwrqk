@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iwrqk/widgets/reloadable_image.dart';
 
 import '../component/iwr_tab_indicator.dart';
 import '../pages/user_page/user_page.dart';
@@ -86,9 +87,11 @@ class _IwrAppBarState extends State<IwrAppBar> {
                 children: [
                   IconButton(
                     iconSize: 35,
-                    icon: CircleAvatar(
-                      backgroundImage:
-                          NetworkImage('https://picsum.photos/200/300'),
+                    icon: ClipOval(
+                      child: ReloadableImage(
+                        imageUrl: 'https://picsum.photos/200/300',
+                        aspectRatio: 1,
+                      ),
                     ),
                     onPressed: () {
                       Navigator.of(context).push(PageRouteBuilder(

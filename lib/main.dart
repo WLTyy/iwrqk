@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/intl_localizations.dart';
 
-
 import 'pages/home_page.dart';
 import 'common/global.dart';
 import 'common/theme.dart';
 import 'pages/settings_page.dart';
+import 'pages/uploader_profile_page/uploader_profile_page.dart';
 import 'pages/user_page/user_page.dart';
 import 'pages/video_detail_page/video_detail_page.dart';
 
@@ -18,8 +18,6 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -29,21 +27,21 @@ class MyApp extends StatelessWidget {
         child: Consumer<ThemeModeProvider>(
             builder: (context, themeModeProvider, _) {
           return MaterialApp(
-                              localizationsDelegates:
-                      AppLocalizations.localizationsDelegates,
-                  supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: IwrAppTheme.getTheme(),
             darkTheme: IwrAppTheme.getTheme(isDarkMode: true),
             themeMode: themeModeProvider.themeMode,
             initialRoute: '/',
-                  routes: {
-                    '/': (context) => const HomePage(),
-                    '/user': (context) => const UserPage(),
-                    '/settings': (context) => const SettingsPage(),
-                    '/video_detail': (context) => VideoDetailPage(),
-                  },
+            routes: {
+              '/': (context) => const HomePage(),
+              '/user': (context) => const UserPage(),
+              '/settings': (context) => const SettingsPage(),
+              '/video_detail': (context) => VideoDetailPage(),
+              '/uploader_profile': (context) => const UploaderProfilePage()
+            },
           );
         }));
   }

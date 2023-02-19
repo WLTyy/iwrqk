@@ -50,7 +50,8 @@ class _VideoPreviewState extends State<VideoPreview> {
                     children: [
                       ReloadableImage(
                         imageUrl: widget.imageSrc,
-                        size: Size(190, 100),
+                        width: 190,
+                        height: 100,
                       ),
                       Container(
                         decoration: const BoxDecoration(
