@@ -5,6 +5,8 @@ import '../../common/classes.dart';
 import '../../component/iwr_tab_indicator.dart';
 import '../../l10n.dart';
 import '../../widgets/reloadable_image.dart';
+import '../../widgets/video_preview.dart';
+import '../video_detail_page/user_comment.dart';
 
 class UploaderProfilePage extends StatefulWidget {
   const UploaderProfilePage({Key? key}) : super(key: key);
@@ -38,7 +40,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
               Navigator.pop(context);
             },
             icon: Icon(CupertinoIcons.back, size: 30)),
-        title: Text('个人主页'),
+        title: Text(uploaderProfile.name),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,20 +69,21 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  SizedBox(height: 10),
                 ]),
                 ButtonBar(
                   children: [
                     ElevatedButton(
                       onPressed: () {},
-                      child: Text('关注'),
+                      child: Text(L10n.of(context).follow),
                     ),
                     ElevatedButton(
                       onPressed: () {},
-                      child: Text('加好友'),
+                      child: Text(L10n.of(context).friend),
                     ),
                     ElevatedButton(
                       onPressed: () {},
-                      child: Text('私信'),
+                      child: Text(L10n.of(context).direct_message),
                     ),
                   ],
                 )
@@ -99,12 +102,10 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
                   unselectedLabelColor: Colors.grey,
                   indicatorColor: Colors.blue,
                   tabs: [
-                    Tab(text: L10n.of(context).videos)
-                    ,
+                    Tab(text: L10n.of(context).videos),
                     Tab(
                       text: L10n.of(context).images,
-                    )
-                    ,
+                    ),
                     Tab(
                       text: L10n.of(context).comments,
                     ),
@@ -123,29 +124,62 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
                 crossAxisCount: 2,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
-                childAspectRatio: 16 / 9,
+                childAspectRatio: 16 / 15,
               ),
               itemCount: 2,
               itemBuilder: (context, index) {
-                return Container(
-                  color: Colors.grey,
-                  child: Center(
-                    child: Text(
-                      'Video $index',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                      ),
-                    ),
-                  ),
+                return MediaPreview(
+                  isVideo: true,
+                  duration: "1:14",
+                  title: "我1是i你1爹操是吧乐乐乐了额呜呜了；额",
+                  imageSrc:
+                      "https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png",
+                  likes: "114",
+                  plays: "114",
+                  uploaderName: '乐子人',
                 );
               },
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
             ),
             Container(),
-            Container(),
-            Container()
+            Column(
+              children: [
+                Expanded(
+                    child: Column(
+                  children: [
+                    UserComment(
+                      avatarUrl:
+                          'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
+                      name: 'John Smith',
+                      comment: 'This is a great app!',
+                      likeCount: 10,
+                      time: DateTime.now(),
+                    )
+                  ],
+                )),
+                Container(
+                    color: Theme.of(context).canvasColor,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(1000))),
+                      child: Text(
+                        "test",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    )),
+              ],
+            ),
+            Container(
+              color: Theme.of(context).canvasColor,
+              child: Column(children: []),
+            )
           ])),
         ],
       ),

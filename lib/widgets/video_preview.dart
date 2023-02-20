@@ -1,33 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iwrqk/l10n.dart';
 
 import '../common/global.dart';
 import '../common/theme.dart';
 import 'reloadable_image.dart';
 
-class VideoPreview extends StatefulWidget {
+class MediaPreview extends StatefulWidget {
+  final bool isVideo;
   final String imageSrc;
   final String title;
   final String uploaderName;
   final String plays;
   final String likes;
-  final String duration;
+  final String? duration;
 
-  const VideoPreview(
-      {required this.imageSrc,
-      required this.title,
-      required this.uploaderName,
-      required this.plays,
-      required this.likes,
-      required this.duration,
-      Key? key})
-      : super(key: key);
+  const MediaPreview({
+    required this.imageSrc,
+    required this.title,
+    required this.uploaderName,
+    required this.plays,
+    required this.likes,
+    this.duration,
+    required this.isVideo,
+    Key? key,
+  }) : super(key: key);
 
   @override
-  State<VideoPreview> createState() => _VideoPreviewState();
+  State<MediaPreview> createState() => _MediaPreviewState();
 }
 
-class _VideoPreviewState extends State<VideoPreview> {
+class _MediaPreviewState extends State<MediaPreview> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,70 +45,59 @@ class _VideoPreviewState extends State<VideoPreview> {
             borderRadius: BorderRadius.circular(7.5),
             child: Container(
                 color: Theme.of(context).canvasColor,
-                width: 190,
-                height: 170,
                 child: Column(children: [
                   Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
                       ReloadableImage(
                         imageUrl: widget.imageSrc,
-                        width: 190,
-                        height: 100,
+                        aspectRatio: 16 / 9,
                       ),
                       Container(
+                        padding: EdgeInsets.fromLTRB(7.5, 2.5, 7.5, 5),
                         decoration: const BoxDecoration(
                             gradient: LinearGradient(
                                 colors: [Colors.transparent, Colors.black45],
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter)),
-                        width: 200,
-                        height: 25,
-                        child: Container(
-                          alignment: Alignment.bottomCenter,
-                          margin: EdgeInsets.fromLTRB(7.5, 0, 7.5, 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.play_fill,
-                                    size: 12.5,
-                                    color: Colors.white,
-                                  ),
-                                  Container(
-                                      margin:
-                                          EdgeInsets.only(left: 2, right: 5),
-                                      child: Text(
-                                        widget.plays,
-                                        style: TextStyle(
-                                            fontSize: 12.5,
-                                            color: Colors.white),
-                                      )),
-                                  Icon(
-                                    CupertinoIcons.hand_thumbsup_fill,
-                                    size: 12.5,
-                                    color: Colors.white,
-                                  ),
-                                  Container(
-                                      margin: EdgeInsets.only(left: 2),
-                                      child: Text(
-                                        widget.likes,
-                                        style: TextStyle(
-                                            fontSize: 12.5,
-                                            color: Colors.white),
-                                      ))
-                                ],
-                              ),
-                              Text(
-                                widget.duration,
-                                style: TextStyle(
-                                    fontSize: 12.5, color: Colors.white),
-                              )
-                            ],
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  CupertinoIcons.play_fill,
+                                  size: 12.5,
+                                  color: Colors.white,
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(left: 2, right: 5),
+                                    child: Text(
+                                      widget.plays,
+                                      style: TextStyle(
+                                          fontSize: 12.5, color: Colors.white),
+                                    )),
+                                Icon(
+                                  CupertinoIcons.hand_thumbsup_fill,
+                                  size: 12.5,
+                                  color: Colors.white,
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(left: 2),
+                                    child: Text(
+                                      widget.likes,
+                                      style: TextStyle(
+                                          fontSize: 12.5, color: Colors.white),
+                                    ))
+                              ],
+                            ),
+                            Text(
+                              widget.duration ?? "",
+                              style: TextStyle(
+                                  fontSize: 12.5, color: Colors.white),
+                            )
+                          ],
                         ),
                       )
                     ],
@@ -116,9 +108,8 @@ class _VideoPreviewState extends State<VideoPreview> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                         Container(
-                            margin: EdgeInsets.fromLTRB(5, 7.5, 0, 0),
+                            padding: EdgeInsets.fromLTRB(5, 7.5, 5, 0),
                             child: SizedBox(
-                              width: 180,
                               child: Text(
                                 widget.title,
                                 style: TextStyle(
@@ -127,20 +118,34 @@ class _VideoPreviewState extends State<VideoPreview> {
                               ),
                             )),
                         Container(
-                            margin: EdgeInsets.fromLTRB(7.5, 0, 0, 7.5),
+                            padding: EdgeInsets.fromLTRB(7.5, 0, 7.5, 7.5),
                             child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Icon(
-                                    CupertinoIcons.person_fill,
-                                    size: 12.5,
-                                  ),
-                                  Container(
-                                      margin: EdgeInsets.only(left: 2),
-                                      child: Text(widget.uploaderName,
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                          )))
+                                  Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Icon(
+                                          CupertinoIcons.person_fill,
+                                          size: 12.5,
+                                        ),
+                                        Container(
+                                            margin: EdgeInsets.only(left: 2),
+                                            child: Text(widget.uploaderName,
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                )))
+                                      ]),
+                                  Text(
+                                    widget.isVideo
+                                        ? L10n.of(context).videos
+                                        : L10n.of(context).images,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                    ),
+                                  )
                                 ]))
                       ]))
                 ]))));
