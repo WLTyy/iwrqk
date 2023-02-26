@@ -50,25 +50,22 @@ class _VideoDetailPageState extends State<VideoDetailPage>
             visible: _showDetail,
             child: Container(
                 color: Theme.of(context).canvasColor,
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  SizedBox(
-                      child: TabBar(
-                    isScrollable: true,
-                    indicator: IwrTabIndicator(),
-                    indicatorSize: TabBarIndicatorSize.label,
-                    labelColor: Colors.blue,
-                    unselectedLabelColor: Colors.grey,
-                    indicatorColor: Colors.blue,
-                    tabs: [
-                      Tab(text: L10n.of(context).details),
-                      Tab(
-                        text: L10n.of(context).comments,
-                      )
-                    ],
-                    controller: _tabController,
-                  ))
-                ])),
+                alignment: Alignment.centerLeft,
+                child: TabBar(
+                  isScrollable: true,
+                  indicator: IwrTabIndicator(),
+                  indicatorSize: TabBarIndicatorSize.label,
+                  labelColor: Colors.blue,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorColor: Colors.blue,
+                  tabs: [
+                    Tab(text: L10n.of(context).details),
+                    Tab(
+                      text: L10n.of(context).comments,
+                    )
+                  ],
+                  controller: _tabController,
+                )),
           ),
           Visibility(
               visible: _showDetail,

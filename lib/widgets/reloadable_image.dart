@@ -10,8 +10,8 @@ class ReloadableImage extends StatefulWidget {
   final BoxFit? fit;
 
   const ReloadableImage(
-      {required this.imageUrl,
-      Key? key,
+      {Key? key,
+      required this.imageUrl,
       this.width,
       this.height,
       this.fit,

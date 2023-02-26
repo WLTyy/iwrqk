@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../widgets/iwr_appbar.dart';
-import '../common/global.dart';
-import '../common/theme.dart';
-import '../l10n.dart';
+import '../../widgets/iwr_appbar.dart';
+import '../../common/global.dart';
+import '../../common/theme.dart';
+import '../../l10n.dart';
 
 class ImagesPage extends StatefulWidget {
   const ImagesPage({super.key});
@@ -29,7 +29,6 @@ class _ImagesPageState extends State<ImagesPage>
 
   Future<Null> _onRefresh() {
     return Future.delayed(Duration(seconds: 5), () {
-      // 延迟5s完成刷新
       setState(() {});
     });
   }

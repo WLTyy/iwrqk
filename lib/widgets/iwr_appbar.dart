@@ -11,7 +11,7 @@ class IwrAppBar extends StatefulWidget {
   final TabController? tabController;
 
   const IwrAppBar(
-      {this.showFilter, required this.tabList, this.tabController, Key? key})
+      {Key? key, this.showFilter, required this.tabList, this.tabController})
       : super(key: key);
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iwrqk/common/classes.dart';
 import 'package:iwrqk/l10n.dart';
 
 import '../common/global.dart';
@@ -7,24 +8,9 @@ import '../common/theme.dart';
 import 'reloadable_image.dart';
 
 class MediaPreview extends StatefulWidget {
-  final bool isVideo;
-  final String imageSrc;
-  final String title;
-  final String uploaderName;
-  final String plays;
-  final String likes;
-  final String? duration;
+  final MediaPreviewData data;
 
-  const MediaPreview({
-    required this.imageSrc,
-    required this.title,
-    required this.uploaderName,
-    required this.plays,
-    required this.likes,
-    this.duration,
-    required this.isVideo,
-    Key? key,
-  }) : super(key: key);
+  const MediaPreview({Key? key, required this.data}) : super(key: key);
 
   @override
   State<MediaPreview> createState() => _MediaPreviewState();
@@ -49,9 +35,13 @@ class _MediaPreviewState extends State<MediaPreview> {
                   Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
-                      ReloadableImage(
-                        imageUrl: widget.imageSrc,
-                        aspectRatio: 16 / 9,
+                      Container(
+                        child: widget.data.coverImageUrl == null
+                            ? null
+                            : ReloadableImage(
+                                imageUrl: widget.data.coverImageUrl!,
+                                aspectRatio: 16 / 9,
+                              ),
                       ),
                       Container(
                         padding: EdgeInsets.fromLTRB(7.5, 2.5, 7.5, 5),
@@ -74,7 +64,7 @@ class _MediaPreviewState extends State<MediaPreview> {
                                 Container(
                                     margin: EdgeInsets.only(left: 2, right: 5),
                                     child: Text(
-                                      widget.plays,
+                                      widget.data.views,
                                       style: TextStyle(
                                           fontSize: 12.5, color: Colors.white),
                                     )),
@@ -86,17 +76,12 @@ class _MediaPreviewState extends State<MediaPreview> {
                                 Container(
                                     margin: EdgeInsets.only(left: 2),
                                     child: Text(
-                                      widget.likes,
+                                      widget.data.likes,
                                       style: TextStyle(
                                           fontSize: 12.5, color: Colors.white),
                                     ))
                               ],
                             ),
-                            Text(
-                              widget.duration ?? "",
-                              style: TextStyle(
-                                  fontSize: 12.5, color: Colors.white),
-                            )
                           ],
                         ),
                       )
@@ -111,7 +96,7 @@ class _MediaPreviewState extends State<MediaPreview> {
                             padding: EdgeInsets.fromLTRB(5, 7.5, 5, 0),
                             child: SizedBox(
                               child: Text(
-                                widget.title,
+                                widget.data.title,
                                 style: TextStyle(
                                   fontSize: 12.5,
                                 ),
@@ -133,13 +118,13 @@ class _MediaPreviewState extends State<MediaPreview> {
                                         ),
                                         Container(
                                             margin: EdgeInsets.only(left: 2),
-                                            child: Text(widget.uploaderName,
+                                            child: Text(widget.data.uploaderName,
                                                 style: TextStyle(
                                                   fontSize: 10,
                                                 )))
                                       ]),
                                   Text(
-                                    widget.isVideo
+                                    widget.data.type == MediaType.video
                                         ? L10n.of(context).videos
                                         : L10n.of(context).images,
                                     style: TextStyle(

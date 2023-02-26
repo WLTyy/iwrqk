@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../widgets/iwr_appbar.dart';
-import '../common/theme.dart';
-import '../common/global.dart';
-import '../l10n.dart';
-import '../widgets/reloadable_image.dart';
+import '../../widgets/iwr_appbar.dart';
+import '../../common/theme.dart';
+import '../../common/global.dart';
+import '../../l10n.dart';
+import '../../widgets/reloadable_image.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});

@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 
 import '../common/global.dart';
 import '../l10n.dart';
-import 'images_page.dart';
-import 'explore_page.dart';
+import 'main_pages/images_page.dart';
+import 'main_pages/explore_page.dart';
 import 'ranking_page/ranking_page.dart';
-import 'videos_page.dart';
+import 'main_pages/videos_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

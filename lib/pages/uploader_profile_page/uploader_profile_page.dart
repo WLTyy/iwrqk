@@ -92,56 +92,31 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
           ),
           Container(
               color: Theme.of(context).canvasColor,
-              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                SizedBox(
-                    child: TabBar(
-                  isScrollable: true,
-                  indicator: IwrTabIndicator(),
-                  indicatorSize: TabBarIndicatorSize.label,
-                  labelColor: Colors.blue,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: Colors.blue,
-                  tabs: [
-                    Tab(text: L10n.of(context).videos),
-                    Tab(
-                      text: L10n.of(context).images,
-                    ),
-                    Tab(
-                      text: L10n.of(context).comments,
-                    ),
-                    Tab(
-                      text: L10n.of(context).user_details,
-                    )
-                  ],
-                  controller: _tabController,
-                ))
-              ])),
+              alignment: Alignment.centerLeft,
+              child: TabBar(
+                isScrollable: true,
+                indicator: IwrTabIndicator(),
+                indicatorSize: TabBarIndicatorSize.label,
+                labelColor: Colors.blue,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: Colors.blue,
+                tabs: [
+                  Tab(text: L10n.of(context).videos),
+                  Tab(
+                    text: L10n.of(context).images,
+                  ),
+                  Tab(
+                    text: L10n.of(context).comments,
+                  ),
+                  Tab(
+                    text: L10n.of(context).user_details,
+                  )
+                ],
+                controller: _tabController,
+              )),
           Expanded(
               child: TabBarView(controller: _tabController, children: [
-            GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 16 / 15,
-              ),
-              itemCount: 2,
-              itemBuilder: (context, index) {
-                return MediaPreview(
-                  isVideo: true,
-                  duration: "1:14",
-                  title: "我1是i你1爹操是吧乐乐乐了额呜呜了；额",
-                  imageSrc:
-                      "https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png",
-                  likes: "114",
-                  plays: "114",
-                  uploaderName: '乐子人',
-                );
-              },
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-            ),
+            Container(),
             Container(),
             Column(
               children: [
