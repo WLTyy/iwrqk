@@ -44,7 +44,7 @@ class _MediaPreviewState extends State<MediaPreview> {
                               ),
                       ),
                       Container(
-                        padding: EdgeInsets.fromLTRB(7.5, 2.5, 7.5, 5),
+                        padding: EdgeInsets.fromLTRB(7.5, 2.5, 7.5, 2.5),
                         decoration: const BoxDecoration(
                             gradient: LinearGradient(
                                 colors: [Colors.transparent, Colors.black45],
@@ -93,24 +93,23 @@ class _MediaPreviewState extends State<MediaPreview> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                         Container(
-                            padding: EdgeInsets.fromLTRB(5, 7.5, 5, 0),
+                            padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
                             child: SizedBox(
                               child: Text(
                                 widget.data.title,
+                                maxLines: 2,
                                 style: TextStyle(
                                   fontSize: 12.5,
                                 ),
                               ),
                             )),
                         Container(
-                            padding: EdgeInsets.fromLTRB(7.5, 0, 7.5, 7.5),
+                            padding: EdgeInsets.fromLTRB(7.5, 0, 7.5, 5),
                             child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
                                       children: [
                                         Icon(
                                           CupertinoIcons.person_fill,
