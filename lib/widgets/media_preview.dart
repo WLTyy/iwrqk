@@ -20,29 +20,30 @@ class _MediaPreviewState extends State<MediaPreview> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).shadowColor,
-            offset: Offset(2.5, 2.5),
-            blurRadius: 7.5,
-          )
-        ]),
         child: ClipRRect(
-            borderRadius: BorderRadius.circular(7.5),
             child: Container(
-                color: Theme.of(context).canvasColor,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).shadowColor, width: 0.5),
+                  borderRadius: BorderRadius.circular(7.5),
+                  color: Theme.of(context).canvasColor,
+                ),
                 child: Column(children: [
                   Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
-                      Container(
-                        child: widget.data.coverImageUrl == null
-                            ? null
-                            : ReloadableImage(
-                                imageUrl: widget.data.coverImageUrl!,
-                                aspectRatio: 16 / 9,
-                              ),
-                      ),
+                      ClipRRect(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(7.5)),
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: widget.data.coverImageUrl == null
+                                ? AspectRatio(aspectRatio: 16 / 9)
+                                : ReloadableImage(
+                                    imageUrl: widget.data.coverImageUrl!,
+                                    aspectRatio: 16 / 9,
+                                    fit: BoxFit.cover,
+                                  ),
+                          )),
                       Container(
                         padding: EdgeInsets.fromLTRB(7.5, 2.5, 7.5, 2.5),
                         decoration: const BoxDecoration(
@@ -109,19 +110,18 @@ class _MediaPreviewState extends State<MediaPreview> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                      children: [
-                                        Icon(
-                                          CupertinoIcons.person_fill,
-                                          size: 12.5,
-                                        ),
-                                        Container(
-                                            margin: EdgeInsets.only(left: 2),
-                                            child: Text(widget.data.uploaderName,
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                )))
-                                      ]),
+                                  Row(children: [
+                                    Icon(
+                                      CupertinoIcons.person_fill,
+                                      size: 12.5,
+                                    ),
+                                    Container(
+                                        margin: EdgeInsets.only(left: 2),
+                                        child: Text(widget.data.uploaderName,
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                            )))
+                                  ]),
                                   Text(
                                     widget.data.type == MediaType.video
                                         ? L10n.of(context).videos

@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../common/classes.dart';
 import '../../network/spider.dart';
-import '../../widgets/video_preview.dart';
+import '../../widgets/media_preview.dart';
 
 class MediaGridView extends StatefulWidget {
   final SourceType sourceType;
@@ -23,7 +25,7 @@ class MediaGridView extends StatefulWidget {
 
 class _MediaGridViewState extends State<MediaGridView> {
   List<MediaPreviewData> _data = [];
-  ScrollController _scrollController = ScrollController();
+  EasyRefreshController _easyRefreshController = EasyRefreshController();
   bool _isLoading = false;
   int _currentPage = 0;
 
@@ -80,65 +82,35 @@ class _MediaGridViewState extends State<MediaGridView> {
 
   @override
   void initState() {
-    _scrollController.addListener(_scrollListener);
     _loadData();
     super.initState();
   }
 
   @override
-  void dispose() {
-    _scrollController.removeListener(_scrollListener);
-    super.dispose();
-  }
-
-  void _scrollListener() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      _loadData();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-        onRefresh: _refresh,
-        child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            shrinkWrap: !_isLoading,
-            physics: BouncingScrollPhysics(),
-            itemCount: (_data.length / 2).truncate() + 1,
+    return EasyRefresh(
+      header: CupertinoHeader(),
+      footer: CupertinoFooter(),
+      controller: _easyRefreshController,
+      onRefresh: _refresh,
+      onLoad: _loadData,
+      child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: WaterfallFlow.builder(
+            shrinkWrap: true,
+            gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+            ),
+            itemCount: _data.length,
             itemBuilder: (BuildContext context, int index) {
-              if (index == _data.length) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                return Expanded(
-                    child: GridView(
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                    childAspectRatio: 16 / 15,
-                  ),
-                  physics: NeverScrollableScrollPhysics(),
-                  children: index * 2 + 1 == _data.length
-                      ? [
-                          MediaPreview(
-                            data: _data[index * 2 + 1],
-                          ),
-                        ]
-                      : [
-                          MediaPreview(
-                            data: _data[index * 2 + 1],
-                          ),
-                          MediaPreview(
-                            data: _data[index * 2 + 2],
-                          )
-                        ],
-                ));
-              }
-            }));
+              return AspectRatio(
+                aspectRatio: 16 / 15,
+                child: MediaPreview(data: _data[index]),
+              );
+            },
+          )),
+    );
   }
 }

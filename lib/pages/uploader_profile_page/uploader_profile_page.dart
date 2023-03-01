@@ -5,7 +5,6 @@ import '../../common/classes.dart';
 import '../../component/iwr_tab_indicator.dart';
 import '../../l10n.dart';
 import '../../widgets/reloadable_image.dart';
-import '../../widgets/video_preview.dart';
 import '../video_detail_page/user_comment.dart';
 
 class UploaderProfilePage extends StatefulWidget {

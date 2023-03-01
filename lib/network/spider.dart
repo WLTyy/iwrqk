@@ -34,14 +34,15 @@ class Spider {
 
       var titleDom = previewItem.querySelector('h3.title > a')!;
       previewData.url = titleDom.attributes['href']!;
-      previewData.title = titleDom.innerHtml;
+      previewData.title = titleDom.text;
 
       var coverImageDom = previewItem.querySelector('img');
-      previewData.coverImageUrl =
-          coverImageDom == null ? null : "https:${coverImageDom.attributes['src']!}";
+      previewData.coverImageUrl = coverImageDom == null
+          ? null
+          : "https:${coverImageDom.attributes['src']!}";
 
       var uploaderDom = previewItem.querySelector('a.username')!;
-      previewData.uploaderName = uploaderDom.innerHtml;
+      previewData.uploaderName = uploaderDom.text;
       previewData.uploaderHomePageUrl = uploaderDom.attributes['href']!;
 
       var viewsDom = previewItem.querySelector('div.left-icon.likes-icon')!;
@@ -50,11 +51,17 @@ class Spider {
           previewItem.querySelector('div.left-icon.multiple-icon');
       previewData.isGallery = galleryIconDom != null;
 
-      previewData.views = viewsDom.innerHtml.split('>').last.replaceAll(' ', '');
+      previewData.views = viewsDom.text
+          .replaceAll(' ', '')
+          .replaceAll('\t', '')
+          .replaceAll('\n', '');
       previewData.likes = likesDom == null
           ? "0"
-          : likesDom.innerHtml.split('>').last.replaceAll(' ', '');
-
+          : likesDom.text
+              .replaceAll(' ', '')
+              .replaceAll('\t', '')
+              .replaceAll('\n', '');
+              
       previewDatas.add(previewData);
     }
     return previewDatas;
