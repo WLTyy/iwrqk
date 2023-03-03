@@ -24,29 +24,61 @@ class ReloadableImage extends StatefulWidget {
 
 class _ReloadableImageState extends State<ReloadableImage> {
   bool _errorOccurred = false;
+  bool _unexpectedErrorOccurred = false;
 
   @override
   Widget build(BuildContext context) {
-    return _errorOccurred
-        ? GestureDetector(
-            onTap: () {
-              setState(() {
-                _errorOccurred = false;
-              });
-            },
-            child: Center(
-              child: Icon(
-                CupertinoIcons.arrow_clockwise,
-                size: 45,
-                color: Colors.blue,
+    if (_unexpectedErrorOccurred) {
+      return Center(
+        child: Icon(
+          CupertinoIcons.xmark_octagon_fill,
+          size: 45,
+          color: Colors.red,
+        ),
+      );
+    }
+
+    try {
+      return _errorOccurred
+          ? GestureDetector(
+              onTap: () {
+                setState(() {
+                  _errorOccurred = false;
+                });
+              },
+              child: Center(
+                child: Icon(
+                  CupertinoIcons.arrow_clockwise,
+                  size: 45,
+                  color: Colors.blue,
+                ),
               ),
-            ),
-          )
-        : widget.aspectRatio != null
-            ? AspectRatio(
-                aspectRatio: widget.aspectRatio!,
-                child: CachedNetworkImage(
+            )
+          : widget.aspectRatio != null
+              ? AspectRatio(
+                  aspectRatio: widget.aspectRatio!,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.imageUrl,
+                    fit: widget.fit,
+                    progressIndicatorBuilder: (context, url, progress) {
+                      return Center(
+                          child: SizedBox(
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 3,
+                        ),
+                      ));
+                    },
+                    errorWidget: (_, __, ___) {
+                      setState(() {
+                        _errorOccurred = true;
+                      });
+                      return Container();
+                    },
+                  ))
+              : CachedNetworkImage(
                   imageUrl: widget.imageUrl,
+                  width: widget.width,
+                  height: widget.height,
                   fit: widget.fit,
                   progressIndicatorBuilder: (context, url, progress) {
                     return Center(
@@ -62,26 +94,16 @@ class _ReloadableImageState extends State<ReloadableImage> {
                     });
                     return Container();
                   },
-                ))
-            : CachedNetworkImage(
-                imageUrl: widget.imageUrl,
-                width: widget.width,
-                height: widget.height,
-                fit: widget.fit,
-                progressIndicatorBuilder: (context, url, progress) {
-                  return Center(
-                      child: SizedBox(
-                    child: const CircularProgressIndicator(
-                      strokeWidth: 3,
-                    ),
-                  ));
-                },
-                errorWidget: (_, __, ___) {
-                  setState(() {
-                    _errorOccurred = true;
-                  });
-                  return Container();
-                },
-              );
+                );
+    } catch (e) {
+      _unexpectedErrorOccurred = true;
+      return Center(
+        child: Icon(
+          CupertinoIcons.xmark_octagon_fill,
+          size: 45,
+          color: Colors.red,
+        ),
+      );
+    }
   }
 }

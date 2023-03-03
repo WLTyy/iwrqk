@@ -283,9 +283,15 @@ class _IwrVideoPlayerState extends State<IwrVideoPlayer> {
                                                 onTap: _onTapVolumeButton,
                                                 child: Icon(
                                                   _controller.value.volume > 0
-                                                      ? CupertinoIcons.volume_up
+                                                      ? _controller.value
+                                                                  .volume >
+                                                              0.5
+                                                          ? CupertinoIcons
+                                                              .speaker_2_fill
+                                                          : CupertinoIcons
+                                                              .speaker_1_fill
                                                       : CupertinoIcons
-                                                          .volume_mute,
+                                                          .speaker_slash_fill,
                                                   color: Colors.white,
                                                 ))
                                           ])),

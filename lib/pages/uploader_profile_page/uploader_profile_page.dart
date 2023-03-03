@@ -123,12 +123,13 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
                     child: Column(
                   children: [
                     UserComment(
-                      avatarUrl:
-                          'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
-                      name: 'John Smith',
-                      comment: 'This is a great app!',
-                      likeCount: 10,
-                      time: DateTime.now(),
+                      commentData: CommentData(
+                          UserData(
+                              "John Smith",
+                              'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
+                              'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png'),
+                          DateTime.now().toString(),
+                          "好好好"),
                     )
                   ],
                 )),

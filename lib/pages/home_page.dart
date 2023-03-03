@@ -34,7 +34,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     Widget body = Scaffold(
-        body: _pageList[_selectedIndex],
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _pageList,
+        ),
         bottomNavigationBar: BottomNavigationBar(
             selectedFontSize: 15,
             unselectedFontSize: 13.5,
@@ -45,15 +48,14 @@ class _HomePageState extends State<HomePage> {
                   label: L10n.of(context).explore,
                   tooltip: ''),
               BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.chart_bar,
-                      size: 30),
-                  activeIcon: Icon(CupertinoIcons.chart_bar_fill,
-                      size: 30),
+                  icon: Icon(CupertinoIcons.chart_bar, size: 30),
+                  activeIcon: Icon(CupertinoIcons.chart_bar_fill, size: 30),
                   label: L10n.of(context).ranking,
                   tooltip: ''),
               BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.play_rectangle, size: 30),
-                  activeIcon: Icon(CupertinoIcons.play_rectangle_fill, size: 30),
+                  activeIcon:
+                      Icon(CupertinoIcons.play_rectangle_fill, size: 30),
                   label: L10n.of(context).videos,
                   tooltip: ''),
               BottomNavigationBarItem(

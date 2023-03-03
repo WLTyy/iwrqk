@@ -13,7 +13,7 @@ class MediaGridView extends StatefulWidget {
   final String orderType;
 
   const MediaGridView(
-      {Key? key,
+      {required Key key,
       required this.sourceType,
       this.sortMethod,
       required this.orderType})
@@ -23,9 +23,14 @@ class MediaGridView extends StatefulWidget {
   State<MediaGridView> createState() => _MediaGridViewState();
 }
 
-class _MediaGridViewState extends State<MediaGridView> {
+class _MediaGridViewState extends State<MediaGridView>
+    with AutomaticKeepAliveClientMixin {
   List<MediaPreviewData> _data = [];
-  EasyRefreshController _easyRefreshController = EasyRefreshController();
+  final EasyRefreshController _easyRefreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
+  bool _fristLoad = true;
   bool _isLoading = false;
   int _currentPage = 0;
 
@@ -35,6 +40,8 @@ class _MediaGridViewState extends State<MediaGridView> {
       _data = [];
     });
     await _loadData();
+    _easyRefreshController.finishRefresh();
+    _easyRefreshController.resetFooter();
   }
 
   Future<void> _loadData() async {
@@ -63,26 +70,40 @@ class _MediaGridViewState extends State<MediaGridView> {
           break;
       }
       try {
-        var newData;
+        List<MediaPreviewData> newData = [];
         await Dio().get(url).then((value) {
           newData = Spider.analyseMediaPreviewsHtml(value.data);
           print("ok");
         });
         setState(() {
-          _data.addAll(newData);
-          _currentPage++;
-          _isLoading = false;
+          if (newData.isNotEmpty) {
+            _data.addAll(newData);
+            _currentPage++;
+            _isLoading = false;
+
+            _easyRefreshController.finishLoad(IndicatorResult.success);
+          } else {
+            _isLoading = false;
+
+            _easyRefreshController.finishLoad(IndicatorResult.noMore);
+          }
         });
       } catch (e) {
         _isLoading = false;
         print(e);
+
+        _easyRefreshController.finishLoad(IndicatorResult.fail);
       }
     }
   }
 
-  @override
   void initState() {
-    _loadData();
+    if (_fristLoad) {
+      _easyRefreshController.callLoad();
+      _loadData();
+      _fristLoad = false;
+    }
+
     super.initState();
   }
 
@@ -94,23 +115,25 @@ class _MediaGridViewState extends State<MediaGridView> {
       controller: _easyRefreshController,
       onRefresh: _refresh,
       onLoad: _loadData,
-      child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          child: WaterfallFlow.builder(
-            shrinkWrap: true,
-            gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-            ),
-            itemCount: _data.length,
-            itemBuilder: (BuildContext context, int index) {
-              return AspectRatio(
-                aspectRatio: 16 / 15,
-                child: MediaPreview(data: _data[index]),
-              );
-            },
-          )),
+      child: WaterfallFlow.builder(
+        padding: EdgeInsets.all(8),
+        shrinkWrap: true,
+        gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+        ),
+        itemCount: _data.length,
+        itemBuilder: (BuildContext context, int index) {
+          return AspectRatio(
+            aspectRatio: 16 / 15,
+            child: MediaPreview(data: _data[index]),
+          );
+        },
+      ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

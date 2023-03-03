@@ -23,7 +23,8 @@ class _MediaPreviewState extends State<MediaPreview> {
         child: ClipRRect(
             child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).shadowColor, width: 0.5),
+                  border: Border.all(
+                      color: Theme.of(context).shadowColor, width: 0.5),
                   borderRadius: BorderRadius.circular(7.5),
                   color: Theme.of(context).canvasColor,
                 ),
@@ -109,28 +110,32 @@ class _MediaPreviewState extends State<MediaPreview> {
                             child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(children: [
-                                    Icon(
-                                      CupertinoIcons.person_fill,
-                                      size: 12.5,
-                                    ),
-                                    Container(
-                                        margin: EdgeInsets.only(left: 2),
-                                        child: Text(widget.data.uploaderName,
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                            )))
-                                  ]),
-                                  Text(
-                                    widget.data.type == MediaType.video
-                                        ? L10n.of(context).videos
-                                        : L10n.of(context).images,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                    ),
-                                  )
-                                ]))
+                                children: widget.data.uploaderName == null
+                                    ? []
+                                    : [
+                                        Row(children: [
+                                          Icon(
+                                            CupertinoIcons.person_fill,
+                                            size: 12.5,
+                                          ),
+                                          Container(
+                                              margin: EdgeInsets.only(left: 2),
+                                              child: Text(
+                                                  widget.data.uploaderName!,
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                  )))
+                                        ]),
+                                        Text(
+                                          widget.data.type == MediaType.video
+                                              ? L10n.of(context).videos
+                                              : L10n.of(context).images,
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        )
+                                      ]))
                       ]))
                 ]))));
   }

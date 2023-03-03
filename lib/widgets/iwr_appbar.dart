@@ -71,75 +71,75 @@ class _IwrAppBarState extends State<IwrAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverAppBar(
-            titleSpacing: 0,
-            expandedHeight: 100,
-            floating: true,
-            pinned: true,
-            snap: true,
-            title: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.zero,
-              expandedTitleScale: 1,
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    iconSize: 35,
-                    icon: ClipOval(
-                      child: ReloadableImage(
-                        imageUrl: 'https://picsum.photos/200/300',
-                        aspectRatio: 1,
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            const UserPage(),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          const begin = Offset(-1, 0);
-                          const end = Offset.zero;
-                          const curve = Curves.ease;
+    return NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+                titleSpacing: 0,
+                expandedHeight: 100,
+                floating: true,
+                pinned: true,
+                snap: true,
+                title: FlexibleSpaceBar(
+                  titlePadding: EdgeInsets.zero,
+                  expandedTitleScale: 1,
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        iconSize: 35,
+                        icon: ClipOval(
+                          child: ReloadableImage(
+                            imageUrl: 'https://picsum.photos/200/300',
+                            aspectRatio: 1,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    const UserPage(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(-1, 0);
+                              const end = Offset.zero;
+                              const curve = Curves.ease;
 
-                          var tween = Tween(begin: begin, end: end)
-                              .chain(CurveTween(curve: curve));
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
 
-                          return SlideTransition(
-                            position: animation.drive(tween),
-                            child: child,
-                          );
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                          ));
                         },
-                      ));
-                    },
+                      ),
+                      Expanded(
+                        child: CupertinoSearchTextField(
+                          placeholder: 'Search',
+                          onSubmitted: (String value) {},
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 2.5),
+                        child: IconButton(
+                          icon: Icon(CupertinoIcons.envelope),
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('/video_detail');
+                          },
+                        ),
+                      )
+                    ],
                   ),
-                  Expanded(
-                    child: CupertinoSearchTextField(
-                      placeholder: 'Search',
-                      onSubmitted: (String value) {},
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 2.5),
-                    child: IconButton(
-                      icon: Icon(CupertinoIcons.envelope),
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/video_detail');
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-            bottom: getBottomWidget(
-                widget.showFilter, widget.tabList, widget.tabController)),
-        SliverFillRemaining(
-            child: TabBarView(
-          controller: widget.tabController,
-          children: getTabWidget(widget.tabList),
-        )),
-      ],
-    );
+                ),
+                bottom: getBottomWidget(
+                    widget.showFilter, widget.tabList, widget.tabController)),
+          ];
+        },
+        body: TabBarView(
+            controller: widget.tabController,
+            children: getTabWidget(widget.tabList)));
   }
 }

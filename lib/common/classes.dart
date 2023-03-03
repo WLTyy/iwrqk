@@ -28,9 +28,9 @@ class MediaPreviewData {
   late MediaType type;
   late String title;
   late String url;
-  late String? coverImageUrl;
-  late String uploaderName;
-  late String uploaderHomePageUrl;
+  String? coverImageUrl;
+  String? uploaderName;
+  String? uploaderHomePageUrl;
   late String views;
   late String likes;
   late bool isGallery;
