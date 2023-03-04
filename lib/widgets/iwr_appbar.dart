@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iwrqk/pages/video_detail_page/video_detail_page.dart';
 import 'package:iwrqk/widgets/reloadable_image.dart';
 
 import '../component/iwr_tab_indicator.dart';
@@ -127,7 +128,11 @@ class _IwrAppBarState extends State<IwrAppBar> {
                         child: IconButton(
                           icon: Icon(CupertinoIcons.envelope),
                           onPressed: () {
-                            Navigator.of(context).pushNamed('/video_detail');
+                            Navigator.of(context).push(PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      const VideoDetailPage(videoUrl: "https://www.iwara.tv/videos/yrnqksq53t0jgl76"),
+                            ));
                           },
                         ),
                       )

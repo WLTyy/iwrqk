@@ -12,7 +12,7 @@ class OrderType {
   final String likes = "likes";
   final String viewsToday = "daycount";
   final String random = "random";
-  
+
   OrderType(SourceType type) {
     if (type == SourceType.videos_3) {
       date = "created";
@@ -50,10 +50,19 @@ class CommentData {
   final UserData user;
   final String date;
   final String content;
+  int depth = 0;
   UserData? replyTo;
   List<CommentData> children = <CommentData>[];
 
   CommentData(this.user, this.date, this.content);
+
+  List<CommentData> preorderTraversal() {
+    List<CommentData> result = [this];
+    for (CommentData child in children) {
+      result.addAll(child.preorderTraversal());
+    }
+    return result;
+  }
 }
 
 class VideoData {
@@ -65,6 +74,8 @@ class VideoData {
   String? likes;
   Map<String, String> resolution = {};
   List<CommentData> comments = <CommentData>[];
+  List<MediaPreviewData> moreFromUser = <MediaPreviewData>[];
+  List<MediaPreviewData> moreLikeThis = <MediaPreviewData>[];
 
   VideoData();
 }
