@@ -77,7 +77,7 @@ class Spider {
           if (comment.children.isNotEmpty) {
             var children = comment.preorderTraversal();
             comment.children =
-                children.getRange(1, children.length - 1).toList();
+                children.getRange(1, children.length).toList();
           }
         }
 
@@ -143,7 +143,9 @@ class Spider {
       var coverImageDom = previewItem.querySelector('img');
       previewData.coverImageUrl = coverImageDom == null
           ? null
-          : "https:${coverImageDom.attributes['src']!}";
+          : coverImageDom.attributes['src']!.substring(0, 2) == "//"
+              ? "https:${coverImageDom.attributes['src']!}"
+              : "https://www.iwara.tv/${coverImageDom.attributes['src']!}";
 
       var uploaderDom = previewItem.querySelector('a.username');
       if (uploaderDom != null) {

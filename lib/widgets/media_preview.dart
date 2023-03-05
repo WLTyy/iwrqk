@@ -78,7 +78,7 @@ class _MediaPreviewState extends State<MediaPreview> {
                                               Icon(
                                                 CupertinoIcons.play_fill,
                                                 size: 12.5,
-                                                color: Colors.white,
+                                                color: Colors.grey,
                                               ),
                                               Container(
                                                   margin: EdgeInsets.only(
@@ -87,13 +87,13 @@ class _MediaPreviewState extends State<MediaPreview> {
                                                     widget.data.views,
                                                     style: TextStyle(
                                                         fontSize: 12.5,
-                                                        color: Colors.white),
+                                                        color: Colors.grey),
                                                   )),
                                               Icon(
                                                 CupertinoIcons
                                                     .hand_thumbsup_fill,
                                                 size: 12.5,
-                                                color: Colors.white,
+                                                color: Colors.grey,
                                               ),
                                               Container(
                                                   margin:
@@ -102,7 +102,7 @@ class _MediaPreviewState extends State<MediaPreview> {
                                                     widget.data.likes,
                                                     style: TextStyle(
                                                         fontSize: 12.5,
-                                                        color: Colors.white),
+                                                        color: Colors.grey),
                                                   ))
                                             ],
                                           ),
@@ -111,8 +111,8 @@ class _MediaPreviewState extends State<MediaPreview> {
                                                 ? L10n.of(context).videos
                                                 : L10n.of(context).images,
                                             style: TextStyle(
-                                              fontSize: 10,
-                                            ),
+                                                fontSize: 10,
+                                                color: Colors.grey),
                                           )
                                         ]))
                               ]))
@@ -213,10 +213,8 @@ class _MediaPreviewState extends State<MediaPreview> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Row(children: [
-                                            Icon(
-                                              CupertinoIcons.person_fill,
-                                              size: 12.5,
-                                            ),
+                                            Icon(CupertinoIcons.person_fill,
+                                                size: 12.5, color: Colors.grey),
                                             Container(
                                                 margin:
                                                     EdgeInsets.only(left: 2),
@@ -224,16 +222,16 @@ class _MediaPreviewState extends State<MediaPreview> {
                                                     widget.data.uploaderName!,
                                                     maxLines: 1,
                                                     style: TextStyle(
-                                                      fontSize: 10,
-                                                    )))
+                                                        fontSize: 10,
+                                                        color: Colors.grey)))
                                           ]),
                                           Text(
                                             widget.data.type == MediaType.video
                                                 ? L10n.of(context).videos
                                                 : L10n.of(context).images,
                                             style: TextStyle(
-                                              fontSize: 10,
-                                            ),
+                                                fontSize: 10,
+                                                color: Colors.grey),
                                           )
                                         ]))
                               ]))

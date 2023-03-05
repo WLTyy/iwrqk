@@ -28,14 +28,28 @@ class _ReloadableImageState extends State<ReloadableImage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget errorWidget = widget.aspectRatio != null
+        ? AspectRatio(
+            aspectRatio: widget.aspectRatio!,
+            child: Center(
+              child: Icon(
+                CupertinoIcons.xmark_octagon_fill,
+                size: 45,
+                color: Colors.red,
+              ),
+            ))
+        : Container(
+            width: widget.width,
+            height: widget.height,
+            child: Center(
+              child: Icon(
+                CupertinoIcons.xmark_octagon_fill,
+                size: 45,
+                color: Colors.red,
+              ),
+            ));
     if (_unexpectedErrorOccurred) {
-      return Center(
-        child: Icon(
-          CupertinoIcons.xmark_octagon_fill,
-          size: 45,
-          color: Colors.red,
-        ),
-      );
+      return errorWidget;
     }
 
     try {
@@ -46,14 +60,26 @@ class _ReloadableImageState extends State<ReloadableImage> {
                   _errorOccurred = false;
                 });
               },
-              child: Center(
-                child: Icon(
-                  CupertinoIcons.arrow_clockwise,
-                  size: 45,
-                  color: Colors.blue,
-                ),
-              ),
-            )
+              child: errorWidget = widget.aspectRatio != null
+                  ? AspectRatio(
+                      aspectRatio: widget.aspectRatio!,
+                      child: Center(
+                        child: Icon(
+                          CupertinoIcons.arrow_clockwise,
+                          size: 45,
+                          color: Colors.blue,
+                        ),
+                      ))
+                  : Container(
+                      width: widget.width,
+                      height: widget.height,
+                      child: Center(
+                        child: Icon(
+                          CupertinoIcons.arrow_clockwise,
+                          size: 45,
+                          color: Colors.blue,
+                        ),
+                      )))
           : widget.aspectRatio != null
               ? AspectRatio(
                   aspectRatio: widget.aspectRatio!,
@@ -97,13 +123,7 @@ class _ReloadableImageState extends State<ReloadableImage> {
                 );
     } catch (e) {
       _unexpectedErrorOccurred = true;
-      return Center(
-        child: Icon(
-          CupertinoIcons.xmark_octagon_fill,
-          size: 45,
-          color: Colors.red,
-        ),
-      );
+      return errorWidget;
     }
   }
 }

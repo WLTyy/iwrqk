@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iwrqk/pages/search_page/search_page.dart';
 import 'package:iwrqk/pages/video_detail_page/video_detail_page.dart';
 import 'package:iwrqk/widgets/reloadable_image.dart';
 
@@ -118,20 +119,55 @@ class _IwrAppBarState extends State<IwrAppBar> {
                         },
                       ),
                       Expanded(
-                        child: CupertinoSearchTextField(
-                          placeholder: 'Search',
-                          onSubmitted: (String value) {},
-                        ),
+                        child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        SearchPage(),
+                              ));
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 7.5, horizontal: 15),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).cardColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15))),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    CupertinoIcons.search,
+                                    color: Colors.grey,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 5),
+                                    child: Text(
+                                      "Search",
+                                      style: TextStyle(
+                                          fontSize: 17.5,
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 2.5),
                         child: IconButton(
-                          icon: Icon(CupertinoIcons.envelope),
+                          icon: Icon(
+                            CupertinoIcons.envelope,
+                            color: Colors.grey,
+                          ),
                           onPressed: () {
                             Navigator.of(context).push(PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      const VideoDetailPage(videoUrl: "https://www.iwara.tv/videos/yrnqksq53t0jgl76"),
+                              pageBuilder: (context, animation,
+                                      secondaryAnimation) =>
+                                  const VideoDetailPage(
+                                      videoUrl:
+                                          "https://www.iwara.tv/videos/yrnqksq53t0jgl76"),
                             ));
                           },
                         ),

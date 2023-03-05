@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:iwrqk/util.dart';
+import 'package:iwrqk/common/util.dart';
 import 'package:video_player/video_player.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
@@ -455,7 +455,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                               child: Container(
                                 alignment: Alignment.centerLeft,
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 20),
+                                    vertical: 10, horizontal: 20),
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).cardColor,
                                     borderRadius: BorderRadius.all(

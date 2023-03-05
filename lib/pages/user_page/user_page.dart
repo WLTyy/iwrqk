@@ -16,13 +16,14 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).accentColor,
       body: SafeArea(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
             Column(children: [
               Container(
-                  margin: EdgeInsets.only(bottom: 10),
+                  margin: EdgeInsets.fromLTRB(0, 5, 10, 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -58,7 +59,8 @@ class _UserPageState extends State<UserPage> {
                           child: Row(children: [
                             ClipOval(
                               child: ReloadableImage(
-                                imageUrl: 'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
+                                imageUrl:
+                                    'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
                                 width: 60,
                                 height: 60,
                               ),

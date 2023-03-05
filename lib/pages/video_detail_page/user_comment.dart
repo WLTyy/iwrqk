@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iwrqk/common/classes.dart';
 
-import '../../util.dart';
+import '../../common/util.dart';
 import '../../widgets/reloadable_image.dart';
 
 class UserComment extends StatelessWidget {
@@ -186,12 +186,15 @@ class UserComment extends StatelessWidget {
                                                       ]),
                                           );
                                         }),
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 5),
-                                      child: Text(
-                                        "See more",
-                                        style: TextStyle(color: Colors.blue),
+                                    Visibility(
+                                      visible: commentData.children.length > 2,
+                                      child: Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 5),
+                                        child: Text(
+                                          "See more",
+                                          style: TextStyle(color: Colors.blue),
+                                        ),
                                       ),
                                     )
                                   ],
