@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 import 'package:html/dom.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 import '../common/classes.dart';
 
@@ -25,7 +26,8 @@ class Spider {
           .firstMatch(uploaderDom.innerHtml)!
           .group(0)!;
 
-      videoData.title = uploaderDom.querySelector('h1.title')!.innerHtml;
+      videoData.title = HtmlUnescape()
+          .convert(uploaderDom.querySelector('h1.title')!.innerHtml);
 
       var uploader = UserData(
         uploaderNameDom.innerHtml,
@@ -118,17 +120,24 @@ class Spider {
 
       if (previewItem.attributes.containsKey('data-original-title') |
           previewItem.attributes.containsKey('title')) {
-        var titleDom = previewItem.querySelector('div > a')!;
-        previewData.url = titleDom.attributes['href']!;
+        var titleDom = previewItem.querySelector('div > a');
+        if (titleDom != null) {
+          previewData.url = titleDom.attributes['href']!;
+        } else {
+          continue;
+        }
         if ((previewItem.attributes.containsKey('data-original-title'))) {
-          previewData.title = previewItem.attributes['data-original-title']!;
+          previewData.title = HtmlUnescape()
+              .convert(previewItem.attributes['data-original-title']!);
         } else if ((previewItem.attributes.containsKey('title'))) {
-          previewData.title = previewItem.attributes['title']!;
+          previewData.title =
+              HtmlUnescape().convert(previewItem.attributes['title']!);
         }
       } else {
         var titleDom = previewItem.querySelector('h3.title > a')!;
         previewData.url = titleDom.attributes['href']!;
-        previewData.title = titleDom.innerHtml;
+        previewData.title =
+            HtmlUnescape().convert(HtmlUnescape().convert(titleDom.innerHtml));
       }
 
       var coverImageDom = previewItem.querySelector('img');

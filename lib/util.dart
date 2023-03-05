@@ -9,7 +9,6 @@ TextSpan parseHtmlCode(String htmlCode) {
   List<InlineSpan> children = [];
 
   for (var node in document.body!.nodes) {
-    print(node);
     if (node.nodeType == Node.TEXT_NODE) {
       children.add(TextSpan(
         text: node.text,
@@ -18,7 +17,7 @@ TextSpan parseHtmlCode(String htmlCode) {
       Element element = node as Element;
       switch (element.localName) {
         case 'a':
-          final link = node.attributes['href'];
+          final link = element.attributes['href'];
           children.add(TextSpan(
             text: element.text,
             style: TextStyle(

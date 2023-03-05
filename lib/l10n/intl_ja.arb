@@ -25,6 +25,7 @@
     "settings": "設定",
     "follow": "フロー",
     "comments": "コメント",
+    "send_comment" : "コメントを送信",
     "details": "詳細",
     "direct_message": "DM",
     "user_details": "ユーザー情報",

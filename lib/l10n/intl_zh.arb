@@ -25,6 +25,7 @@
     "settings": "设置",
     "follow": "关注",
     "comments": "评论",
+    "send_comment" : "发条友善的评论",
     "details": "详情",
     "direct_message": "私信",
     "user_details": "用户详情",

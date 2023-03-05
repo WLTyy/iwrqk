@@ -25,6 +25,7 @@
     "settings": "Settings",
     "follow": "Follow",
     "comments": "Comments",
+    "send_comment" : "Send comment",
     "details": "Details",
     "direct_message": "DM",
     "user_details": "User details",

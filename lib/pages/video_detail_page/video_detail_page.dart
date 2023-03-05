@@ -160,20 +160,18 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                                   ListTile(
                                     contentPadding:
                                         EdgeInsets.symmetric(vertical: 5),
-                                    leading: IconButton(
-                                      iconSize: 40,
-                                      icon: ClipOval(
+                                    leading: GestureDetector(
+                                      child: ClipOval(
                                         child: ReloadableImage(
                                           imageUrl:
                                               _videoData.uploader.avatarUrl,
-                                          aspectRatio: 1,
+                                          width: 40,
+                                          height: 40,
                                         ),
                                       ),
-                                      onPressed: () {},
+                                      onTap: () {},
                                     ),
                                     title: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -206,9 +204,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                                           _animationController
                                               .reverse()
                                               .then<void>((void value) {
-                                            setState(() {
-                                              // Rebuild without widget.children.
-                                            });
+                                            setState(() {});
                                           });
                                           ;
                                         }
@@ -398,7 +394,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                             itemCount: _videoData.moreFromUser.length,
                             itemBuilder: (BuildContext context, int index) {
                               return AspectRatio(
-                                aspectRatio: 16 / 13.5,
+                                aspectRatio: 16 / 15,
                                 child: MediaPreview(
                                     data: _videoData.moreFromUser[index]),
                               );
@@ -427,7 +423,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                             itemCount: _videoData.moreLikeThis.length,
                             itemBuilder: (BuildContext context, int index) {
                               return AspectRatio(
-                                aspectRatio: 16 / 13.5,
+                                aspectRatio: 16 / 15,
                                 child: MediaPreview(
                                     data: _videoData.moreLikeThis[index]),
                               );
@@ -465,7 +461,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                                     borderRadius: BorderRadius.all(
                                         Radius.circular(1000))),
                                 child: Text(
-                                  "test",
+                                  L10n.of(context).send_comment,
                                   style: TextStyle(color: Colors.grey),
                                 ),
                               )),
