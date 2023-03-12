@@ -117,13 +117,24 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(
-                                      CupertinoIcons.xmark_circle_fill,
-                                      size: 42,
-                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _errorInfo = null;
+                                            _isLoading = true;
+                                          });
+                                          _loadData();
+                                        },
+                                        child: Center(
+                                          child: Icon(
+                                            CupertinoIcons
+                                                .arrow_counterclockwise,
+                                            color: Colors.blue,
+                                            size: 42,
+                                          ),
+                                        )),
                                     Container(
-                                      margin: EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 20),
+                                      margin: EdgeInsets.all(20),
                                       child: Text(
                                         _errorInfo!,
                                         textAlign: TextAlign.left,
@@ -310,7 +321,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                                           ),
                                         )),
                                     Icon(
-                                      CupertinoIcons.hand_thumbsup_fill,
+                                      CupertinoIcons.heart_fill,
                                       size: 15,
                                       color: Colors.grey,
                                     ),
@@ -359,10 +370,10 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                                         child: Column(
                                           children: [
                                             Icon(
-                                              CupertinoIcons.hand_thumbsup_fill,
+                                              CupertinoIcons.heart_fill,
                                               size: 35,
                                             ),
-                                            Text(L10n.of(context).like,
+                                            Text(L10n.of(context).favorite,
                                                 style:
                                                     TextStyle(fontSize: 12.5))
                                           ],

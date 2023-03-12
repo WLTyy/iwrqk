@@ -63,6 +63,9 @@ class IwrVideoPlayerState extends State<IwrVideoPlayer> {
   Future<void> listener() async {
     if (widget.controller.renewing) {
       return;
+    } else if (widget.controller.disableListener) {
+      widget.controller.disableListener = false;
+      return;
     }
     if (isControllerFullScreen && !_isFullScreen) {
       _isFullScreen = isControllerFullScreen;
@@ -215,19 +218,26 @@ class IwrVideoPlayerWithControlsState
           color: Colors.black,
           child: Stack(children: [
             Center(
-              child: iwrVideoController.videoPlayerController != null
-                  ? iwrVideoController
-                          .videoPlayerController!.value.isInitialized
-                      ? AspectRatio(
-                          aspectRatio: iwrVideoController
-                              .videoPlayerController!.value.aspectRatio,
-                          child: VideoPlayer(
-                              iwrVideoController.videoPlayerController!))
-                      : CircularProgressIndicator()
-                  : CircularProgressIndicator(),
+              child: iwrVideoController.errorMessage != null
+                  ? null
+                  : iwrVideoController.renewing
+                      ? CircularProgressIndicator()
+                      : iwrVideoController.videoPlayerController != null
+                          ? iwrVideoController
+                                  .videoPlayerController!.value.isInitialized
+                              ? AspectRatio(
+                                  aspectRatio: iwrVideoController
+                                      .videoPlayerController!.value.aspectRatio,
+                                  child: VideoPlayer(iwrVideoController
+                                      .videoPlayerController!))
+                              : CircularProgressIndicator()
+                          : CircularProgressIndicator(),
             ),
             if (iwrVideoController.videoPlayerController != null)
-              if (iwrVideoController.videoPlayerController!.value.isInitialized)
+              if (!iwrVideoController.renewing &&
+                      iwrVideoController
+                          .videoPlayerController!.value.isInitialized ||
+                  iwrVideoController.errorMessage != null)
                 IwrVideoControl(),
           ])),
     );
@@ -266,6 +276,8 @@ class IwrVideoController extends ChangeNotifier {
   VoidCallback callbackAfterInit;
 
   String? errorMessage;
+
+  bool disableListener = false;
 
   final Map<String, double> availablePlaybackSpeedMap = {
     '0.5x': 0.5,
@@ -324,8 +336,8 @@ class IwrVideoController extends ChangeNotifier {
     } catch (e) {
       errorMessage = "$e";
     }
-    callbackAfterInit.call();
     notifyListeners();
+    callbackAfterInit.call();
   }
 
   static IwrVideoController of(BuildContext context) {
@@ -336,16 +348,22 @@ class IwrVideoController extends ChangeNotifier {
   }
 
   Future<void> renew(String videoUrl) async {
-    //videoPlayerController.dispose();
+    if (errorMessage != null) {
+      errorMessage = null;
+    }
+    _renewing = true;
+    notifyListeners();
     try {
       videoPlayerController = VideoPlayerController.network(videoUrl);
       await videoPlayerController!.initialize();
-      _renewing = true;
-      notifyListeners();
+      callbackAfterInit.call();
     } catch (e) {
       errorMessage = "$e";
       callbackAfterInit.call();
     }
+    _renewing = false;
+    disableListener = true;
+    notifyListeners();
   }
 
   void changeResolution(index) {

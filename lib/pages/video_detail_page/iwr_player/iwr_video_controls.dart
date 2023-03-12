@@ -104,7 +104,6 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
         }
       }
       await _initialize();
-      iwrVideoController.renewing = false;
     }
   }
 
@@ -820,36 +819,70 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
   }
 
   Widget _buildErrorWidget(String message) {
-    return Center(
-        child: Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          CupertinoIcons.xmark_circle_fill,
-          color: Colors.white,
-          size: 42,
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 5),
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: Text(
-              message,
-              style: TextStyle(
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-        )
-      ],
-    ));
+    return Expanded(
+        child: Container(
+            color: Colors.black.withAlpha(128),
+            child: Stack(children: [
+              if (iwrVideoController.isFullScreen)
+                GestureDetector(
+                    onTap: () {
+                      _onExpandCollapse(context);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(top: 15),
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: Icon(
+                        CupertinoIcons.back,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    )),
+              Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            iwrVideoController.valueBeforeRenewing =
+                                videoPlayerController.value;
+                            iwrVideoController.renew(iwrVideoController
+                                    .availableResolutions.values
+                                    .toList()[
+                                iwrVideoController.currentResolutionIndex]);
+                          },
+                          child: Center(
+                            child: Icon(
+                              CupertinoIcons.arrow_counterclockwise,
+                              color: Colors.blue,
+                              size: 42,
+                            ),
+                          )),
+                      Container(
+                        margin: EdgeInsets.only(top: 5),
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          child: Text(
+                            message,
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      )
+                    ],
+                  ))
+            ])));
   }
 
   @override
   Widget build(BuildContext context) {
     if (_latestValue.hasError) {
+      iwrVideoController.errorMessage =
+          videoPlayerController.value.errorDescription!;
       return _buildErrorWidget(videoPlayerController.value.errorDescription!);
     } else if (iwrVideoController.errorMessage != null) {
       return _buildErrorWidget(iwrVideoController.errorMessage!);

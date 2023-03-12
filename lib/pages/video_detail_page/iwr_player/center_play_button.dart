@@ -47,7 +47,7 @@ class CenterPlayButton extends StatelessWidget {
                     ? Icon(
                         CupertinoIcons.arrow_counterclockwise,
                         color: iconColor,
-                        size: 25,
+                        size: 30,
                       )
                     : AnimatedPlayPause(
                         color: iconColor,

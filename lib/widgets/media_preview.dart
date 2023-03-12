@@ -91,7 +91,7 @@ class _MediaPreviewState extends State<MediaPreview> {
                                                   )),
                                               Icon(
                                                 CupertinoIcons
-                                                    .hand_thumbsup_fill,
+                                                    .heart_fill,
                                                 size: 12.5,
                                                 color: Colors.grey,
                                               ),
@@ -169,7 +169,7 @@ class _MediaPreviewState extends State<MediaPreview> {
                                                   color: Colors.white),
                                             )),
                                         Icon(
-                                          CupertinoIcons.hand_thumbsup_fill,
+                                          CupertinoIcons.heart_fill,
                                           size: 12.5,
                                           color: Colors.white,
                                         ),
