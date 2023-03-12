@@ -71,6 +71,7 @@ class VideoData {
   late String title;
   late String description;
   late String views;
+  String? processingVideo;
   String? likes;
   Map<String, String> resolution = {};
   List<CommentData> comments = <CommentData>[];

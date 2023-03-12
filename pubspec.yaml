@@ -44,7 +44,7 @@ dependencies:
   easy_refresh: ^3.3.1
   waterfall_flow: ^3.0.2
   video_player: ^2.4.7
-  chewie: ^1.4.0
+  wakelock: ^0.6.2
   cached_network_image: ^3.2.3
 
 dev_dependencies:

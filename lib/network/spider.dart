@@ -6,7 +6,7 @@ import 'package:html_unescape/html_unescape.dart';
 import '../common/classes.dart';
 
 class Spider {
-  static Future<VideoData?> getVideoPage(String url) async {
+  static Future<Object> getVideoPage(String url) async {
     try {
       VideoData videoData = VideoData();
       Document document = Document();
@@ -50,9 +50,16 @@ class Spider {
             .addAll({element["resolution"]: "https:${element["uri"]}"});
       }
 
-      videoData.description = document
-          .querySelector('div.field-name-body > div > div > p')!
-          .innerHtml;
+      var processingVideo = document.querySelector("#video-processing");
+
+      if (processingVideo != null && resolution.isEmpty) {
+        videoData.processingVideo = processingVideo.text;
+      }
+
+      var description =
+          document.querySelector('div.field-name-body > div > div > p');
+
+      videoData.description = description != null ? description.innerHtml : "";
 
       var likesAndViewsDom =
           document.querySelector('div.node-views')!.innerHtml;
@@ -76,8 +83,7 @@ class Spider {
         for (var comment in comments) {
           if (comment.children.isNotEmpty) {
             var children = comment.preorderTraversal();
-            comment.children =
-                children.getRange(1, children.length).toList();
+            comment.children = children.getRange(1, children.length).toList();
           }
         }
 
@@ -87,19 +93,22 @@ class Spider {
       var moreFromUserDom =
           document.querySelector('div.view-id-videos > div > div');
 
-      videoData.moreFromUser =
-          analyseMediaPreviewsHtml(moreFromUserDom!.innerHtml);
+      if (moreFromUserDom != null) {
+        videoData.moreFromUser =
+            analyseMediaPreviewsHtml(moreFromUserDom.innerHtml);
+      }
 
       var moreLikeThisDom =
           document.querySelector('div.view-id-search > div > div');
 
-      videoData.moreLikeThis =
-          analyseMediaPreviewsHtml(moreLikeThisDom!.innerHtml);
+      if (moreLikeThisDom != null) {
+        videoData.moreLikeThis =
+            analyseMediaPreviewsHtml(moreLikeThisDom.innerHtml);
+      }
 
       return videoData;
-    } catch (e) {
-      print(e);
-      return null;
+    } catch (e, stackTrace) {
+      return "${e}";
     }
   }
 

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
@@ -26,15 +27,13 @@ class MediaGridView extends StatefulWidget {
 class _MediaGridViewState extends State<MediaGridView>
     with AutomaticKeepAliveClientMixin {
   List<MediaPreviewData> _data = [];
-  final EasyRefreshController _easyRefreshController = EasyRefreshController(
-    controlFinishRefresh: true,
-    controlFinishLoad: true,
-  );
+  late EasyRefreshController _easyRefreshController;
   bool _fristLoad = true;
   bool _isLoading = false;
   int _currentPage = 0;
 
   Future<void> _refresh() async {
+    if (!mounted) return;
     setState(() {
       _currentPage = 0;
       _data = [];
@@ -45,6 +44,8 @@ class _MediaGridViewState extends State<MediaGridView>
   }
 
   Future<void> _loadData() async {
+    if (!mounted) return;
+
     if (!_isLoading) {
       setState(() {
         _isLoading = true;
@@ -73,7 +74,6 @@ class _MediaGridViewState extends State<MediaGridView>
         List<MediaPreviewData> newData = [];
         await Dio().get(url).then((value) {
           newData = Spider.analyseMediaPreviewsHtml(value.data);
-          print("ok");
         });
         setState(() {
           if (newData.isNotEmpty) {
@@ -85,26 +85,31 @@ class _MediaGridViewState extends State<MediaGridView>
           } else {
             _isLoading = false;
 
-            _easyRefreshController.finishLoad(IndicatorResult.noMore);
+            //_easyRefreshController.finishLoad(IndicatorResult.noMore);
           }
         });
       } catch (e) {
         _isLoading = false;
-        print(e);
 
         _easyRefreshController.finishLoad(IndicatorResult.fail);
       }
     }
   }
 
+  @override
   void initState() {
+    super.initState();
+
+    _easyRefreshController = EasyRefreshController(
+      controlFinishRefresh: true,
+      controlFinishLoad: true,
+    );
+    /*
     if (_fristLoad) {
       _easyRefreshController.callLoad();
-      _loadData();
+      //_loadData();
       _fristLoad = false;
-    }
-
-    super.initState();
+    }*/
   }
 
   @override
@@ -113,6 +118,8 @@ class _MediaGridViewState extends State<MediaGridView>
       header: CupertinoHeader(),
       footer: CupertinoFooter(),
       controller: _easyRefreshController,
+      refreshOnStart: true,
+      refreshOnStartHeader: CupertinoHeader(),
       onRefresh: _refresh,
       onLoad: _loadData,
       child: WaterfallFlow.builder(

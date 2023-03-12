@@ -24,106 +24,63 @@ class ReloadableImage extends StatefulWidget {
 
 class _ReloadableImageState extends State<ReloadableImage> {
   bool _errorOccurred = false;
-  bool _unexpectedErrorOccurred = false;
+  GlobalKey _imageKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    Widget errorWidget = widget.aspectRatio != null
+    final errorWidget = GestureDetector(
+        onTap: () {
+          setState(() {
+            _imageKey = GlobalKey();
+          });
+        },
+        child: Center(
+          child: Icon(
+            CupertinoIcons.arrow_clockwise,
+            color: Colors.blue,
+          ),
+        ));
+
+    return widget.aspectRatio != null
         ? AspectRatio(
             aspectRatio: widget.aspectRatio!,
-            child: Center(
-              child: Icon(
-                CupertinoIcons.xmark_octagon_fill,
-                size: 45,
-                color: Colors.red,
-              ),
+            child: CachedNetworkImage(
+              key: _imageKey,
+              imageUrl: widget.imageUrl,
+              fit: widget.fit,
+              progressIndicatorBuilder: (context, url, progress) {
+                return Center(
+                    child: Container(
+                  margin: EdgeInsets.all(5),
+                  child: const CircularProgressIndicator(
+                    strokeWidth: 3,
+                  ),
+                ));
+              },
+              errorWidget: (_, __, ___) {
+                _errorOccurred = true;
+                return errorWidget;
+              },
             ))
-        : Container(
+        : CachedNetworkImage(
+            key: _imageKey,
+            imageUrl: widget.imageUrl,
             width: widget.width,
             height: widget.height,
-            child: Center(
-              child: Icon(
-                CupertinoIcons.xmark_octagon_fill,
-                size: 45,
-                color: Colors.red,
-              ),
-            ));
-    if (_unexpectedErrorOccurred) {
-      return errorWidget;
-    }
-
-    try {
-      return _errorOccurred
-          ? GestureDetector(
-              onTap: () {
-                setState(() {
-                  _errorOccurred = false;
-                });
-              },
-              child: errorWidget = widget.aspectRatio != null
-                  ? AspectRatio(
-                      aspectRatio: widget.aspectRatio!,
-                      child: Center(
-                        child: Icon(
-                          CupertinoIcons.arrow_clockwise,
-                          size: 45,
-                          color: Colors.blue,
-                        ),
-                      ))
-                  : Container(
-                      width: widget.width,
-                      height: widget.height,
-                      child: Center(
-                        child: Icon(
-                          CupertinoIcons.arrow_clockwise,
-                          size: 45,
-                          color: Colors.blue,
-                        ),
-                      )))
-          : widget.aspectRatio != null
-              ? AspectRatio(
-                  aspectRatio: widget.aspectRatio!,
-                  child: CachedNetworkImage(
-                    imageUrl: widget.imageUrl,
-                    fit: widget.fit,
-                    progressIndicatorBuilder: (context, url, progress) {
-                      return Center(
-                          child: SizedBox(
-                        child: const CircularProgressIndicator(
-                          strokeWidth: 3,
-                        ),
-                      ));
-                    },
-                    errorWidget: (_, __, ___) {
-                      setState(() {
-                        _errorOccurred = true;
-                      });
-                      return Container();
-                    },
-                  ))
-              : CachedNetworkImage(
-                  imageUrl: widget.imageUrl,
-                  width: widget.width,
-                  height: widget.height,
-                  fit: widget.fit,
-                  progressIndicatorBuilder: (context, url, progress) {
-                    return Center(
-                        child: SizedBox(
-                      child: const CircularProgressIndicator(
-                        strokeWidth: 3,
-                      ),
-                    ));
-                  },
-                  errorWidget: (_, __, ___) {
-                    setState(() {
-                      _errorOccurred = true;
-                    });
-                    return Container();
-                  },
-                );
-    } catch (e) {
-      _unexpectedErrorOccurred = true;
-      return errorWidget;
-    }
+            fit: widget.fit,
+            progressIndicatorBuilder: (context, url, progress) {
+              return Center(
+                  child: Container(
+                margin: EdgeInsets.all(5),
+                child: const CircularProgressIndicator(
+                  strokeWidth: 3,
+                ),
+              ));
+            },
+            errorWidget: (_, __, ___) {
+              _errorOccurred = true;
+              return errorWidget;
+            },
+          );
   }
 }

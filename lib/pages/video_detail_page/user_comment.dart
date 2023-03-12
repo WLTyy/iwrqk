@@ -15,7 +15,7 @@ class UserComment extends StatelessWidget {
     GlobalKey _userNameKey = GlobalKey();
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.symmetric(vertical: 0.5),
       color: Theme.of(context).canvasColor,
       padding: EdgeInsets.fromLTRB(20, 15, 15, 15),
       child: Row(

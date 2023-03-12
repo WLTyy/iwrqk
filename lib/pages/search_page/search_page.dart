@@ -20,7 +20,7 @@ class _SearchPageState extends State<SearchPage> {
                 icon: Icon(CupertinoIcons.back, size: 30)),
             centerTitle: true,
             title: Text(
-              "earch",
+              "Search",
             )),
         body: Container());
   }
