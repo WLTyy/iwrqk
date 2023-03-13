@@ -6,6 +6,67 @@ import 'package:html_unescape/html_unescape.dart';
 import '../common/classes.dart';
 
 class Spider {
+  
+  Future<Object> getUploaderProfileHtml(String url) async {
+    try {
+      UploaderProfileData profileData = UploaderProfileData();
+      Document document = Document();
+
+      await Dio().get(url).then((value) {
+        document = parse(value.data);
+      });
+
+      var infoDom = document.querySelector('div.view-profile > div > div')!;
+
+      profileData.avatarUrl =
+          "http:${infoDom.querySelector('img')!.attributes['src']!}";
+      profileData.name = infoDom.querySelector('h2')!.innerHtml;
+      profileData.joinDate = infoDom
+          .querySelector('div.views-field-created > span.field-content')!
+          .text;
+      profileData.lastLoginTime = infoDom.querySelector('em')!.innerHtml;
+
+      var discriptionDom =
+          infoDom.querySelector('div.views-field-field-about > div');
+      profileData.discription = discriptionDom?.innerHtml;
+
+      var uploadedVideosDom =
+          document.querySelector('div.view-videos > div.view-content');
+
+      if (uploadedVideosDom != null) {
+        profileData.uploadedVideos =
+            analyseMediaPreviewsHtml(uploadedVideosDom.innerHtml);
+      }
+
+      var uploadedImagesDom =
+          document.querySelector('div.view-images > div.view-content');
+
+      if (uploadedImagesDom != null) {
+        profileData.uploadedImages =
+            analyseMediaPreviewsHtml(uploadedImagesDom.innerHtml);
+      }
+
+      var commentsDoms = document.querySelector("#comments");
+
+      if (commentsDoms != null) {
+        var comments = getComments(commentsDoms.children);
+
+        for (var comment in comments) {
+          if (comment.children.isNotEmpty) {
+            var children = comment.preorderTraversal();
+            comment.children = children.getRange(1, children.length).toList();
+          }
+        }
+
+        profileData.comments = comments;
+      }
+
+      return profileData;
+    } catch (e, stackTrace) {
+      return "${e}";
+    }
+  }
+
   static Future<Object> getVideoPage(String url) async {
     try {
       VideoData videoData = VideoData();

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iwrqk/common/classes.dart';
 import 'package:iwrqk/pages/search_page/search_page.dart';
+import 'package:iwrqk/pages/uploader_profile_page/uploader_profile_page.dart';
 import 'package:iwrqk/pages/video_detail_page/video_detail_page.dart';
 import 'package:iwrqk/widgets/reloadable_image.dart';
 
@@ -21,7 +23,7 @@ class IwrAppBar extends StatefulWidget {
 }
 
 class _IwrAppBarState extends State<IwrAppBar> {
-  PreferredSize? getBottomWidget(bool? showFilter, Map<String, Widget>? tabList,
+  PreferredSize? _buildBottomWidget(bool? showFilter, Map<String, Widget>? tabList,
       TabController? tabController) {
     if (tabList != null) {
       return PreferredSize(
@@ -37,7 +39,7 @@ class _IwrAppBarState extends State<IwrAppBar> {
                 controller: widget.tabController,
                 indicator: IwrTabIndicator(),
                 indicatorSize: TabBarIndicatorSize.label,
-                tabs: getTab(tabList),
+                tabs: _buildTab(tabList),
               ),
             ),
             Visibility(
@@ -57,7 +59,7 @@ class _IwrAppBarState extends State<IwrAppBar> {
     }
   }
 
-  List<Widget> getTab(Map<String, Widget>? tabList) {
+  List<Widget> _buildTab(Map<String, Widget>? tabList) {
     List<Widget> widgetList = [];
     tabList!.forEach((key, value) {
       widgetList.add(Tab(text: key));
@@ -65,7 +67,7 @@ class _IwrAppBarState extends State<IwrAppBar> {
     return widgetList;
   }
 
-  List<Widget> getTabWidget(Map<String, Widget> list) {
+  List<Widget> _buildTabWidget(Map<String, Widget> list) {
     return List<Widget>.from(list.keys.map((i) {
       return list[i]!;
     }));
@@ -165,9 +167,7 @@ class _IwrAppBarState extends State<IwrAppBar> {
                             Navigator.of(context).push(PageRouteBuilder(
                               pageBuilder: (context, animation,
                                       secondaryAnimation) =>
-                                  const VideoDetailPage(
-                                      videoUrl:
-                                          "https://www.iwara.tv/videos/yrnqksq53t0jgl76"),
+                                  const UploaderProfilePage(),
                             ));
                           },
                         ),
@@ -175,12 +175,12 @@ class _IwrAppBarState extends State<IwrAppBar> {
                     ],
                   ),
                 ),
-                bottom: getBottomWidget(
+                bottom: _buildBottomWidget(
                     widget.showFilter, widget.tabList, widget.tabController)),
           ];
         },
         body: TabBarView(
             controller: widget.tabController,
-            children: getTabWidget(widget.tabList)));
+            children: _buildTabWidget(widget.tabList)));
   }
 }

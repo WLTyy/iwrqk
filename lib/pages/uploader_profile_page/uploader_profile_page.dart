@@ -18,8 +18,11 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
+  UploaderProfileData _profileData = UploaderProfileData();
+
   @override
   void initState() {
+    _loadData();
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
 
@@ -28,10 +31,94 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
     });
   }
 
+  void _loadData() {
+    _profileData.name = "114514";
+  }
+
+  Widget _buildUploderFunction() {
+    return Container(
+      color: Theme.of(context).canvasColor,
+      padding: EdgeInsets.only(top: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Column(children: [
+            ClipOval(
+              child: ReloadableImage(
+                imageUrl:
+                    'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
+                width: 60,
+                height: 60,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              _profileData.name,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+          ]),
+          ButtonBar(
+            children: [
+              ElevatedButton(
+                onPressed: () {},
+                child: Text(L10n.of(context).follow),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text(L10n.of(context).friend),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text(L10n.of(context).direct_message),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUploaderDetail() {
+    return Container(
+      color: Theme.of(context).canvasColor,
+      child: Column(children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: DataTable(
+            columns: [
+              DataColumn(label: Text('Join Date')),
+              DataColumn(label: Text('年龄'), numeric: true),
+            ],
+            rows: [
+              DataRow(cells: [
+                DataCell(Text('Late Active Time')),
+                DataCell(Text('18')),
+              ]),
+            ],
+          ),
+        ),
+        Card(
+          margin: EdgeInsets.symmetric(horizontal: 15),
+          color: Theme.of(context).accentColor,
+          child: Container(
+            alignment: Alignment.centerLeft,
+            child: SizedBox(
+              width: 100,
+              height: 100,
+            ),
+          ),
+        )
+      ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final uploaderProfile =
-        ModalRoute.of(context)!.settings.arguments as UploaderProfile;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -39,56 +126,12 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
               Navigator.pop(context);
             },
             icon: Icon(CupertinoIcons.back, size: 30)),
-        title: Text(uploaderProfile.name),
+        title: Text("Profile"),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            color: Theme.of(context).canvasColor,
-            padding: EdgeInsets.only(top: 20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(children: [
-                  ClipOval(
-                    child: ReloadableImage(
-                      imageUrl:
-                          'https://cravatar.cn/avatar/245467ef31b6f0addc72b039b94122a4.png',
-                      width: 60,
-                      height: 60,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    uploaderProfile.name,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                ]),
-                ButtonBar(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text(L10n.of(context).follow),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text(L10n.of(context).friend),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text(L10n.of(context).direct_message),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
+          _buildUploderFunction(),
           Container(
               color: Theme.of(context).canvasColor,
               alignment: Alignment.centerLeft,
@@ -100,6 +143,9 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
                 unselectedLabelColor: Colors.grey,
                 indicatorColor: Colors.blue,
                 tabs: [
+                  Tab(
+                    text: L10n.of(context).user_details,
+                  ),
                   Tab(text: L10n.of(context).videos),
                   Tab(
                     text: L10n.of(context).images,
@@ -107,15 +153,12 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
                   Tab(
                     text: L10n.of(context).comments,
                   ),
-                  Tab(
-                    text: L10n.of(context).user_details,
-                  )
                 ],
                 controller: _tabController,
               )),
           Expanded(
               child: TabBarView(controller: _tabController, children: [
-            Container(),
+            _buildUploaderDetail(),
             Container(),
             Column(
               children: [

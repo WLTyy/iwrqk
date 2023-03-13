@@ -12,13 +12,12 @@ class MediaGridView extends StatefulWidget {
   final SourceType sourceType;
   final SortMethod? sortMethod;
   final String orderType;
-
-  const MediaGridView(
-      {required Key key,
-      required this.sourceType,
-      this.sortMethod,
-      required this.orderType})
-      : super(key: key);
+  const MediaGridView({
+    required Key key,
+    required this.sourceType,
+    this.sortMethod,
+    required this.orderType,
+  }) : super(key: key);
 
   @override
   State<MediaGridView> createState() => _MediaGridViewState();
@@ -124,6 +123,7 @@ class _MediaGridViewState extends State<MediaGridView>
       onLoad: _loadData,
       child: WaterfallFlow.builder(
         padding: EdgeInsets.all(8),
+        physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,

@@ -197,49 +197,32 @@ class IwrVideoPlayerWithControlsState
     iwrVideoController = IwrVideoController.of(context);
     iwrVideoController.addListener(listener);
 
-    double calculateAspectRatio(BuildContext context) {
-      if (iwrVideoController.isFullScreen) {
-        var size = MediaQuery.of(context).size;
-        var width = size.width;
-        var height = size.height;
-
-        return width > height ? width / height : height / width;
-      } else if (iwrVideoController.videoPlayerController != null) {
-        if (iwrVideoController.videoPlayerController!.value.isInitialized) {
-          return iwrVideoController.videoPlayerController!.value.aspectRatio;
-        }
-      }
-      return 4 / 3;
-    }
-
-    return AspectRatio(
-      aspectRatio: calculateAspectRatio(context),
-      child: Container(
-          color: Colors.black,
-          child: Stack(children: [
-            Center(
-              child: iwrVideoController.errorMessage != null
-                  ? null
-                  : iwrVideoController.renewing
-                      ? CircularProgressIndicator()
-                      : iwrVideoController.videoPlayerController != null
-                          ? iwrVideoController
-                                  .videoPlayerController!.value.isInitialized
-                              ? AspectRatio(
-                                  aspectRatio: iwrVideoController
-                                      .videoPlayerController!.value.aspectRatio,
-                                  child: VideoPlayer(iwrVideoController
-                                      .videoPlayerController!))
-                              : CircularProgressIndicator()
-                          : CircularProgressIndicator(),
-            ),
-            if (iwrVideoController.videoPlayerController != null)
-              if (!iwrVideoController.renewing &&
-                      iwrVideoController
-                          .videoPlayerController!.value.isInitialized ||
-                  iwrVideoController.errorMessage != null)
-                IwrVideoControl(),
-          ])),
+    return Container(
+      color: Colors.black,
+      child: Stack(children: [
+        Center(
+          child: iwrVideoController.errorMessage != null
+              ? null
+              : iwrVideoController.renewing
+                  ? CircularProgressIndicator()
+                  : iwrVideoController.videoPlayerController != null
+                      ? iwrVideoController
+                              .videoPlayerController!.value.isInitialized
+                          ? AspectRatio(
+                              aspectRatio: iwrVideoController
+                                  .videoPlayerController!.value.aspectRatio,
+                              child: VideoPlayer(
+                                  iwrVideoController.videoPlayerController!))
+                          : CircularProgressIndicator()
+                      : CircularProgressIndicator(),
+        ),
+        if (iwrVideoController.videoPlayerController != null)
+          if (!iwrVideoController.renewing &&
+                  iwrVideoController
+                      .videoPlayerController!.value.isInitialized ||
+              iwrVideoController.errorMessage != null)
+            IwrVideoControl(),
+      ]),
     );
   }
 }

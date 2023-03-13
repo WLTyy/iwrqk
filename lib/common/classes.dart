@@ -81,14 +81,15 @@ class VideoData {
   VideoData();
 }
 
-class UploaderProfile {
-  String avatarUrl;
-  String name;
-  String describe;
-  String joinDate;
-  String lastActiveDate;
-  late List<String> videosUrls;
+class UploaderProfileData {
+  late String name;
+  late String avatarUrl;
+  late String joinDate;
+  late String lastLoginTime;
+  String? discription;
+  List<MediaPreviewData> uploadedImages = <MediaPreviewData>[];
+  List<MediaPreviewData> uploadedVideos = <MediaPreviewData>[];
+  List<CommentData> comments = <CommentData>[];
 
-  UploaderProfile(this.avatarUrl, this.name, this.describe, this.joinDate,
-      this.lastActiveDate);
+  UploaderProfileData();
 }
