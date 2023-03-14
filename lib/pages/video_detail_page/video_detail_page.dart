@@ -11,6 +11,7 @@ import '../../l10n.dart';
 import '../../network/spider.dart';
 import '../../widgets/media_preview.dart';
 import '../../widgets/reloadable_image.dart';
+import '../uploader_profile_page/uploader_profile_page.dart';
 import 'iwr_player/iwr_video_player.dart';
 import 'user_comment.dart';
 
@@ -226,7 +227,15 @@ class _VideoDetailPageState extends State<VideoDetailPage>
             height: 40,
           ),
         ),
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                UploaderProfilePage(
+              homePageUrl:
+                  "https://www.iwara.tv${_videoData.uploader.homepageUrl}",
+            ),
+          ));
+        },
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

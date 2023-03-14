@@ -164,11 +164,6 @@ class _IwrAppBarState extends State<IwrAppBar> {
                             color: Colors.grey,
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(PageRouteBuilder(
-                              pageBuilder: (context, animation,
-                                      secondaryAnimation) =>
-                                  const UploaderProfilePage(),
-                            ));
                           },
                         ),
                       )

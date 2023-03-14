@@ -1,6 +1,13 @@
 enum MediaType { video, image }
 
-enum SourceType { thirdparty, videos, images, videos_3 }
+enum SourceType {
+  thirdparty,
+  videos,
+  images,
+  uploader_videos,
+  uploader_images,
+  videos_3
+}
 
 enum SortMethod { ascend, descend }
 
@@ -86,7 +93,9 @@ class UploaderProfileData {
   late String avatarUrl;
   late String joinDate;
   late String lastLoginTime;
-  String? discription;
+  late bool moreUploadedVideos;
+  late bool moreUploadedImages;
+  String? description;
   List<MediaPreviewData> uploadedImages = <MediaPreviewData>[];
   List<MediaPreviewData> uploadedVideos = <MediaPreviewData>[];
   List<CommentData> comments = <CommentData>[];

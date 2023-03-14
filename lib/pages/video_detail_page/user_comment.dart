@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iwrqk/common/classes.dart';
+import 'package:iwrqk/pages/uploader_profile_page/uploader_profile_page.dart';
 
 import '../../common/util.dart';
 import '../../widgets/reloadable_image.dart';
@@ -38,7 +39,15 @@ class UserComment extends StatelessWidget {
                                 height: 30,
                               ),
                             ),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        UploaderProfilePage(
+                                  homePageUrl: "https://www.iwara.tv${commentData.user.homepageUrl}",
+                                ),
+                              ));
+                            },
                           ),
                           SizedBox(
                             width: 15,

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,12 +13,15 @@ import '../../widgets/media_preview.dart';
 class MediaGridView extends StatefulWidget {
   final SourceType sourceType;
   final SortMethod? sortMethod;
-  final String orderType;
+  final String? uploaderName;
+  final String? orderType;
+
   const MediaGridView({
     required Key key,
     required this.sourceType,
     this.sortMethod,
-    required this.orderType,
+    this.orderType,
+    this.uploaderName,
   }) : super(key: key);
 
   @override
@@ -27,6 +32,7 @@ class _MediaGridViewState extends State<MediaGridView>
     with AutomaticKeepAliveClientMixin {
   List<MediaPreviewData> _data = [];
   late EasyRefreshController _easyRefreshController;
+  ScrollController _scrollController = ScrollController();
   bool _fristLoad = true;
   bool _isLoading = false;
   int _currentPage = 0;
@@ -68,6 +74,14 @@ class _MediaGridViewState extends State<MediaGridView>
           url =
               'https://www.iwara.tv/videos-3?language=en&sort_by=${widget.orderType}&sort_order=${widget.sortMethod! == SortMethod.ascend ? "ASC" : "DESC"}&page=$_currentPage';
           break;
+        case SourceType.uploader_videos:
+          url =
+              'https://www.iwara.tv/users/${widget.uploaderName}/videos?language=en&page=$_currentPage';
+          break;
+        case SourceType.uploader_images:
+          url =
+              'https://www.iwara.tv/users/${widget.uploaderName}/images?language=en&page=$_currentPage';
+          break;
       }
       try {
         List<MediaPreviewData> newData = [];
@@ -103,6 +117,7 @@ class _MediaGridViewState extends State<MediaGridView>
       controlFinishRefresh: true,
       controlFinishLoad: true,
     );
+
     /*
     if (_fristLoad) {
       _easyRefreshController.callLoad();
@@ -111,20 +126,58 @@ class _MediaGridViewState extends State<MediaGridView>
     }*/
   }
 
+  ClassicHeader _buildRefreshHeader() {
+    return ClassicHeader(
+        showMessage: false,
+        showText: false,
+        pullIconBuilder: (context, state, animation) {
+          return Transform.rotate(
+              angle: -pi * animation,
+              child: Icon(state.reverse
+                  ? (state.axis == Axis.vertical
+                      ? CupertinoIcons.arrow_up
+                      : CupertinoIcons.arrow_left)
+                  : (state.axis == Axis.vertical
+                      ? CupertinoIcons.arrow_down
+                      : CupertinoIcons.arrow_right)));
+        },
+        succeededIcon: Icon(CupertinoIcons.check_mark),
+        failedIcon: Icon(CupertinoIcons.xmark),
+        noMoreIcon: Icon(CupertinoIcons.archivebox));
+  }
+
+  ClassicFooter _buildRefreshFooter() {
+    return ClassicFooter(
+        showMessage: false,
+        showText: false,
+        pullIconBuilder: (context, state, animation) {
+          return Transform.rotate(
+              angle: -pi * animation,
+              child: Icon(state.reverse
+                  ? (state.axis == Axis.vertical
+                      ? CupertinoIcons.arrow_up
+                      : CupertinoIcons.arrow_left)
+                  : (state.axis == Axis.vertical
+                      ? CupertinoIcons.arrow_down
+                      : CupertinoIcons.arrow_right)));
+        },
+        succeededIcon: Icon(CupertinoIcons.check_mark),
+        failedIcon: Icon(CupertinoIcons.xmark),
+        noMoreIcon: Icon(CupertinoIcons.archivebox));
+  }
+
   @override
   Widget build(BuildContext context) {
     return EasyRefresh(
-      header: CupertinoHeader(),
-      footer: CupertinoFooter(),
+      header: _buildRefreshHeader(),
+      footer: _buildRefreshFooter(),
       controller: _easyRefreshController,
       refreshOnStart: true,
-      refreshOnStartHeader: CupertinoHeader(),
+      refreshOnStartHeader: _buildRefreshHeader(),
       onRefresh: _refresh,
       onLoad: _loadData,
       child: WaterfallFlow.builder(
         padding: EdgeInsets.all(8),
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
         gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 8,

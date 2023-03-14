@@ -6,8 +6,7 @@ import 'package:html_unescape/html_unescape.dart';
 import '../common/classes.dart';
 
 class Spider {
-  
-  Future<Object> getUploaderProfileHtml(String url) async {
+  static Future<Object> getUploaderProfile(String url) async {
     try {
       UploaderProfileData profileData = UploaderProfileData();
       Document document = Document();
@@ -28,10 +27,13 @@ class Spider {
 
       var discriptionDom =
           infoDom.querySelector('div.views-field-field-about > div');
-      profileData.discription = discriptionDom?.innerHtml;
+      profileData.description = discriptionDom?.innerHtml;
 
       var uploadedVideosDom =
           document.querySelector('div.view-videos > div.view-content');
+
+      profileData.moreUploadedVideos =
+          document.querySelector('div.view-videos > div.more-link') != null;
 
       if (uploadedVideosDom != null) {
         profileData.uploadedVideos =
@@ -40,6 +42,9 @@ class Spider {
 
       var uploadedImagesDom =
           document.querySelector('div.view-images > div.view-content');
+
+      profileData.moreUploadedImages =
+          document.querySelector('div.view-images > div.more-link') != null;
 
       if (uploadedImagesDom != null) {
         profileData.uploadedImages =

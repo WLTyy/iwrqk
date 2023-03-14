@@ -39,7 +39,6 @@ class MyApp extends StatelessWidget {
               '/': (context) => const HomePage(),
               '/user': (context) => const UserPage(),
               '/settings': (context) => const SettingsPage(),
-              '/uploader_profile': (context) => const UploaderProfilePage()
             },
           );
         }));
