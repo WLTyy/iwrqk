@@ -21,7 +21,7 @@ class VideoDetailPage extends StatefulWidget {
   const VideoDetailPage({super.key, required this.videoUrl});
 
   @override
-  _VideoDetailPageState createState() => _VideoDetailPageState();
+  State<VideoDetailPage> createState() => _VideoDetailPageState();
 }
 
 class _VideoDetailPageState extends State<VideoDetailPage>

@@ -52,8 +52,9 @@ class _ReloadableImageState extends State<ReloadableImage> {
                 return Center(
                     child: Container(
                   margin: EdgeInsets.all(5),
-                  child: const CircularProgressIndicator(
+                  child: CircularProgressIndicator(
                     strokeWidth: 3,
+                    value: progress.progress,
                   ),
                 ));
               },
@@ -72,8 +73,9 @@ class _ReloadableImageState extends State<ReloadableImage> {
               return Center(
                   child: Container(
                 margin: EdgeInsets.all(5),
-                child: const CircularProgressIndicator(
+                child: CircularProgressIndicator(
                   strokeWidth: 3,
+                  value: progress.progress,
                 ),
               ));
             },

@@ -43,7 +43,7 @@ class _MediaPreviewState extends State<MediaPreview> {
             margin: EdgeInsets.only(left: 2),
             child: Text(
               widget.data.likes,
-              style: TextStyle(fontSize: 12.5, color: Colors.grey),
+              style: TextStyle(fontSize: 12.5, color: color),
             ))
       ],
     );
