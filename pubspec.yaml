@@ -32,7 +32,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
-    sdk: flutter 
+    sdk: flutter
+  flutter_launcher_icons: any
   intl: ^0.17.0
   cupertino_icons: ^1.0.2
   dio: ^5.0.1
@@ -102,3 +103,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path_ios: "assets/launcher/ios.png"
+  image_path_android: "assets/launcher/android.png"
+  adaptive_icon_background: "assets/launcher/background.png"
+  adaptive_icon_foreground: "assets/launcher/foreground.png"

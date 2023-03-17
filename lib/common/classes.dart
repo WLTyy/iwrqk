@@ -42,64 +42,112 @@ class RatingType {
 
 class MediaPreviewData {
   late MediaType type;
-  late DateTime date;
+  late DateTime createDate;
   late String title;
   late String id;
-  late String? fileId;
-  late int? thumbnailLength;
-  late String? thumbnailUrl;
-  late int? galleryLength;
+  String? fileId;
+  int? thumbnailLength;
+  String? thumbnailUrl;
+  int? galleryLength;
   late UserData uploader;
   bool isPrivate = false;
-  late int? duration;
+  String? youtubeUrl;
+  int? duration;
   late String ratingType;
   late int views;
   late int likes;
+
+  bool hasCover() {
+    bool flag = false;
+    if (thumbnailLength != null) {
+      if (thumbnailLength != 0) {
+        flag = true;
+      }
+    }
+    if (thumbnailUrl != null) {
+      flag = true;
+    }
+    return flag;
+  }
+
+  String getCoverUrl() {
+    if (type == MediaType.video) {
+      return "https://files.iwara.tv/image/thumbnail/$fileId/thumbnail-00.jpg";
+    } else {
+      return "https://files.iwara.tv$thumbnailUrl";
+    }
+  }
 
   MediaPreviewData();
 }
 
 class UserData {
+  final String id;
   final String userName;
   final String nickName;
   final String avatarUrl;
 
-  UserData(this.userName, this.nickName, this.avatarUrl);
+  UserData(
+      {required this.id,
+      required this.userName,
+      required this.nickName,
+      required this.avatarUrl});
 }
 
 class CommentData {
+  final String id;
   final UserData user;
-  final String date;
+  final DateTime createDate;
+  DateTime? updateDate;
   final String content;
-  int depth = 0;
   UserData? replyTo;
+  String? parentId;
+  int repliesNum = 0;
   List<CommentData> children = <CommentData>[];
 
-  CommentData(this.user, this.date, this.content);
-
-  List<CommentData> preorderTraversal() {
-    List<CommentData> result = [this];
-    for (CommentData child in children) {
-      result.addAll(child.preorderTraversal());
-    }
-    return result;
-  }
+  CommentData(
+      {required this.id,
+      required this.user,
+      required this.createDate,
+      required this.content});
 }
 
-class VideoData {
+class TagData {
+  final String id;
+  final String type;
+
+  TagData(this.id, this.type);
+}
+
+class MediaData {
   late UserData uploader;
-  late String date;
+  late DateTime createDate;
+  DateTime? updateDate;
   late String title;
   late String description;
-  late String views;
-  String? processingVideo;
-  String? likes;
-  Map<String, String> resolution = {};
+  late int views;
+  late int likes;
+  List<TagData> tags = <TagData>[];
   List<CommentData> comments = <CommentData>[];
   List<MediaPreviewData> moreFromUser = <MediaPreviewData>[];
   List<MediaPreviewData> moreLikeThis = <MediaPreviewData>[];
 
+  MediaData();
+}
+
+class VideoData extends MediaData {
+  late String? youtubeUrl;
+  bool isPrivate = false;
+  bool fetchFailed = true;
+  Map<String, String> resolution = {};
+
   VideoData();
+}
+
+class ImageData extends MediaData {
+  List<String> imageUrls = <String>[];
+
+  ImageData();
 }
 
 class UploaderProfileData {

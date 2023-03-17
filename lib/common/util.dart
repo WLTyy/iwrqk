@@ -1,35 +1,109 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Element;
-import 'package:html/dom.dart';
-import 'package:html/parser.dart';
+import 'package:intl/intl.dart';
+import 'package:iwrqk/l10n.dart';
 
-TextSpan parseHtmlCode(String htmlCode) {
-  final document = parse(htmlCode);
+TextSpan parseHtmlCode(String text) {
+  List<TextSpan> spans = [];
+  RegExp urlRegex = RegExp(
+      r"(https?://(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})");
 
-  List<InlineSpan> children = [];
+  List<RegExpMatch> matches = urlRegex.allMatches(text).toList();
+  int lastMatchEnd = 0;
+  for (RegExpMatch match in matches) {
+    String? linkText = match.group(0);
+    int matchStart = match.start;
 
-  for (var node in document.body!.nodes) {
-    if (node.nodeType == Node.TEXT_NODE) {
-      children.add(TextSpan(
-        text: node.text,
-      ));
-    } else if (node.nodeType == Node.ELEMENT_NODE) {
-      Element element = node as Element;
-      switch (element.localName) {
-        case 'a':
-          final link = element.attributes['href'];
-          children.add(TextSpan(
-            text: element.text,
-            style: TextStyle(
-              color: Colors.blue,
-              decoration: TextDecoration.underline,
-            ),
-            recognizer: TapGestureRecognizer()..onTap = () {},
-          ));
-          break;
-      }
+    // Add any text before the link.
+    if (matchStart > lastMatchEnd) {
+      spans.add(
+        TextSpan(
+          text: text.substring(lastMatchEnd, matchStart),
+        ),
+      );
     }
+
+    // Add the link.
+    spans.add(
+      TextSpan(
+        text: linkText,
+        style: TextStyle(
+          color: Colors.blue,
+          decoration: TextDecoration.underline,
+        ),
+        recognizer: TapGestureRecognizer()..onTap = () {},
+      ),
+    );
+
+    // Update the last match end position.
+    lastMatchEnd = match.end;
   }
 
-  return TextSpan(children: children);
+  // Add any remaining text after the last match.
+  if (lastMatchEnd < text.length) {
+    spans.add(
+      TextSpan(
+        text: text.substring(lastMatchEnd),
+      ),
+    );
+  }
+
+  return TextSpan(children: spans);
+}
+
+String getDisplayDate(BuildContext context, DateTime dateTime) {
+  Duration difference = DateTime.now().difference(dateTime);
+
+  if (difference.inSeconds < 60) {
+    return L10n.of(context)
+        .seconds_ago
+        .replaceFirst("\$s", "${difference.inSeconds}");
+  } else if (difference.inMinutes < 60) {
+    return L10n.of(context)
+        .minutes_ago
+        .replaceFirst("\$s", "${difference.inMinutes}");
+  } else if (difference.inHours < 24) {
+    return L10n.of(context)
+        .hours_ago
+        .replaceFirst("\$s", "${difference.inHours}");
+  } else if (difference.inDays < 10) {
+    return L10n.of(context)
+        .days_ago
+        .replaceFirst("\$s", "${difference.inDays}");
+  } else {
+    return DateFormat('yyyy-MM-dd').format(dateTime);
+  }
+}
+
+String getDisplayTime(BuildContext context, DateTime dateTime) {
+  Duration difference = DateTime.now().difference(dateTime);
+
+  if (difference.inSeconds < 60) {
+    return L10n.of(context)
+        .seconds_ago
+        .replaceFirst("\$s", "${difference.inSeconds}");
+  } else if (difference.inMinutes < 60) {
+    return L10n.of(context)
+        .minutes_ago
+        .replaceFirst("\$s", "${difference.inMinutes}");
+  } else if (difference.inHours < 24) {
+    return L10n.of(context)
+        .hours_ago
+        .replaceFirst("\$s", "${difference.inHours}");
+  } else if (difference.inDays < 10) {
+    return L10n.of(context)
+        .days_ago
+        .replaceFirst("\$s", "${difference.inDays}");
+  } else {
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+  }
+}
+
+String compactBigNumber(BuildContext context, int number) {
+  return NumberFormat.compact(locale: L10n.of(context).localeName)
+      .format(number);
+}
+
+String formatNumberWithCommas(BuildContext context, int number) {
+  return NumberFormat("#,###").format(number);
 }

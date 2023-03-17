@@ -1,253 +1,232 @@
-
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:html/parser.dart';
-import 'package:html/dom.dart';
-import 'package:html_unescape/html_unescape.dart';
-
 import '../common/classes.dart';
 
 class Api {
-  static Future<Object> getUploaderProfile(String url) async {
-    try {
-      UploaderProfileData profileData = UploaderProfileData();
-      Document document = Document();
+  static List<MediaPreviewData> analyseMediaPreviewsJson(dynamic previews) {
+    List<MediaPreviewData> previewDatasList = [];
 
-      await Dio().get(url).then((value) {
-        document = parse(value.data);
-      });
+    for (var previewItem in previews["results"]) {
+      MediaPreviewData previewData = MediaPreviewData();
 
-      var infoDom = document.querySelector('div.view-profile > div > div')!;
+      previewData.id = previewItem["id"];
+      previewData.title = previewItem["title"];
+      previewData.ratingType = previewItem["rating"];
+      previewData.likes = previewItem["numLikes"];
+      previewData.views = previewItem["numViews"];
 
-      profileData.avatarUrl =
-          "http:${infoDom.querySelector('img')!.attributes['src']!}";
-      profileData.name = infoDom.querySelector('h2')!.innerHtml;
-      profileData.joinDate = infoDom
-          .querySelector('div.views-field-created > span.field-content')!
-          .text;
-      profileData.lastLoginTime = infoDom.querySelector('em')!.innerHtml;
-
-      var discriptionDom =
-          infoDom.querySelector('div.views-field-field-about > div');
-      profileData.description = discriptionDom?.innerHtml;
-
-      var uploadedVideosDom =
-          document.querySelector('div.view-videos > div.view-content');
-
-      profileData.moreUploadedVideos =
-          document.querySelector('div.view-videos > div.more-link') != null;
-
-      if (uploadedVideosDom != null) {
+      if (previewItem["files"] != null) {
+        previewData.type = MediaType.image;
+        previewData.thumbnailUrl =
+            "/image/avatar/${previewItem["thumbnail"]["id"]}/${previewItem["thumbnail"]["name"]}";
+      } else if (previewItem["file"] != null) {
+        previewData.type = MediaType.video;
+        previewData.duration = previewItem["file"]["duration"];
+        previewData.fileId = previewItem["file"]["id"];
+        previewData.thumbnailLength = previewItem["file"]["numThumbnails"];
+      } else if (previewItem["embedUrl"] != null) {
+        previewData.youtubeUrl = previewItem["embedUrl"];
       }
 
-      var uploadedImagesDom =
-          document.querySelector('div.view-images > div.view-content');
+      var uploader = previewItem["user"];
 
-      profileData.moreUploadedImages =
-          document.querySelector('div.view-images > div.more-link') != null;
+      var avatarUrl = uploader["avatar"] == null
+          ? "/images/default-avatar.jpg"
+          : "/image/avatar/${uploader["avatar"]["id"]}/${uploader["avatar"]["name"]}";
 
-      if (uploadedImagesDom != null) {
+      previewData.uploader = UserData(
+          id: uploader["id"],
+          userName: uploader["username"],
+          nickName: uploader["name"],
+          avatarUrl: avatarUrl);
+
+      previewData.galleryLength = previewItem["numImages"];
+
+      previewData.createDate = DateTime.parse(previewItem["createdAt"]);
+      if (previewItem.containsKey("private")) {
+        previewData.isPrivate = previewItem["private"];
       }
 
-      var commentsDoms = document.querySelector("#comments");
-
-      if (commentsDoms != null) {
-        var comments = getComments(commentsDoms.children);
-
-        for (var comment in comments) {
-          if (comment.children.isNotEmpty) {
-            var children = comment.preorderTraversal();
-            comment.children = children.getRange(1, children.length).toList();
-          }
-        }
-
-        profileData.comments = comments;
-      }
-
-      return profileData;
-    } catch (e, stackTrace) {
-      return "${e}";
+      previewDatasList.add(previewData);
     }
+    return previewDatasList;
   }
 
-  static Future<Object> getVideoPage(String url) async {
+  static Future<Object> getVideoPage(String id) async {
     try {
       VideoData videoData = VideoData();
-      Document document = Document();
+      dynamic video;
 
-      await Dio().get(url).then((value) {
-        document = parse(value.data);
+      await Dio().get("https://api.iwara.tv/video/$id").then((value) {
+        video = value.data;
       });
 
-      var uploaderDom =
-          document.querySelector('div.node-info > div.submitted')!;
-      var uploaderNameDom = uploaderDom.querySelector('a.username')!;
-      var uploaderAvatarDom =
-          uploaderDom.querySelector('div.user-picture > a > img')!;
-
-      videoData.date = RegExp(
-              "[1-9]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\\s+(20|21|22|23|[0-1]\\d):[0-5]\\d")
-          .firstMatch(uploaderDom.innerHtml)!
-          .group(0)!;
-
-      videoData.title = HtmlUnescape()
-          .convert(uploaderDom.querySelector('h1.title')!.innerHtml);
-
-      var uploader = UserData(
-        uploaderNameDom.innerHtml,
-        "https:${uploaderAvatarDom.attributes["src"]!}",
-        uploaderNameDom.attributes["href"]!,
-      );
-
-      videoData.uploader = uploader;
-
-      List<dynamic> resolution = <dynamic>[];
-
-      await Dio()
-          .get("https://www.iwara.tv/api/video/${url.split('/').last}")
-          .then((value) {
-        resolution = value.data;
-      });
-
-      for (var element in resolution) {
-        videoData.resolution
-            .addAll({element["resolution"]: "https:${element["uri"]}"});
+      if (video["embedUrl"] != null) {
+        videoData.youtubeUrl = video["embedUrl"];
       }
 
-      var processingVideo = document.querySelector("#video-processing");
+      videoData.createDate = DateTime.parse(video["createdAt"]);
+      videoData.updateDate = DateTime.parse(video["updatedAt"]);
+      videoData.title = video["title"];
+      videoData.likes = video["numLikes"];
+      videoData.description = video["body"] ?? "";
+      videoData.views = video["numViews"];
+      videoData.isPrivate = video["private"];
 
-      if (processingVideo != null && resolution.isEmpty) {
-        videoData.processingVideo = processingVideo.text;
+      var uploader = video["user"];
+
+      var avatarUrl = uploader["avatar"] == null
+          ? "https://www.iwara.tv/images/default-avatar.jpg"
+          : "https://files.iwara.tv/image/avatar/${uploader["avatar"]["id"]}/${uploader["avatar"]["name"]}";
+
+      videoData.uploader = UserData(
+          id: uploader["id"],
+          userName: uploader["username"],
+          nickName: uploader["name"],
+          avatarUrl: avatarUrl);
+
+      for (var tag in video["tags"]) {
+        videoData.tags.add(TagData(tag["id"], tag["type"]));
       }
 
-      var description =
-          document.querySelector('div.field-name-body > div > div > p');
-
-      videoData.description = description != null ? description.innerHtml : "";
-
-      var likesAndViewsDom =
-          document.querySelector('div.node-views')!.innerHtml;
-
-      var likesAndViews = RegExp("(\\d+(\\.+\\d+|\\.{0})\\,{0,1})+")
-          .allMatches(likesAndViewsDom)
-          .toList();
-
-      if (likesAndViews.length == 2) {
-        videoData.views = likesAndViews[1].group(0)!;
-        videoData.likes = likesAndViews[0].group(0)!;
-      } else if (likesAndViews.length == 1) {
-        videoData.views = likesAndViews[0].group(0)!;
-      }
-
-      var commentsDoms = document.querySelector("#comments");
-
-      if (commentsDoms != null) {
-        var comments = getComments(commentsDoms.children);
-
-        for (var comment in comments) {
-          if (comment.children.isNotEmpty) {
-            var children = comment.preorderTraversal();
-            comment.children = children.getRange(1, children.length).toList();
+      await Dio().get(video["fileUrl"]).then((value) {
+        if (value.data is List) {
+          if (value.data.isNotEmpty) {
+            videoData.fetchFailed = false;
           }
         }
+      });
 
-        videoData.comments = comments;
-      }
+      await Dio()
+          .get(
+              "https://api.iwara.tv/videos?user=${videoData.uploader.id}&exclude=$id&limit=6")
+          .then((value) {
+        videoData.moreFromUser = analyseMediaPreviewsJson(value.data);
+      });
 
-      var moreFromUserDom =
-          document.querySelector('div.view-id-videos > div > div');
+      await Dio().get("https://api.iwara.tv/video/$id/related").then((value) {
+        videoData.moreLikeThis = analyseMediaPreviewsJson(value.data);
+      });
 
-
-      var moreLikeThisDom =
-          document.querySelector('div.view-id-search > div > div');
+      await getComments(id: id, type: "video", pageNum: 0)
+          .then((value) => videoData.comments = value);
 
       return videoData;
     } catch (e, stackTrace) {
-      return "${e}";
+      return "$e";
     }
   }
 
-  static List<MediaPreviewData> analyseMediaPreviewsJson(dynamic previews) {
-  List<MediaPreviewData> previewDatasList = [];
+  static Future<Object> getImagePage(String id) async {
+    try {
+      ImageData imageData = ImageData();
+      dynamic image;
 
-  for (var previewItem in previews["results"]) {
-    MediaPreviewData previewData = MediaPreviewData();
-    previewData.id = previewItem["id"];
+      await Dio().get("https://api.iwara.tv/image/$id").then((value) {
+        image = value.data;
+      });
 
-    previewData.title = previewItem["title"];
-    previewData.ratingType = previewItem["rating"];
-    if (previewItem["files"] != null) {
-      previewData.type = MediaType.image;
-      previewData.thumbnailUrl =
-          "/image/avatar/${previewItem["thumbnail"]["id"]}/${previewItem["thumbnail"]["name"]}";
-    } else {
-      previewData.type = MediaType.video;
-      previewData.duration = previewItem["file"]["duration"];
-      previewData.fileId = previewItem["file"]["id"];
-      previewData.thumbnailLength = previewItem["file"]["numThumbnails"];
-    }
-    previewData.likes = previewItem["numLikes"];
-    previewData.views = previewItem["numViews"];
+      imageData.createDate = DateTime.parse(image["createdAt"]);
+      imageData.updateDate = DateTime.parse(image["updatedAt"]);
+      imageData.title = image["title"];
+      imageData.likes = image["numLikes"];
+      imageData.description = image["body"] ?? "";
+      imageData.views = image["numViews"];
 
-    var uploader = previewItem["user"];
+      var uploader = image["user"];
 
-    var avatarUrl = uploader["avatar"] == null
-        ? "/images/default-avatar.jpg"
-        : "/image/avatar/${uploader["avatar"]["id"]}/${uploader["avatar"]["name"]}";
+      var avatarUrl = uploader["avatar"] == null
+          ? "https://www.iwara.tv/images/default-avatar.jpg"
+          : "https://files.iwara.tv/image/avatar/${uploader["avatar"]["id"]}/${uploader["avatar"]["name"]}";
 
-    previewData.uploader =
-        UserData(uploader["username"], uploader["name"], avatarUrl);
+      imageData.uploader = UserData(
+          id: uploader["id"],
+          userName: uploader["username"],
+          nickName: uploader["name"],
+          avatarUrl: avatarUrl);
 
-    previewData.galleryLength = previewItem["numImages"];
-
-    previewData.date = DateTime.parse(previewItem["updatedAt"]);
-    if (previewItem.containsKey("private")) {
-      previewData.isPrivate = previewItem["private"];
-    }
-
-    previewDatasList.add(previewData);
-  }
-  return previewDatasList;
-}
-
-  static List<CommentData> getComments(List<Element> commentsDoms,
-      {UserData? replyTo, int depth = 0}) {
-    List<CommentData> comments = <CommentData>[];
-    CommentData? lastComment;
-
-    for (var item in commentsDoms) {
-      if (item.className.contains("comment")) {
-        lastComment = analyseCommentHtml(item.innerHtml);
-        lastComment.depth = depth;
-        lastComment.replyTo = replyTo;
-        comments.add(lastComment);
-      } else if (item.className.contains("indented")) {
-        comments.last.children = getComments(item.children,
-            replyTo: lastComment!.user, depth: depth + 1);
+      for (var tag in image["tags"]) {
+        imageData.tags.add(TagData(tag["id"], tag["type"]));
       }
+
+      for (var imageFile in image["files"]) {
+        imageData.imageUrls.add(
+            "https://files.iwara.tv/image/large/${imageFile["id"]}/${imageFile["name"]}");
+      }
+
+      await Dio()
+          .get(
+              "https://api.iwara.tv/images?user=${imageData.uploader.id}&exclude=$id&limit=6")
+          .then((value) {
+        imageData.moreFromUser = analyseMediaPreviewsJson(value.data);
+      });
+
+      await Dio().get("https://api.iwara.tv/image/$id/related").then((value) {
+        imageData.moreLikeThis = analyseMediaPreviewsJson(value.data);
+      });
+
+      await getComments(id: id, type: "image", pageNum: 0)
+          .then((value) => imageData.comments = value);
+
+      return imageData;
+    } catch (e, stackTrace) {
+      print("$stackTrace");
+      return "$e";
     }
-    return comments;
   }
 
-  static CommentData analyseCommentHtml(String htmlData) {
-    var document = parse(htmlData);
-    var userDom = document.querySelector('div.submitted')!;
-    var userNameDom = userDom.querySelector('a.username')!;
-    var userAvatarDom = document.querySelector('div.user-picture > a > img')!;
-    var content =
-        document.querySelector('div.content > div > div > div > p')!.innerHtml;
+  static Future<List<CommentData>> getComments({
+    required String id,
+    required String type,
+    required int pageNum,
+    String? parentId,
+  }) async {
+    try {
+      List<CommentData> commentsList = [];
+      dynamic comments;
 
-    var date = RegExp(
-            "[1-9]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\\s+(20|21|22|23|[0-1]\\d):[0-5]\\d")
-        .firstMatch(userDom.innerHtml)!
-        .group(0)!;
-    return CommentData(
-        UserData(
-            userNameDom.innerHtml,
-            "https:${userAvatarDom.attributes['src']!}",
-            userNameDom.attributes['href']!),
-        date,
-        content);
+      String url = parentId != null
+          ? "https://api.iwara.tv/${type}/$id/comments?parent=$parentId&page=$pageNum"
+          : "https://api.iwara.tv/${type}/$id/comments?page=$pageNum";
+
+      await Dio().get(url).then((value) {
+        comments = value.data;
+      });
+
+      for (var commentItem in comments["results"]) {
+        var user = commentItem["user"];
+
+        var avatarUrl = user["avatar"] == null
+            ? "https://www.iwara.tv/images/default-avatar.jpg"
+            : "https://files.iwara.tv/image/avatar/${user["avatar"]["id"]}/${user["avatar"]["name"]}";
+
+        CommentData commentData = CommentData(
+            id: commentItem["id"],
+            user: UserData(
+                id: user["id"],
+                userName: user["username"],
+                nickName: user["name"],
+                avatarUrl: avatarUrl),
+            createDate: DateTime.parse(commentItem["createdAt"]),
+            content: commentItem["body"]);
+
+        commentData.updateDate = DateTime.parse(commentItem["updatedAt"]);
+
+        commentData.repliesNum = commentItem["numReplies"];
+
+        if (commentItem["parent"] != null) {
+          commentData.parentId = commentItem["parent"]["id"];
+        }
+
+        if (commentData.repliesNum > 0 && parentId != null) {
+          "https://api.iwara.tv/${type}/$id/comments?parent=${commentData.id}&limit=2";
+        }
+
+        commentsList.add(commentData);
+      }
+      return commentsList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
   }
 }

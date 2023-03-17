@@ -45,7 +45,7 @@ class _RankingPageState extends State<RankingPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
 
     _tabController.addListener(() {
       print(_tabController.index);
@@ -57,8 +57,7 @@ class _RankingPageState extends State<RankingPage>
     return IwrAppBar(
       showFilter: false,
       tabList: {
-        L10n.of(context).hottest: Container(),
-        L10n.of(context).popular: Container(),
+        L10n.of(context).latest: Container(),
       },
       tabController: _tabController,
     );

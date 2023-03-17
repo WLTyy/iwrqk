@@ -21,7 +21,7 @@ class _ExplorePageState extends State<ExplorePage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
 
     _tabController.addListener(() {
       print(_tabController.index);
@@ -33,14 +33,7 @@ class _ExplorePageState extends State<ExplorePage>
     return IwrAppBar(
       showFilter: false,
       tabList: {
-        L10n.of(context).hottest: Container(
-          child: Center(
-            child: ReloadableImage(imageUrl: 'https://picsum.photos/200/300'),
-          ),
-        ),
-        L10n.of(context).popular: Container(),
         L10n.of(context).latest: Container(),
-        L10n.of(context).toplist: Container(),
       },
       tabController: _tabController,
     );

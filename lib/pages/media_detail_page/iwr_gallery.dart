@@ -3,15 +3,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:provider/provider.dart';
+
+import '../../widgets/Iwr_progress_indicator.dart';
 
 class IwrGallery extends StatefulWidget {
   final List<String> imageUrls;
   final bool isfullScreen;
+  final int? lastPage;
+  final void Function(int index)? onPageChanged;
 
   const IwrGallery({
     Key? key,
     required this.imageUrls,
     this.isfullScreen = false,
+    this.lastPage,
+    this.onPageChanged,
   }) : super(key: key);
 
   @override
@@ -20,30 +27,13 @@ class IwrGallery extends StatefulWidget {
 
 class _IwrGalleryState extends State<IwrGallery> {
   late PageController _pageController;
-  late int _currentIndex;
+  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 0);
-    _currentIndex = 0;
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  Widget _buildLoading(ImageChunkEvent? event) {
-    double value = event == null || event.expectedTotalBytes == null
-        ? 0
-        : event.cumulativeBytesLoaded / event.expectedTotalBytes!;
-    return Center(
-      child: CircularProgressIndicator(
-        value: value,
-      ),
-    );
+    _pageController = PageController(initialPage: widget.lastPage ?? 0);
+    _currentIndex = widget.lastPage ?? 0;
   }
 
   @override
@@ -87,10 +77,11 @@ class _IwrGalleryState extends State<IwrGallery> {
                 },
                 itemCount: widget.imageUrls.length,
                 loadingBuilder: (context, event) => Center(
-                  child: _buildLoading(event),
+                  child: IwrProgressIndicator(),
                 ),
                 pageController: _pageController,
                 onPageChanged: (index) {
+                  widget.onPageChanged?.call(index);
                   setState(() {
                     _currentIndex = index;
                   });
@@ -107,6 +98,13 @@ class _IwrGalleryState extends State<IwrGallery> {
                           body: IwrGallery(
                             isfullScreen: true,
                             imageUrls: widget.imageUrls,
+                            lastPage: _currentIndex,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentIndex = index;
+                              });
+                              _pageController.jumpToPage(_currentIndex);
+                            },
                           ),
                         ),
                       ));
@@ -119,12 +117,20 @@ class _IwrGalleryState extends State<IwrGallery> {
                     size: 30,
                     color: Colors.white,
                   )),
-              if (widget.imageUrls.length <= 15)
+              if (widget.imageUrls.length > 15)
+                Positioned(
+                    bottom: 10,
+                    left: 0,
+                    right: 0,
+                    child: Text(
+                        "${_currentIndex + 1} / ${widget.imageUrls.length}")),
+              if (widget.imageUrls.length <= 15 && widget.imageUrls.length > 1)
                 Positioned(
                   bottom: 10,
                   left: 0,
                   right: 0,
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(widget.imageUrls.length, (index) {
                       return GestureDetector(
@@ -147,7 +153,7 @@ class _IwrGalleryState extends State<IwrGallery> {
                       );
                     }),
                   ),
-                ),
+                )
             ],
           ),
         ));

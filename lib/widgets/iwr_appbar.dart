@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iwrqk/common/classes.dart';
 import 'package:iwrqk/pages/search_page/search_page.dart';
 import 'package:iwrqk/pages/uploader_profile_page/uploader_profile_page.dart';
-import 'package:iwrqk/pages/video_detail_page/video_detail_page.dart';
+import 'package:iwrqk/pages/media_detail_page/media_detail_page.dart';
 import 'package:iwrqk/widgets/reloadable_image.dart';
 
 import '../component/iwr_tab_indicator.dart';
@@ -46,6 +46,7 @@ class _IwrAppBarState extends State<IwrAppBar> {
               visible: widget.showFilter!,
               child: IconButton(
                 icon: Icon(CupertinoIcons.slider_horizontal_3),
+                color: Colors.grey,
                 onPressed: () {
                   // Do something when filter button is pressed
                 },

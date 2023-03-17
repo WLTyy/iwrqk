@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:iwrqk/common/util.dart';
-import 'package:video_player/video_player.dart';
+import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../common/classes.dart';
@@ -13,21 +12,24 @@ import '../../widgets/Iwr_progress_indicator.dart';
 import '../../widgets/media_preview.dart';
 import '../../widgets/reloadable_image.dart';
 import '../uploader_profile_page/uploader_profile_page.dart';
+import 'iwr_gallery.dart';
 import 'iwr_player/iwr_video_player.dart';
 import 'user_comment.dart';
 
-class VideoDetailPage extends StatefulWidget {
-  final String videoUrl;
+class MediaDetailPage extends StatefulWidget {
+  final String id;
+  final MediaType type;
 
-  const VideoDetailPage({super.key, required this.videoUrl});
+  const MediaDetailPage({super.key, required this.id, required this.type});
 
   @override
-  State<VideoDetailPage> createState() => _VideoDetailPageState();
+  State<MediaDetailPage> createState() => _MediaDetailPageState();
 }
 
-class _VideoDetailPageState extends State<VideoDetailPage>
+class _MediaDetailPageState extends State<MediaDetailPage>
     with TickerProviderStateMixin {
   IwrVideoController? _iwrVideoController;
+  PageController _iwrGalleryController = PageController(initialPage: 0);
   final Animatable<double> _easeInTween = CurveTween(curve: Curves.easeIn);
   final Animatable<double> _halfTween = Tween<double>(begin: 0.0, end: 0.5);
   late TabController _tabController;
@@ -37,20 +39,26 @@ class _VideoDetailPageState extends State<VideoDetailPage>
   late bool _detailExpanded;
   bool _isLoading = true;
   String? _errorInfo;
-  String _title = "";
+  int _grallertLastPage = 0;
 
-  VideoData _videoData = VideoData();
+  MediaData _mediaData = MediaData();
 
   Future<void> _loadData() async {
-    var videoData;
-    await Api.getVideoPage(widget.videoUrl).then((value) {
-      videoData = value;
-    });
-    if (videoData is VideoData) {
-      _videoData = videoData;
+    var mediaData;
+    if (widget.type == MediaType.video) {
+      await Api.getVideoPage(widget.id).then((value) {
+        mediaData = value;
+      });
+    } else if (widget.type == MediaType.image) {
+      await Api.getImagePage(widget.id).then((value) {
+        mediaData = value;
+      });
+    }
+    if (mediaData is VideoData) {
+      _mediaData = mediaData;
       _iwrVideoController = IwrVideoController(
-        availableResolutions: _videoData.resolution,
-        initResolutionindex: _videoData.resolution.length - 1,
+        availableResolutions: (_mediaData as VideoData).resolution,
+        initResolutionindex: (_mediaData as VideoData).resolution.length - 1,
         callbackAfterInit: () {
           if (!mounted) return;
           setState(() {});
@@ -58,13 +66,18 @@ class _VideoDetailPageState extends State<VideoDetailPage>
       );
       if (!mounted) return;
       setState(() {
-        _title = _videoData.title;
         _isLoading = false;
       });
-    } else if (videoData is String) {
+    } else if (mediaData is ImageData) {
+      _mediaData = mediaData;
       if (!mounted) return;
       setState(() {
-        _errorInfo = videoData;
+        _isLoading = false;
+      });
+    } else if (mediaData is String) {
+      if (!mounted) return;
+      setState(() {
+        _errorInfo = mediaData;
       });
     }
   }
@@ -141,7 +154,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
   Widget _buildPlayer() {
     return AspectRatio(
         aspectRatio: 16 / 9,
-        child: _videoData.processingVideo == null
+        child: !(_mediaData as VideoData).fetchFailed
             ? IwrVideoPlayer(
                 controller: _iwrVideoController!,
               )
@@ -162,7 +175,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                         Container(
                           margin: EdgeInsets.only(top: 5),
                           child: Text(
-                            _videoData.processingVideo!,
+                            "Failed to fetch videos",
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
@@ -171,6 +184,15 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                     ))
                   ],
                 )));
+  }
+
+  Widget _buildGallery() {
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: IwrGallery(
+        imageUrls: (_mediaData as ImageData).imageUrls,
+      ),
+    );
   }
 
   Widget _buildTabBar() {
@@ -223,7 +245,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
       leading: GestureDetector(
         child: ClipOval(
           child: ReloadableImage(
-            imageUrl: _videoData.uploader.avatarUrl,
+            imageUrl: _mediaData.uploader.avatarUrl,
             width: 40,
             height: 40,
           ),
@@ -233,7 +255,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
             pageBuilder: (context, animation, secondaryAnimation) =>
                 UploaderProfilePage(
               homePageUrl:
-                  "https://www.iwara.tv/profile/${_videoData.uploader.userName}",
+                  "https://www.iwara.tv/profile/${_mediaData.uploader.userName}",
             ),
           ));
         },
@@ -242,11 +264,11 @@ class _VideoDetailPageState extends State<VideoDetailPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _videoData.uploader.nickName,
+            _mediaData.uploader.nickName,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(
-            _videoData.date,
+            getDisplayTime(context, _mediaData.createDate),
             style: TextStyle(color: Colors.grey, fontSize: 12.5),
           ),
         ],
@@ -281,7 +303,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
         children: [
           Expanded(
             child: Text(
-              _videoData.title,
+              _mediaData.title,
               maxLines: _detailExpanded ? null : 1,
               style: TextStyle(
                 fontSize: 20.0,
@@ -309,14 +331,14 @@ class _VideoDetailPageState extends State<VideoDetailPage>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(
-            CupertinoIcons.play_fill,
+            CupertinoIcons.eye_fill,
             size: 15,
             color: Colors.grey,
           ),
           Container(
               margin: EdgeInsets.only(left: 2, right: 15),
               child: Text(
-                _videoData.views,
+                formatNumberWithCommas(context, _mediaData.views),
                 style: TextStyle(
                   fontSize: 15,
                   color: Colors.grey,
@@ -330,7 +352,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
           Container(
               margin: EdgeInsets.only(left: 2),
               child: Text(
-                _videoData.likes ?? "0",
+                formatNumberWithCommas(context, _mediaData.likes),
                 style: TextStyle(
                   fontSize: 15,
                   color: Colors.grey,
@@ -359,7 +381,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                   text: TextSpan(
                       style: TextStyle(color: Colors.grey),
                       children: <InlineSpan>[
-                    parseHtmlCode(_videoData.description)
+                    parseHtmlCode(_mediaData.description)
                   ])))),
     );
   }
@@ -428,7 +450,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildVideoDetail(),
-        if (_videoData.moreFromUser.isNotEmpty)
+        if (_mediaData.moreFromUser.isNotEmpty)
           Container(
             color: Theme.of(context).canvasColor,
             padding: EdgeInsets.fromLTRB(20, 10, 10, 15),
@@ -438,7 +460,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
-        if (_videoData.moreFromUser.isNotEmpty)
+        if (_mediaData.moreFromUser.isNotEmpty)
           WaterfallFlow.builder(
             padding: EdgeInsets.all(8),
             physics: NeverScrollableScrollPhysics(),
@@ -448,15 +470,15 @@ class _VideoDetailPageState extends State<VideoDetailPage>
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
             ),
-            itemCount: _videoData.moreFromUser.length,
+            itemCount: _mediaData.moreFromUser.length,
             itemBuilder: (BuildContext context, int index) {
               return AspectRatio(
                 aspectRatio: 16 / 15,
-                child: MediaPreview(data: _videoData.moreFromUser[index]),
+                child: MediaPreview(data: _mediaData.moreFromUser[index]),
               );
             },
           ),
-        if (_videoData.moreLikeThis.isNotEmpty)
+        if (_mediaData.moreLikeThis.isNotEmpty)
           Container(
             color: Theme.of(context).canvasColor,
             padding: EdgeInsets.fromLTRB(20, 10, 10, 15),
@@ -466,7 +488,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
-        if (_videoData.moreLikeThis.isNotEmpty)
+        if (_mediaData.moreLikeThis.isNotEmpty)
           WaterfallFlow.builder(
             padding: EdgeInsets.all(8),
             physics: NeverScrollableScrollPhysics(),
@@ -476,11 +498,11 @@ class _VideoDetailPageState extends State<VideoDetailPage>
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
             ),
-            itemCount: _videoData.moreLikeThis.length,
+            itemCount: _mediaData.moreLikeThis.length,
             itemBuilder: (BuildContext context, int index) {
               return AspectRatio(
                 aspectRatio: 16 / 15,
-                child: MediaPreview(data: _videoData.moreLikeThis[index]),
+                child: MediaPreview(data: _mediaData.moreLikeThis[index]),
               );
             },
           ),
@@ -495,9 +517,9 @@ class _VideoDetailPageState extends State<VideoDetailPage>
             child: ListView.builder(
                 padding: EdgeInsets.symmetric(vertical: 1),
                 itemBuilder: (BuildContext context, int index) {
-                  return UserComment(commentData: _videoData.comments[index]);
+                  return UserComment(commentData: _mediaData.comments[index]);
                 },
-                itemCount: _videoData.comments.length)),
+                itemCount: _mediaData.comments.length)),
         Container(
             decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
@@ -520,6 +542,15 @@ class _VideoDetailPageState extends State<VideoDetailPage>
     );
   }
 
+  String _getTitle(BuildContext context) {
+    switch (widget.type) {
+      case MediaType.video:
+        return L10n.of(context).videos;
+      case MediaType.image:
+        return L10n.of(context).images;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget body = Scaffold(
@@ -527,7 +558,8 @@ class _VideoDetailPageState extends State<VideoDetailPage>
         children: _isLoading
             ? [_buildLoadingWidget()]
             : [
-                _buildPlayer(),
+                if (widget.type == MediaType.video) _buildPlayer(),
+                if (widget.type == MediaType.image) _buildGallery(),
                 _buildTabBar(),
                 Expanded(
                     child: TabBarView(controller: _tabController, children: [
@@ -546,7 +578,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
             },
             icon: Icon(CupertinoIcons.back, size: 30)),
         centerTitle: true,
-        title: Text(L10n.of(context).videos),
+        title: Text(_getTitle(context)),
       ),
       body: body,
     );

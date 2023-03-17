@@ -8,7 +8,7 @@ import '../../l10n.dart';
 import '../../network/api.dart';
 import '../../widgets/reloadable_image.dart';
 import '../main_pages/media_grid_view.dart';
-import '../video_detail_page/user_comment.dart';
+import '../media_detail_page/user_comment.dart';
 
 class UploaderProfilePage extends StatefulWidget {
   final String homePageUrl;
@@ -40,7 +40,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
   }
 
   Future<void> _loadData() async {
-    var profileData;
+    var profileData;/*
     await Api.getUploaderProfile(widget.homePageUrl).then((value) {
       profileData = value;
     });
@@ -55,7 +55,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
       setState(() {
         _errorInfo = profileData;
       });
-    }
+    }*/
   }
 
   Widget _buildUploderFunction() {

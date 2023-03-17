@@ -8,7 +8,7 @@ import 'common/theme.dart';
 import 'pages/settings_page.dart';
 import 'pages/uploader_profile_page/uploader_profile_page.dart';
 import 'pages/user_page/user_page.dart';
-import 'pages/video_detail_page/video_detail_page.dart';
+import 'pages/media_detail_page/media_detail_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
+            title: 'IwrQk',
             theme: IwrAppTheme.getTheme(),
             darkTheme: IwrAppTheme.getTheme(isDarkMode: true),
             themeMode: themeModeProvider.themeMode,

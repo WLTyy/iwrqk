@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iwrqk/common/classes.dart';
+import 'package:iwrqk/common/util.dart';
 import 'package:iwrqk/l10n.dart';
 import 'package:iwrqk/pages/uploader_profile_page/uploader_profile_page.dart';
 
 import '../common/global.dart';
 import '../common/theme.dart';
-import '../pages/video_detail_page/video_detail_page.dart';
+import '../pages/media_detail_page/media_detail_page.dart';
 import 'reloadable_image.dart';
 
 class MediaPreview extends StatefulWidget {
@@ -19,32 +20,103 @@ class MediaPreview extends StatefulWidget {
 }
 
 class _MediaPreviewState extends State<MediaPreview> {
-  Widget _buildViewsAndLikes(Color color) {
+  Widget _buildRatingAndGallery() {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Icon(
-          CupertinoIcons.play_fill,
-          size: 12.5,
-          color: color,
-        ),
-        Container(
-            margin: EdgeInsets.only(left: 2, right: 5),
-            child: Text(
-              "${widget.data.views}",
-              style: TextStyle(fontSize: 12.5, color: color),
+        if (widget.data.ratingType == "ecchi")
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2.5),
+              color: Colors.red.withAlpha(175),
+            ),
+            height: 25,
+            child: Center(
+                child: Text(
+              "R-18",
+              style: TextStyle(fontSize: 12.5, color: Colors.white),
             )),
-        Icon(
-          CupertinoIcons.heart_fill,
-          size: 12.5,
-          color: color,
+          ),
+        if (widget.data.galleryLength != null)
+          if (widget.data.galleryLength! > 1)
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2.5),
+                color: Colors.black.withAlpha(175),
+              ),
+              height: 25,
+              child: Row(
+                children: [
+                  Icon(
+                    CupertinoIcons.photo_fill_on_rectangle_fill,
+                    size: 12.5,
+                    color: Colors.white,
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(left: 2),
+                      child: Text(
+                        "${widget.data.galleryLength}",
+                        style: TextStyle(fontSize: 12.5, color: Colors.white),
+                      ))
+                ],
+              ),
+            ),
+      ],
+    );
+  }
+
+  Widget _buildViewsAndLikes() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2.5),
+            color: Colors.black.withAlpha(175),
+          ),
+          height: 25,
+          child: Row(
+            children: [
+              Icon(
+                CupertinoIcons.eye_fill,
+                size: 12.5,
+                color: Colors.white,
+              ),
+              Container(
+                  margin: EdgeInsets.only(left: 2),
+                  child: Text(
+                    compactBigNumber(context, widget.data.views),
+                    style: TextStyle(fontSize: 12.5, color: Colors.white),
+                  ))
+            ],
+          ),
         ),
         Container(
-            margin: EdgeInsets.only(left: 2),
-            child: Text(
-              "${widget.data.likes}",
-              style: TextStyle(fontSize: 12.5, color: color),
-            ))
+          padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2.5),
+            color: Colors.black.withAlpha(175),
+          ),
+          height: 25,
+          child: Row(
+            children: [
+              Icon(
+                CupertinoIcons.heart_fill,
+                size: 12.5,
+                color: Colors.white,
+              ),
+              Container(
+                  margin: EdgeInsets.only(left: 2),
+                  child: Text(
+                    compactBigNumber(context, widget.data.likes),
+                    style: TextStyle(fontSize: 12.5, color: Colors.white),
+                  ))
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -52,36 +124,31 @@ class _MediaPreviewState extends State<MediaPreview> {
   List<Widget> _buildFullVerison() {
     return [
       Stack(
-        alignment: Alignment.bottomCenter,
         children: [
           ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(7.5)),
               child: Container(
                 alignment: Alignment.center,
-                child: widget.data.thumbnailLength != null
-                    ? widget.data.thumbnailLength != 0
-                        ? ReloadableImage(
-                            imageUrl:"https://files.iwara.tv/image/thumbnail/${widget.data.fileId}/thumbnail-00.jpg",
-                            aspectRatio: 16 / 9,
-                            fit: BoxFit.cover,
-                          )
-                        : AspectRatio(aspectRatio: 16 / 9)
+                child: widget.data.hasCover()
+                    ? ReloadableImage(
+                        imageUrl: widget.data.getCoverUrl(),
+                        aspectRatio: 16 / 9,
+                        fit: BoxFit.cover,
+                      )
                     : AspectRatio(aspectRatio: 16 / 9),
               )),
-          Container(
-            padding: EdgeInsets.fromLTRB(7.5, 2.5, 7.5, 2.5),
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.transparent, Colors.black45],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildViewsAndLikes(Colors.white),
-              ],
-            ),
-          )
+          Positioned(
+            left: 5,
+            right: 5,
+            top: 7.5,
+            child: _buildViewsAndLikes(),
+          ),
+          Positioned(
+            left: 5,
+            right: 5,
+            bottom: 7.5,
+            child: _buildRatingAndGallery(),
+          ),
         ],
       ),
       Expanded(
@@ -105,31 +172,35 @@ class _MediaPreviewState extends State<MediaPreview> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(PageRouteBuilder(
-                            pageBuilder: (context, animation,
-                                    secondaryAnimation) =>
-                                UploaderProfilePage(
-                                    homePageUrl:
-                                        "https://www.iwara.tv/profile/${widget.data.uploader.userName}"),
-                          ));
-                        },
-                        child: Row(children: [
-                          Icon(CupertinoIcons.person_fill,
-                              size: 12.5, color: Colors.grey),
-                          Container(
-                              margin: EdgeInsets.only(left: 2),
-                              child: Text(widget.data.uploader.nickName,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      fontSize: 10, color: Colors.grey)))
-                        ]),
+                      Flexible(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(PageRouteBuilder(
+                              pageBuilder: (context, animation,
+                                      secondaryAnimation) =>
+                                  UploaderProfilePage(
+                                      homePageUrl:
+                                          "https://www.iwara.tv/profile/${widget.data.uploader.userName}"),
+                            ));
+                          },
+                          child: Row(children: [
+                            Icon(CupertinoIcons.person_fill,
+                                size: 12.5, color: Colors.grey),
+                            Flexible(
+                                child: Container(
+                                    margin: EdgeInsets.only(left: 2),
+                                    child: Text(widget.data.uploader.nickName,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.grey,
+                                          overflow: TextOverflow.ellipsis,
+                                        ))))
+                          ]),
+                        ),
                       ),
                       Text(
-                        widget.data.type == MediaType.video
-                            ? L10n.of(context).videos
-                            : L10n.of(context).images,
+                        getDisplayDate(context, widget.data.createDate),
                         style: TextStyle(fontSize: 10, color: Colors.grey),
                       )
                     ]))
@@ -142,13 +213,14 @@ class _MediaPreviewState extends State<MediaPreview> {
     return GestureDetector(
       child: Card(
           color: Theme.of(context).canvasColor,
-          child: Column(
-              children: _buildFullVerison())),
+          child: Column(children: _buildFullVerison())),
       onTap: () {
         Navigator.of(context).push(PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              VideoDetailPage(
-                  videoUrl: "https://www.iwara.tv/video/${widget.data.id}"),
+              MediaDetailPage(
+            id: widget.data.id,
+            type: widget.data.type,
+          ),
         ));
       },
     );
