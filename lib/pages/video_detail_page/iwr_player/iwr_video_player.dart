@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../../../widgets/Iwr_progress_indicator.dart';
 import 'iwr_video_controls.dart';
 
 class IwrVideoPlayer extends StatefulWidget {
@@ -204,7 +205,7 @@ class IwrVideoPlayerWithControlsState
           child: iwrVideoController.errorMessage != null
               ? null
               : iwrVideoController.renewing
-                  ? CircularProgressIndicator()
+                  ? IwrProgressIndicator()
                   : iwrVideoController.videoPlayerController != null
                       ? iwrVideoController
                               .videoPlayerController!.value.isInitialized
@@ -213,8 +214,8 @@ class IwrVideoPlayerWithControlsState
                                   .videoPlayerController!.value.aspectRatio,
                               child: VideoPlayer(
                                   iwrVideoController.videoPlayerController!))
-                          : CircularProgressIndicator()
-                      : CircularProgressIndicator(),
+                          : IwrProgressIndicator()
+                      : IwrProgressIndicator(),
         ),
         if (iwrVideoController.videoPlayerController != null)
           if (!iwrVideoController.renewing &&

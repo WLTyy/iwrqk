@@ -23,8 +23,8 @@ class IwrAppBar extends StatefulWidget {
 }
 
 class _IwrAppBarState extends State<IwrAppBar> {
-  PreferredSize? _buildBottomWidget(bool? showFilter, Map<String, Widget>? tabList,
-      TabController? tabController) {
+  PreferredSize? _buildBottomWidget(bool? showFilter,
+      Map<String, Widget>? tabList, TabController? tabController) {
     if (tabList != null) {
       return PreferredSize(
         preferredSize: Size.fromHeight(
@@ -34,10 +34,10 @@ class _IwrAppBarState extends State<IwrAppBar> {
             Expanded(
               child: TabBar(
                 isScrollable: true,
-                labelColor: Colors.blue,
+                labelColor: Theme.of(context).primaryColor,
                 unselectedLabelColor: Colors.grey,
                 controller: widget.tabController,
-                indicator: IwrTabIndicator(),
+                indicator: IwrTabIndicator(context),
                 indicatorSize: TabBarIndicatorSize.label,
                 tabs: _buildTab(tabList),
               ),
@@ -163,8 +163,7 @@ class _IwrAppBarState extends State<IwrAppBar> {
                             CupertinoIcons.envelope,
                             color: Colors.grey,
                           ),
-                          onPressed: () {
-                          },
+                          onPressed: () {},
                         ),
                       )
                     ],

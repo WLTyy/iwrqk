@@ -16,7 +16,6 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).accentColor,
       body: SafeArea(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -6,51 +6,65 @@ enum SourceType {
   images,
   uploader_videos,
   uploader_images,
-  videos_3
 }
 
-enum SortMethod { ascend, descend }
+class SortSetting {
+  final SourceType sourceType;
+  final String orderType;
+  final String ratingType;
+  SortSetting(
+      {required this.sourceType,
+      required this.orderType,
+      required this.ratingType});
+}
 
-//enum OrderType { date, views, likes, viewsToday, random }
+// enum OrderType { date, views, likes, viewsToday, random }
+
+/* Latest, Trending, Popularity, Most views, Most likes */
 
 class OrderType {
-  String? date;
-  String? views;
-  final String likes = "likes";
-  final String viewsToday = "daycount";
-  final String random = "random";
+  static const String date = "date";
+  static const String trending = "trending";
+  static const String popularity = "popularity";
+  static const String views = "views";
+  static const String likes = "likes";
 
-  OrderType(SourceType type) {
-    if (type == SourceType.videos_3) {
-      date = "created";
-      views = "totalcount";
-    } else {
-      date = "date";
-      views = "views";
-    }
-  }
+  OrderType();
+}
+
+class RatingType {
+  static const String all = "all";
+  static const String general = "general";
+  static const String ecchi = "ecchi";
+
+  RatingType();
 }
 
 class MediaPreviewData {
   late MediaType type;
+  late DateTime date;
   late String title;
-  late String url;
-  String? coverImageUrl;
-  String? uploaderName;
-  String? uploaderHomePageUrl;
-  late String views;
-  late String likes;
-  late bool isGallery;
+  late String id;
+  late String? fileId;
+  late int? thumbnailLength;
+  late String? thumbnailUrl;
+  late int? galleryLength;
+  late UserData uploader;
+  bool isPrivate = false;
+  late int? duration;
+  late String ratingType;
+  late int views;
+  late int likes;
 
   MediaPreviewData();
 }
 
 class UserData {
-  final String name;
+  final String userName;
+  final String nickName;
   final String avatarUrl;
-  final String homepageUrl;
 
-  UserData(this.name, this.avatarUrl, this.homepageUrl);
+  UserData(this.userName, this.nickName, this.avatarUrl);
 }
 
 class CommentData {

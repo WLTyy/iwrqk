@@ -44,7 +44,7 @@ class UserComment extends StatelessWidget {
                                 pageBuilder:
                                     (context, animation, secondaryAnimation) =>
                                         UploaderProfilePage(
-                                  homePageUrl: "https://www.iwara.tv${commentData.user.homepageUrl}",
+                                  homePageUrl: "https://www.iwara.tv/profile/${commentData.user.userName}",
                                 ),
                               ));
                             },
@@ -53,7 +53,7 @@ class UserComment extends StatelessWidget {
                             width: 15,
                           ),
                           Text(
-                            commentData.user.name,
+                            commentData.user.nickName,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -101,7 +101,7 @@ class UserComment extends StatelessWidget {
                             width: 15,
                           ),
                           Text(
-                            commentData.user.name,
+                            commentData.user.nickName,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -162,7 +162,7 @@ class UserComment extends StatelessWidget {
                                                             text: commentData
                                                                 .children[index]
                                                                 .user
-                                                                .name,
+                                                                .nickName,
                                                             style: TextStyle(
                                                                 color: Colors
                                                                     .grey)),
@@ -177,14 +177,14 @@ class UserComment extends StatelessWidget {
                                                             text: commentData
                                                                 .children[index]
                                                                 .user
-                                                                .name,
+                                                                .nickName,
                                                             style: TextStyle(
                                                                 color: Colors
                                                                     .grey)),
                                                         TextSpan(text: '：'),
                                                         TextSpan(
                                                             text:
-                                                                '@${commentData.children[index].replyTo!.name} ',
+                                                                '@${commentData.children[index].replyTo!.nickName} ',
                                                             style: TextStyle(
                                                                 color: Colors
                                                                     .blue)),
@@ -202,7 +202,7 @@ class UserComment extends StatelessWidget {
                                             EdgeInsets.symmetric(vertical: 5),
                                         child: Text(
                                           "See more",
-                                          style: TextStyle(color: Colors.blue),
+                                          style: TextStyle(color: Theme.of(context).primaryColor),
                                         ),
                                       ),
                                     )

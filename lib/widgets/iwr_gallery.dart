@@ -78,7 +78,7 @@ class _IwrGalleryState extends State<IwrGallery> {
                           child: Center(
                             child: Icon(
                               CupertinoIcons.arrow_clockwise,
-                              color: Colors.blue,
+                              color: Theme.of(context).primaryColor,
                               size: 30,
                             ),
                           ));
@@ -96,16 +96,29 @@ class _IwrGalleryState extends State<IwrGallery> {
                   });
                 },
               ),
-              if (widget.isfullScreen)
-                IconButton(
-                    onPressed: () {
+              IconButton(
+                  onPressed: () {
+                    if (widget.isfullScreen) {
                       Navigator.pop(context);
-                    },
-                    icon: Icon(
-                      CupertinoIcons.back,
-                      size: 30,
-                      color: Colors.white,
-                    )),
+                    } else {
+                      Navigator.of(context).push(PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            Scaffold(
+                          body: IwrGallery(
+                            isfullScreen: true,
+                            imageUrls: widget.imageUrls,
+                          ),
+                        ),
+                      ));
+                    }
+                  },
+                  icon: Icon(
+                    widget.isfullScreen
+                        ? CupertinoIcons.back
+                        : CupertinoIcons.fullscreen,
+                    size: 30,
+                    color: Colors.white,
+                  )),
               if (widget.imageUrls.length <= 15)
                 Positioned(
                   bottom: 10,

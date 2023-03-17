@@ -35,17 +35,24 @@ class _VideosPageState extends State<VideosPage>
       showFilter: true,
       tabList: {
         L10n.of(context).latest: MediaGridView(
-            key: PageStorageKey<String>("videos_page_latest"),
-            sourceType: SourceType.videos,
-            orderType: OrderType(SourceType.videos).date!),
+          key: PageStorageKey<String>("videos_page_latest"),
+          sortSetting: SortSetting(
+              sourceType: SourceType.videos,
+              orderType: OrderType.date,
+              ratingType: RatingType.all),
+        ),
         L10n.of(context).toplist: MediaGridView(
             key: PageStorageKey<String>("videos_page_toplist"),
-            sourceType: SourceType.videos,
-            orderType: OrderType(SourceType.videos).views!),
+            sortSetting: SortSetting(
+                sourceType: SourceType.videos,
+                orderType: OrderType.views,
+                ratingType: RatingType.all)),
         L10n.of(context).popular: MediaGridView(
             key: PageStorageKey<String>("videos_page_popular"),
-            sourceType: SourceType.videos,
-            orderType: OrderType(SourceType.videos).likes),
+            sortSetting: SortSetting(
+                sourceType: SourceType.videos,
+                orderType: OrderType.likes,
+                ratingType: RatingType.all)),
       },
       tabController: _tabController,
     );

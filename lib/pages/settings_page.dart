@@ -7,8 +7,6 @@ import '../common/global.dart';
 import '../common/theme.dart';
 import '../l10n.dart';
 
-
-
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -34,6 +32,12 @@ class _SettingsPageState extends State<SettingsPage> {
           )),
       body: SettingsList(
         platform: DevicePlatform.iOS,
+        darkTheme: SettingsThemeData(
+          settingsListBackground:
+              IwrAppTheme.getTheme(isDarkMode: true).scaffoldBackgroundColor,
+          settingsSectionBackground:
+              IwrAppTheme.getTheme(isDarkMode: true).canvasColor,
+        ),
         sections: [
           SettingsSection(
             title: Text(L10n.of(context).appearance),

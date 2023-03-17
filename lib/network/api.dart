@@ -1,3 +1,6 @@
+
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 import 'package:html/dom.dart';
@@ -5,7 +8,7 @@ import 'package:html_unescape/html_unescape.dart';
 
 import '../common/classes.dart';
 
-class Spider {
+class Api {
   static Future<Object> getUploaderProfile(String url) async {
     try {
       UploaderProfileData profileData = UploaderProfileData();
@@ -36,8 +39,6 @@ class Spider {
           document.querySelector('div.view-videos > div.more-link') != null;
 
       if (uploadedVideosDom != null) {
-        profileData.uploadedVideos =
-            analyseMediaPreviewsHtml(uploadedVideosDom.innerHtml);
       }
 
       var uploadedImagesDom =
@@ -47,8 +48,6 @@ class Spider {
           document.querySelector('div.view-images > div.more-link') != null;
 
       if (uploadedImagesDom != null) {
-        profileData.uploadedImages =
-            analyseMediaPreviewsHtml(uploadedImagesDom.innerHtml);
       }
 
       var commentsDoms = document.querySelector("#comments");
@@ -159,18 +158,9 @@ class Spider {
       var moreFromUserDom =
           document.querySelector('div.view-id-videos > div > div');
 
-      if (moreFromUserDom != null) {
-        videoData.moreFromUser =
-            analyseMediaPreviewsHtml(moreFromUserDom.innerHtml);
-      }
 
       var moreLikeThisDom =
           document.querySelector('div.view-id-search > div > div');
-
-      if (moreLikeThisDom != null) {
-        videoData.moreLikeThis =
-            analyseMediaPreviewsHtml(moreLikeThisDom.innerHtml);
-      }
 
       return videoData;
     } catch (e, stackTrace) {
@@ -178,77 +168,48 @@ class Spider {
     }
   }
 
-  static List<MediaPreviewData> analyseMediaPreviewsHtml(String htmlCode) {
-    var document = parse(htmlCode);
-    List<MediaPreviewData> previewDatas = <MediaPreviewData>[];
+  static List<MediaPreviewData> analyseMediaPreviewsJson(dynamic previews) {
+  List<MediaPreviewData> previewDatasList = [];
 
-    var previewDoms = document.querySelectorAll('div.node');
+  for (var previewItem in previews["results"]) {
+    MediaPreviewData previewData = MediaPreviewData();
+    previewData.id = previewItem["id"];
 
-    for (var previewItem in previewDoms) {
-      var previewData = MediaPreviewData();
-
-      if (previewItem.className.contains("node-video")) {
-        previewData.type = MediaType.video;
-      } else if (previewItem.className.contains("node-image")) {
-        previewData.type = MediaType.image;
-      }
-
-      if (previewItem.attributes.containsKey('data-original-title') |
-          previewItem.attributes.containsKey('title')) {
-        var titleDom = previewItem.querySelector('div > a');
-        if (titleDom != null) {
-          previewData.url = titleDom.attributes['href']!;
-        } else {
-          continue;
-        }
-        if ((previewItem.attributes.containsKey('data-original-title'))) {
-          previewData.title = HtmlUnescape()
-              .convert(previewItem.attributes['data-original-title']!);
-        } else if ((previewItem.attributes.containsKey('title'))) {
-          previewData.title =
-              HtmlUnescape().convert(previewItem.attributes['title']!);
-        }
-      } else {
-        var titleDom = previewItem.querySelector('h3.title > a')!;
-        previewData.url = titleDom.attributes['href']!;
-        previewData.title =
-            HtmlUnescape().convert(HtmlUnescape().convert(titleDom.innerHtml));
-      }
-
-      var coverImageDom = previewItem.querySelector('img');
-      previewData.coverImageUrl = coverImageDom == null
-          ? null
-          : coverImageDom.attributes['src']!.substring(0, 2) == "//"
-              ? "https:${coverImageDom.attributes['src']!}"
-              : "https://www.iwara.tv/${coverImageDom.attributes['src']!}";
-
-      var uploaderDom = previewItem.querySelector('a.username');
-      if (uploaderDom != null) {
-        previewData.uploaderName = uploaderDom.innerHtml;
-        previewData.uploaderHomePageUrl = uploaderDom.attributes['href']!;
-      }
-
-      var viewsDom = previewItem.querySelector('div.left-icon.likes-icon')!;
-      var likesDom = previewItem.querySelector('div.right-icon.likes-icon');
-      var galleryIconDom =
-          previewItem.querySelector('div.left-icon.multiple-icon');
-      previewData.isGallery = galleryIconDom != null;
-
-      previewData.views = viewsDom.text
-          .replaceAll(' ', '')
-          .replaceAll('\t', '')
-          .replaceAll('\n', '');
-      previewData.likes = likesDom == null
-          ? "0"
-          : likesDom.text
-              .replaceAll(' ', '')
-              .replaceAll('\t', '')
-              .replaceAll('\n', '');
-
-      previewDatas.add(previewData);
+    previewData.title = previewItem["title"];
+    previewData.ratingType = previewItem["rating"];
+    if (previewItem["files"] != null) {
+      previewData.type = MediaType.image;
+      previewData.thumbnailUrl =
+          "/image/avatar/${previewItem["thumbnail"]["id"]}/${previewItem["thumbnail"]["name"]}";
+    } else {
+      previewData.type = MediaType.video;
+      previewData.duration = previewItem["file"]["duration"];
+      previewData.fileId = previewItem["file"]["id"];
+      previewData.thumbnailLength = previewItem["file"]["numThumbnails"];
     }
-    return previewDatas;
+    previewData.likes = previewItem["numLikes"];
+    previewData.views = previewItem["numViews"];
+
+    var uploader = previewItem["user"];
+
+    var avatarUrl = uploader["avatar"] == null
+        ? "/images/default-avatar.jpg"
+        : "/image/avatar/${uploader["avatar"]["id"]}/${uploader["avatar"]["name"]}";
+
+    previewData.uploader =
+        UserData(uploader["username"], uploader["name"], avatarUrl);
+
+    previewData.galleryLength = previewItem["numImages"];
+
+    previewData.date = DateTime.parse(previewItem["updatedAt"]);
+    if (previewItem.containsKey("private")) {
+      previewData.isPrivate = previewItem["private"];
+    }
+
+    previewDatasList.add(previewData);
   }
+  return previewDatasList;
+}
 
   static List<CommentData> getComments(List<Element> commentsDoms,
       {UserData? replyTo, int depth = 0}) {

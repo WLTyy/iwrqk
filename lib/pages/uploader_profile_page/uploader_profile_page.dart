@@ -5,7 +5,7 @@ import '../../common/classes.dart';
 import '../../common/util.dart';
 import '../../component/iwr_tab_indicator.dart';
 import '../../l10n.dart';
-import '../../network/spider.dart';
+import '../../network/api.dart';
 import '../../widgets/reloadable_image.dart';
 import '../main_pages/media_grid_view.dart';
 import '../video_detail_page/user_comment.dart';
@@ -41,7 +41,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
 
   Future<void> _loadData() async {
     var profileData;
-    await Spider.getUploaderProfile(widget.homePageUrl).then((value) {
+    await Api.getUploaderProfile(widget.homePageUrl).then((value) {
       profileData = value;
     });
     if (profileData is UploaderProfileData) {
@@ -145,11 +145,11 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
         alignment: Alignment.centerLeft,
         child: TabBar(
           isScrollable: true,
-          indicator: IwrTabIndicator(),
+          indicator: IwrTabIndicator(context),
           indicatorSize: TabBarIndicatorSize.label,
-          labelColor: Colors.blue,
+          labelColor: Theme.of(context).primaryColor,
           unselectedLabelColor: Colors.grey,
-          indicatorColor: Colors.blue,
+          indicatorColor: Theme.of(context).primaryColor,
           tabs: [
             Tab(
               text: L10n.of(context).user_details,
@@ -167,19 +167,11 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
   }
 
   Widget _buildVideosTab() {
-    return MediaGridView(
-      key: PageStorageKey<String>("uploader_videos"),
-      sourceType: SourceType.uploader_videos,
-      uploaderName: _profileData.name,
-    );
+    return Container();
   }
 
   Widget _buildImagesTab() {
-    return MediaGridView(
-      key: PageStorageKey<String>("uploader_images"),
-      sourceType: SourceType.uploader_images,
-      uploaderName: _profileData.name,
-    );
+    return Container();
   }
 
   Widget _buildCommentsTab() {
@@ -234,7 +226,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
                           child: Center(
                             child: Icon(
                               CupertinoIcons.arrow_counterclockwise,
-                              color: Colors.blue,
+                              color: Theme.of(context).primaryColor,
                               size: 42,
                             ),
                           )),

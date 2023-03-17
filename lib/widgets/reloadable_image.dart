@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iwrqk/widgets/Iwr_progress_indicator.dart';
 
 class ReloadableImage extends StatefulWidget {
   final String imageUrl;
@@ -23,7 +24,6 @@ class ReloadableImage extends StatefulWidget {
 }
 
 class _ReloadableImageState extends State<ReloadableImage> {
-  bool _errorOccurred = false;
   GlobalKey _imageKey = GlobalKey();
 
   @override
@@ -37,7 +37,7 @@ class _ReloadableImageState extends State<ReloadableImage> {
         child: Center(
           child: Icon(
             CupertinoIcons.arrow_clockwise,
-            color: Colors.blue,
+            color: Theme.of(context).primaryColor,
           ),
         ));
 
@@ -52,14 +52,10 @@ class _ReloadableImageState extends State<ReloadableImage> {
                 return Center(
                     child: Container(
                   margin: EdgeInsets.all(5),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
-                    value: progress.progress,
-                  ),
+                  child: IwrProgressIndicator(),
                 ));
               },
               errorWidget: (_, __, ___) {
-                _errorOccurred = true;
                 return errorWidget;
               },
             ))
@@ -73,14 +69,10 @@ class _ReloadableImageState extends State<ReloadableImage> {
               return Center(
                   child: Container(
                 margin: EdgeInsets.all(5),
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  value: progress.progress,
-                ),
+                child: IwrProgressIndicator(),
               ));
             },
             errorWidget: (_, __, ___) {
-              _errorOccurred = true;
               return errorWidget;
             },
           );

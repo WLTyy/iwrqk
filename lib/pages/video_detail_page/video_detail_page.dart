@@ -8,7 +8,8 @@ import 'package:waterfall_flow/waterfall_flow.dart';
 import '../../common/classes.dart';
 import '../../component/iwr_tab_indicator.dart';
 import '../../l10n.dart';
-import '../../network/spider.dart';
+import '../../network/api.dart';
+import '../../widgets/Iwr_progress_indicator.dart';
 import '../../widgets/media_preview.dart';
 import '../../widgets/reloadable_image.dart';
 import '../uploader_profile_page/uploader_profile_page.dart';
@@ -42,7 +43,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
 
   Future<void> _loadData() async {
     var videoData;
-    await Spider.getVideoPage(widget.videoUrl).then((value) {
+    await Api.getVideoPage(widget.videoUrl).then((value) {
       videoData = value;
     });
     if (videoData is VideoData) {
@@ -106,7 +107,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
     return Expanded(
         child: Center(
             child: _errorInfo == null
-                ? CircularProgressIndicator()
+                ? IwrProgressIndicator()
                 : Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +123,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
                           child: Center(
                             child: Icon(
                               CupertinoIcons.arrow_counterclockwise,
-                              color: Colors.blue,
+                              color: Theme.of(context).primaryColor,
                               size: 42,
                             ),
                           )),
@@ -182,11 +183,11 @@ class _VideoDetailPageState extends State<VideoDetailPage>
       alignment: Alignment.centerLeft,
       child: TabBar(
         isScrollable: true,
-        indicator: IwrTabIndicator(),
+        indicator: IwrTabIndicator(context),
         indicatorSize: TabBarIndicatorSize.label,
-        labelColor: Colors.blue,
+        labelColor: Theme.of(context).primaryColor,
         unselectedLabelColor: Colors.grey,
-        indicatorColor: Colors.blue,
+        indicatorColor: Theme.of(context).primaryColor,
         tabs: [
           Tab(text: L10n.of(context).details),
           Tab(
@@ -232,7 +233,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
             pageBuilder: (context, animation, secondaryAnimation) =>
                 UploaderProfilePage(
               homePageUrl:
-                  "https://www.iwara.tv${_videoData.uploader.homepageUrl}",
+                  "https://www.iwara.tv/profile/${_videoData.uploader.userName}",
             ),
           ));
         },
@@ -241,7 +242,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _videoData.uploader.name,
+            _videoData.uploader.nickName,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(

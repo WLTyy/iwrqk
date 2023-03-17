@@ -7,21 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../common/classes.dart';
-import '../../network/spider.dart';
+import '../../network/api.dart';
 import '../../widgets/media_preview.dart';
 
 class MediaGridView extends StatefulWidget {
-  final SourceType sourceType;
-  final SortMethod? sortMethod;
+  final SortSetting sortSetting;
   final String? uploaderName;
-  final String? orderType;
 
   const MediaGridView({
     required Key key,
-    required this.sourceType,
-    this.sortMethod,
-    this.orderType,
     this.uploaderName,
+    required this.sortSetting,
   }) : super(key: key);
 
   @override
@@ -58,21 +54,17 @@ class _MediaGridViewState extends State<MediaGridView>
 
       var url = "";
 
-      switch (widget.sourceType) {
+      switch (widget.sortSetting.sourceType) {
         case SourceType.thirdparty:
           url = '?page=$_currentPage';
           break;
         case SourceType.videos:
           url =
-              'https://www.iwara.tv/videos?language=en&sort=${widget.orderType}&page=$_currentPage';
+              "https://api.iwara.tv/videos?sort=${widget.sortSetting.orderType}&rating=${widget.sortSetting.ratingType}&page=$_currentPage";
           break;
         case SourceType.images:
           url =
-              'https://ecchi.iwara.tv/images?language=en&sort=${widget.orderType}&page=$_currentPage';
-          break;
-        case SourceType.videos_3:
-          url =
-              'https://www.iwara.tv/videos-3?language=en&sort_by=${widget.orderType}&sort_order=${widget.sortMethod! == SortMethod.ascend ? "ASC" : "DESC"}&page=$_currentPage';
+              "https://api.iwara.tv/images?sort=${widget.sortSetting.orderType}&rating=${widget.sortSetting.ratingType}&page=$_currentPage";
           break;
         case SourceType.uploader_videos:
           url =
@@ -86,7 +78,7 @@ class _MediaGridViewState extends State<MediaGridView>
       try {
         List<MediaPreviewData> newData = [];
         await Dio().get(url).then((value) {
-          newData = Spider.analyseMediaPreviewsHtml(value.data);
+          newData = Api.analyseMediaPreviewsJson(value.data);
         });
         setState(() {
           if (newData.isNotEmpty) {
@@ -101,8 +93,9 @@ class _MediaGridViewState extends State<MediaGridView>
             //_easyRefreshController.finishLoad(IndicatorResult.noMore);
           }
         });
-      } catch (e) {
+      } catch (e, stackTrace) {
         _isLoading = false;
+        print(stackTrace);
 
         _easyRefreshController.finishLoad(IndicatorResult.fail);
       }

@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../widgets/Iwr_progress_indicator.dart';
 import 'center_play_button.dart';
 import 'iwr_video_player.dart';
 import 'video_progress_bar.dart';
@@ -292,7 +293,7 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
                             .toList()[index],
                         style: TextStyle(
                             color: index == iwrVideoController.currentSpeedIndex
-                                ? Colors.blue
+                                ? Theme.of(context).primaryColor
                                 : Colors.white,
                             fontSize: 17.5),
                       )),
@@ -335,7 +336,7 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
                           style: TextStyle(
                               color: index ==
                                       iwrVideoController.currentResolutionIndex
-                                  ? Colors.blue
+                                  ? Theme.of(context).primaryColor
                                   : Colors.white,
                               fontSize: 17.5),
                         )));
@@ -855,7 +856,7 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
                           child: Center(
                             child: Icon(
                               CupertinoIcons.arrow_counterclockwise,
-                              color: Colors.blue,
+                              color: Theme.of(context).primaryColor,
                               size: 42,
                             ),
                           )),
@@ -900,7 +901,7 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
             children: [
               if (_displayBufferingIndicator)
                 const Center(
-                  child: CircularProgressIndicator(),
+                  child: IwrProgressIndicator(),
                 )
               else
                 _buildHitArea(context),
