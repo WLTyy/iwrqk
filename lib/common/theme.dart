@@ -52,7 +52,7 @@ class IwrAppTheme {
             foregroundColor: Colors.black,
             shadowColor: Colors.transparent,
           ),
-          primaryColor: Colors.green,
+          primaryColor: Colors.blue,
           tabBarTheme: TabBarTheme().copyWith(
               labelColor: Colors.black, unselectedLabelColor: Colors.grey),
           scaffoldBackgroundColor: CupertinoColors.systemGroupedBackground,
