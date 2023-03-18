@@ -125,6 +125,7 @@ class MediaData {
   DateTime? updateDate;
   late String title;
   late String description;
+  late String fetchUrl;
   late int views;
   late int likes;
   List<TagData> tags = <TagData>[];
@@ -139,9 +140,21 @@ class VideoData extends MediaData {
   late String? youtubeUrl;
   bool isPrivate = false;
   bool fetchFailed = true;
-  Map<String, String> resolution = {};
+  List<ResolutionData> resolutions = <ResolutionData>[];
 
   VideoData();
+}
+
+class ResolutionData {
+  final String name;
+  final String viewUrl;
+  final String downloadUrl;
+
+  ResolutionData({
+    required this.name,
+    required this.viewUrl,
+    required this.downloadUrl,
+  });
 }
 
 class ImageData extends MediaData {

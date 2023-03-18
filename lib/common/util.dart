@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' hide Element;
 import 'package:intl/intl.dart';
 import 'package:iwrqk/l10n.dart';
 
-TextSpan parseHtmlCode(String text) {
+TextSpan _parseHtmlCode(String text) {
   List<TextSpan> spans = [];
   RegExp urlRegex = RegExp(
       r"(https?://(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})");
@@ -56,22 +56,22 @@ String getDisplayDate(BuildContext context, DateTime dateTime) {
 
   if (difference.inSeconds < 60) {
     return L10n.of(context)
-        .seconds_ago
+        .time_seconds_ago
         .replaceFirst("\$s", "${difference.inSeconds}");
   } else if (difference.inMinutes < 60) {
     return L10n.of(context)
-        .minutes_ago
+        .time_minutes_ago
         .replaceFirst("\$s", "${difference.inMinutes}");
   } else if (difference.inHours < 24) {
     return L10n.of(context)
-        .hours_ago
+        .time_hours_ago
         .replaceFirst("\$s", "${difference.inHours}");
   } else if (difference.inDays < 10) {
     return L10n.of(context)
-        .days_ago
+        .time_days_ago
         .replaceFirst("\$s", "${difference.inDays}");
   } else {
-    return DateFormat('yyyy-MM-dd').format(dateTime);
+    return DateFormat.yMd(L10n.of(context).localeName).format(dateTime);
   }
 }
 
@@ -80,22 +80,24 @@ String getDisplayTime(BuildContext context, DateTime dateTime) {
 
   if (difference.inSeconds < 60) {
     return L10n.of(context)
-        .seconds_ago
+        .time_seconds_ago
         .replaceFirst("\$s", "${difference.inSeconds}");
   } else if (difference.inMinutes < 60) {
     return L10n.of(context)
-        .minutes_ago
+        .time_minutes_ago
         .replaceFirst("\$s", "${difference.inMinutes}");
   } else if (difference.inHours < 24) {
     return L10n.of(context)
-        .hours_ago
+        .time_hours_ago
         .replaceFirst("\$s", "${difference.inHours}");
   } else if (difference.inDays < 10) {
     return L10n.of(context)
-        .days_ago
+        .time_days_ago
         .replaceFirst("\$s", "${difference.inDays}");
   } else {
-    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+    return DateFormat.yMd(L10n.of(context).localeName)
+        .add_Hms()
+        .format(dateTime);
   }
 }
 

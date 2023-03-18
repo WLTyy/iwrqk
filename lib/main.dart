@@ -6,9 +6,7 @@ import 'pages/home_page.dart';
 import 'common/global.dart';
 import 'common/theme.dart';
 import 'pages/settings_page.dart';
-import 'pages/uploader_profile_page/uploader_profile_page.dart';
 import 'pages/user_page/user_page.dart';
-import 'pages/media_detail_page/media_detail_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

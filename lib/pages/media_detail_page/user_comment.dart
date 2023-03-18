@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:iwrqk/common/classes.dart';
 import 'package:iwrqk/l10n.dart';
 import 'package:iwrqk/pages/uploader_profile_page/uploader_profile_page.dart';
@@ -51,12 +52,11 @@ class UserComment extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
             padding: EdgeInsets.only(top: 5),
-            child: RichText(
-                text: TextSpan(
-                    style: DefaultTextStyle.of(context).style,
-                    children: <InlineSpan>[
-                  parseHtmlCode(commentData.content)
-                ])),
+            child: Markdown(
+                padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                data: commentData.content),
           ),
           Padding(
             padding: EdgeInsets.only(top: 10),
@@ -69,29 +69,12 @@ class UserComment extends StatelessWidget {
   }
 
   Widget _repliesBuilder(BuildContext context, int index) {
-    return RichText(
-      text: TextSpan(
-          style: DefaultTextStyle.of(context).style,
-          children: commentData.children[index].parentId != commentData.id
-              ? <InlineSpan>[
-                  TextSpan(
-                      text: commentData.children[index].user.nickName,
-                      style: TextStyle(color: Colors.grey)),
-                  TextSpan(text: '：'),
-                  TextSpan(
-                      text:
-                          '@${commentData.children[index].replyTo!.nickName} ',
-                      style: TextStyle(color: Colors.blue)),
-                  parseHtmlCode(commentData.children[index].content)
-                ]
-              : <InlineSpan>[
-                  TextSpan(
-                      text: commentData.children[index].user.nickName,
-                      style: TextStyle(color: Colors.grey)),
-                  TextSpan(text: '：'),
-                  parseHtmlCode(commentData.children[index].content)
-                ]),
-    );
+    return Markdown(
+        padding: EdgeInsets.zero,
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        data:
+            "[${commentData.children[index].user.nickName}](iwrqk://user/${commentData.children[index].user.userName})：${commentData.children[index].content}");
   }
 
   Widget _buildContentWithReplies(BuildContext context) {
@@ -102,17 +85,16 @@ class UserComment extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.only(top: 5),
-              child: RichText(
-                  text: TextSpan(
-                      style: DefaultTextStyle.of(context).style,
-                      children: <InlineSpan>[
-                    parseHtmlCode(commentData.content)
-                  ])),
+              child: Markdown(
+                  padding: EdgeInsets.zero,
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  data: commentData.content),
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                getDisplayDate(context, commentData.createDate),
+                getDisplayTime(context, commentData.createDate),
                 style: TextStyle(color: Colors.grey, fontSize: 12.5),
               ),
             ),
@@ -129,16 +111,17 @@ class UserComment extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: commentData.children.length >= 2
+                      itemCount: commentData.repliesNum >= 2
                           ? 2
-                          : commentData.children.length,
+                          : commentData.repliesNum,
                       itemBuilder: _repliesBuilder),
                   Visibility(
-                    visible: commentData.children.length > 2,
+                    visible: commentData.repliesNum > 2,
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 5),
                       child: Text(
-                        L10n.of(context).more,
+                        L10n.of(context).comments_see_all_replies.replaceFirst(
+                            "\$s", commentData.repliesNum.toString()),
                         style: TextStyle(color: Theme.of(context).primaryColor),
                       ),
                     ),

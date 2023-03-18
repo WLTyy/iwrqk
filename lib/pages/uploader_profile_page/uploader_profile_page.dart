@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../common/classes.dart';
 import '../../common/util.dart';
@@ -40,7 +41,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
   }
 
   Future<void> _loadData() async {
-    var profileData;/*
+    var profileData; /*
     await Api.getUploaderProfile(widget.homePageUrl).then((value) {
       profileData = value;
     });
@@ -87,15 +88,15 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
             children: [
               ElevatedButton(
                 onPressed: () {},
-                child: Text(L10n.of(context).follow),
+                child: Text(L10n.of(context).profile_follow),
               ),
               ElevatedButton(
                 onPressed: () {},
-                child: Text(L10n.of(context).friend),
+                child: Text(L10n.of(context).profile_friend),
               ),
               ElevatedButton(
                 onPressed: () {},
-                child: Text(L10n.of(context).direct_message),
+                child: Text(L10n.of(context).profile_message),
               ),
             ],
           )
@@ -116,21 +117,23 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
             child: Container(
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: RichText(
-                    text: TextSpan(children: <InlineSpan>[
-                  parseHtmlCode(_profileData.description!)
-                ]))),
+                child: Markdown(
+                  padding: EdgeInsets.zero,
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  data: _profileData.description!,
+                )),
           ),
         Padding(
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Column(
               children: [
                 ListTile(
-                  title: Text(L10n.of(context).join_date),
+                  title: Text(L10n.of(context).profile_join_date),
                   subtitle: Text(_profileData.joinDate),
                 ),
                 ListTile(
-                  title: Text(L10n.of(context).last_active_time),
+                  title: Text(L10n.of(context).profile_last_active_time),
                   subtitle: Text(_profileData.lastLoginTime),
                 ),
               ],
@@ -152,11 +155,11 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
           indicatorColor: Theme.of(context).primaryColor,
           tabs: [
             Tab(
-              text: L10n.of(context).user_details,
+              text: L10n.of(context).user_user_details,
             ),
-            Tab(text: L10n.of(context).videos),
+            Tab(text: L10n.of(context).browse_videos),
             Tab(
-              text: L10n.of(context).images,
+              text: L10n.of(context).browse_images,
             ),
             Tab(
               text: L10n.of(context).comments,
@@ -198,7 +201,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
                   color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.all(Radius.circular(1000))),
               child: Text(
-                L10n.of(context).send_comment,
+                L10n.of(context).comments_send_comment,
                 style: TextStyle(color: Colors.grey),
               ),
             )),

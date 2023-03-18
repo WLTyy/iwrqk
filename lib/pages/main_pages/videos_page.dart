@@ -34,35 +34,35 @@ class _VideosPageState extends State<VideosPage>
     return IwrAppBar(
       showFilter: true,
       tabList: {
-        L10n.of(context).latest: MediaGridView(
+        L10n.of(context).sort_latest: MediaGridView(
           key: PageStorageKey<String>("videos_page_latest"),
           sortSetting: SortSetting(
               sourceType: SourceType.videos,
               orderType: OrderType.date,
               ratingType: RatingType.all),
         ),
-        L10n.of(context).trending: MediaGridView(
+        L10n.of(context).sort_trending: MediaGridView(
           key: PageStorageKey<String>("videos_page_trending"),
           sortSetting: SortSetting(
               sourceType: SourceType.videos,
               orderType: OrderType.trending,
               ratingType: RatingType.all),
         ),
-        L10n.of(context).popularity: MediaGridView(
+        L10n.of(context).sort_popularity: MediaGridView(
           key: PageStorageKey<String>("videos_page_popularity"),
           sortSetting: SortSetting(
               sourceType: SourceType.videos,
               orderType: OrderType.popularity,
               ratingType: RatingType.all),
         ),
-        L10n.of(context).most_views: MediaGridView(
+        L10n.of(context).sort_most_views: MediaGridView(
           key: PageStorageKey<String>("videos_page_most_views"),
           sortSetting: SortSetting(
               sourceType: SourceType.videos,
               orderType: OrderType.views,
               ratingType: RatingType.all),
         ),
-        L10n.of(context).most_likes: MediaGridView(
+        L10n.of(context).sort_most_likes: MediaGridView(
           key: PageStorageKey<String>("videos_page_most_likes"),
           sortSetting: SortSetting(
               sourceType: SourceType.videos,

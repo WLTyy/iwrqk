@@ -41,36 +41,36 @@ class _ImagesPageState extends State<ImagesPage>
     return IwrAppBar(
       showFilter: true,
       tabList: {
-        L10n.of(context).latest: MediaGridView(
-          key: PageStorageKey<String>("videos_page_latest"),
+        L10n.of(context).sort_latest: MediaGridView(
+          key: PageStorageKey<String>("images_page_latest"),
           sortSetting: SortSetting(
               sourceType: SourceType.images,
               orderType: OrderType.date,
               ratingType: RatingType.all),
         ),
-        L10n.of(context).trending: MediaGridView(
-          key: PageStorageKey<String>("videos_page_trending"),
+        L10n.of(context).sort_trending: MediaGridView(
+          key: PageStorageKey<String>("images_page_trending"),
           sortSetting: SortSetting(
               sourceType: SourceType.images,
               orderType: OrderType.trending,
               ratingType: RatingType.all),
         ),
-        L10n.of(context).popularity: MediaGridView(
-          key: PageStorageKey<String>("videos_page_popularity"),
+        L10n.of(context).sort_popularity: MediaGridView(
+          key: PageStorageKey<String>("images_page_popularity"),
           sortSetting: SortSetting(
               sourceType: SourceType.images,
               orderType: OrderType.popularity,
               ratingType: RatingType.all),
         ),
-        L10n.of(context).most_views: MediaGridView(
-          key: PageStorageKey<String>("videos_page_most_views"),
+        L10n.of(context).sort_most_views: MediaGridView(
+          key: PageStorageKey<String>("images_page_most_views"),
           sortSetting: SortSetting(
               sourceType: SourceType.images,
               orderType: OrderType.views,
               ratingType: RatingType.all),
         ),
-        L10n.of(context).most_likes: MediaGridView(
-          key: PageStorageKey<String>("videos_page_most_likes"),
+        L10n.of(context).sort_most_likes: MediaGridView(
+          key: PageStorageKey<String>("images_page_most_likes"),
           sortSetting: SortSetting(
               sourceType: SourceType.images,
               orderType: OrderType.likes,

@@ -14,17 +14,27 @@ class Api {
       previewData.likes = previewItem["numLikes"];
       previewData.views = previewItem["numViews"];
 
-      if (previewItem["files"] != null) {
+      if (previewItem["numImages"] != null) {
         previewData.type = MediaType.image;
-        previewData.thumbnailUrl =
-            "/image/avatar/${previewItem["thumbnail"]["id"]}/${previewItem["thumbnail"]["name"]}";
-      } else if (previewItem["file"] != null) {
+      } else {
         previewData.type = MediaType.video;
+      }
+
+      if (previewItem["thumbnail"] is! int) {
+        previewData.thumbnailUrl =
+            "/image/thumbnail/${previewItem["thumbnail"]["id"]}/${previewItem["thumbnail"]["name"]}";
+      }
+
+      if (previewItem["file"] != null) {
         previewData.duration = previewItem["file"]["duration"];
         previewData.fileId = previewItem["file"]["id"];
         previewData.thumbnailLength = previewItem["file"]["numThumbnails"];
-      } else if (previewItem["embedUrl"] != null) {
+      }
+
+      if (previewItem["embedUrl"] != null) {
         previewData.youtubeUrl = previewItem["embedUrl"];
+        var youtubeId = Uri.parse(previewItem["embedUrl"]).pathSegments.first;
+        previewData.thumbnailUrl = "/image/embed/thumbnail/youtube/$youtubeId";
       }
 
       var uploader = previewItem["user"];
@@ -88,13 +98,16 @@ class Api {
         videoData.tags.add(TagData(tag["id"], tag["type"]));
       }
 
-      await Dio().get(video["fileUrl"]).then((value) {
-        if (value.data is List) {
-          if (value.data.isNotEmpty) {
-            videoData.fetchFailed = false;
-          }
-        }
-      });
+      videoData.fetchUrl = video["fileUrl"];
+      List<ResolutionData> resolutions = <ResolutionData>[];
+
+      await getVideoResolutions(videoData.fetchUrl)
+          .then((value) => resolutions = value);
+
+      if (resolutions.isNotEmpty) {
+        videoData.fetchFailed = false;
+        videoData.resolutions = resolutions;
+      }
 
       await Dio()
           .get(
@@ -107,7 +120,7 @@ class Api {
         videoData.moreLikeThis = analyseMediaPreviewsJson(value.data);
       });
 
-      await getComments(id: id, type: "video", pageNum: 0)
+      await getComments(id: id, type: "video", pageNum: 0, isPreview: true)
           .then((value) => videoData.comments = value);
 
       return videoData;
@@ -164,7 +177,7 @@ class Api {
         imageData.moreLikeThis = analyseMediaPreviewsJson(value.data);
       });
 
-      await getComments(id: id, type: "image", pageNum: 0)
+      await getComments(id: id, type: "image", pageNum: 0, isPreview: true)
           .then((value) => imageData.comments = value);
 
       return imageData;
@@ -174,51 +187,52 @@ class Api {
     }
   }
 
-  static Future<List<CommentData>> getComments({
-    required String id,
-    required String type,
-    required int pageNum,
-    String? parentId,
-  }) async {
+  static Future<List<ResolutionData>> getVideoResolutions(String url) async {
+    List<ResolutionData> resolution = [];
+
+    try {
+      await Dio().get(url).then((value) {
+        if (value.data is List) {
+          for (var resolutionItem in value.data) {
+            resolution.add(ResolutionData(
+                name: resolutionItem["name"],
+                viewUrl: resolutionItem["src"]["view"],
+                downloadUrl: resolutionItem["src"]["download"]));
+          }
+        }
+      });
+    } catch (e) {}
+
+    return resolution;
+  }
+
+  static Future<List<CommentData>> getComments(
+      {required String id,
+      required String type,
+      required int pageNum,
+      bool isPreview = false}) async {
     try {
       List<CommentData> commentsList = [];
       dynamic comments;
 
-      String url = parentId != null
-          ? "https://api.iwara.tv/${type}/$id/comments?parent=$parentId&page=$pageNum"
-          : "https://api.iwara.tv/${type}/$id/comments?page=$pageNum";
+      String url = "https://api.iwara.tv/${type}/$id/comments?page=$pageNum";
 
       await Dio().get(url).then((value) {
         comments = value.data;
       });
 
       for (var commentItem in comments["results"]) {
-        var user = commentItem["user"];
+        CommentData commentData = analyseCommentJson(commentItem);
 
-        var avatarUrl = user["avatar"] == null
-            ? "https://www.iwara.tv/images/default-avatar.jpg"
-            : "https://files.iwara.tv/image/avatar/${user["avatar"]["id"]}/${user["avatar"]["name"]}";
-
-        CommentData commentData = CommentData(
-            id: commentItem["id"],
-            user: UserData(
-                id: user["id"],
-                userName: user["username"],
-                nickName: user["name"],
-                avatarUrl: avatarUrl),
-            createDate: DateTime.parse(commentItem["createdAt"]),
-            content: commentItem["body"]);
-
-        commentData.updateDate = DateTime.parse(commentItem["updatedAt"]);
-
-        commentData.repliesNum = commentItem["numReplies"];
-
-        if (commentItem["parent"] != null) {
-          commentData.parentId = commentItem["parent"]["id"];
-        }
-
-        if (commentData.repliesNum > 0 && parentId != null) {
-          "https://api.iwara.tv/${type}/$id/comments?parent=${commentData.id}&limit=2";
+        if (commentData.repliesNum > 0 && isPreview) {
+          await Dio()
+              .get(
+                  "https://api.iwara.tv/${type}/$id/comments?parent=${commentData.id}&limit=2")
+              .then((value) {
+            for (var child in value.data["results"]) {
+              commentData.children.add(analyseCommentJson(child));
+            }
+          });
         }
 
         commentsList.add(commentData);
@@ -228,5 +242,32 @@ class Api {
       print(e);
       return [];
     }
+  }
+
+  static CommentData analyseCommentJson(dynamic commentItem) {
+    var user = commentItem["user"];
+
+    var avatarUrl = user["avatar"] == null
+        ? "https://www.iwara.tv/images/default-avatar.jpg"
+        : "https://files.iwara.tv/image/avatar/${user["avatar"]["id"]}/${user["avatar"]["name"]}";
+
+    CommentData commentData = CommentData(
+        id: commentItem["id"],
+        user: UserData(
+            id: user["id"],
+            userName: user["username"],
+            nickName: user["name"],
+            avatarUrl: avatarUrl),
+        createDate: DateTime.parse(commentItem["createdAt"]),
+        content: commentItem["body"]);
+
+    commentData.updateDate = DateTime.parse(commentItem["updatedAt"]);
+
+    commentData.repliesNum = commentItem["numReplies"];
+
+    if (commentItem["parent"] != null) {
+      commentData.parentId = commentItem["parent"]["id"];
+    }
+    return commentData;
   }
 }

@@ -9,6 +9,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:iwrqk/common/classes.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
@@ -251,7 +252,7 @@ class PlayerNotifier extends ChangeNotifier {
 }
 
 class IwrVideoController extends ChangeNotifier {
-  final Map<String, String> availableResolutions;
+  final List<ResolutionData> availableResolutions;
 
   final int initResolutionindex;
 
@@ -310,12 +311,11 @@ class IwrVideoController extends ChangeNotifier {
   }
 
   Future<void> initize() async {
-    var resolutions = availableResolutions.values.toList();
-    if (resolutions.isEmpty) return;
+    if (availableResolutions.isEmpty) return;
     currentResolutionIndex = initResolutionindex;
     try {
       videoPlayerController =
-          VideoPlayerController.network(resolutions[initResolutionindex]);
+          VideoPlayerController.network(availableResolutions[initResolutionindex].viewUrl);
       await videoPlayerController!.initialize();
     } catch (e) {
       errorMessage = "$e";

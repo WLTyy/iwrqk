@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:iwrqk/common/util.dart';
 import 'package:provider/provider.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -38,6 +39,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
   late Animation<double> _heightFactor;
   late bool _detailExpanded;
   bool _isLoading = true;
+  bool _refectching = false;
   String? _errorInfo;
   int _grallertLastPage = 0;
 
@@ -56,14 +58,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
     }
     if (mediaData is VideoData) {
       _mediaData = mediaData;
-      _iwrVideoController = IwrVideoController(
-        availableResolutions: (_mediaData as VideoData).resolution,
-        initResolutionindex: (_mediaData as VideoData).resolution.length - 1,
-        callbackAfterInit: () {
-          if (!mounted) return;
-          setState(() {});
-        },
-      );
+      _initializePlayerController();
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -80,6 +75,36 @@ class _MediaDetailPageState extends State<MediaDetailPage>
         _errorInfo = mediaData;
       });
     }
+  }
+
+  void _initializePlayerController() {
+    _iwrVideoController = IwrVideoController(
+      availableResolutions: (_mediaData as VideoData).resolutions,
+      initResolutionindex: (_mediaData as VideoData).resolutions.length - 1,
+      callbackAfterInit: () {
+        if (!mounted) return;
+        setState(() {});
+      },
+    );
+  }
+
+  Future<void> _refectchVideos() async {
+    if (!mounted) return;
+    setState(() {
+      _refectching = true;
+    });
+    await Api.getVideoResolutions((_mediaData as VideoData).fetchUrl)
+        .then((value) {
+      if (value.isNotEmpty) {
+        (_mediaData as VideoData).resolutions = value;
+        (_mediaData as VideoData).fetchFailed = false;
+        _initializePlayerController();
+      }
+    });
+    if (!mounted) return;
+    setState(() {
+      _refectching = false;
+    });
   }
 
   @override
@@ -163,25 +188,33 @@ class _MediaDetailPageState extends State<MediaDetailPage>
                 child: Stack(
                   children: [
                     Center(
-                        child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          CupertinoIcons.xmark_circle_fill,
-                          color: Colors.white,
-                          size: 42,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 5),
-                          child: Text(
-                            "Failed to fetch videos",
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        )
-                      ],
-                    ))
+                        child: _refectching
+                            ? IwrProgressIndicator()
+                            : Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                      onTap: () {
+                                        _refectchVideos();
+                                      },
+                                      child: Center(
+                                        child: Icon(
+                                          CupertinoIcons.arrow_counterclockwise,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 42,
+                                        ),
+                                      )),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 10),
+                                    child: Text(
+                                      L10n.of(context).error_fetch_failed,
+                                      style: TextStyle(color: Colors.white),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  )
+                                ],
+                              ))
                   ],
                 )));
   }
@@ -275,7 +308,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
       ),
       trailing: ElevatedButton(
         onPressed: () {},
-        child: Text(L10n.of(context).follow),
+        child: Text(L10n.of(context).profile_follow),
       ),
     );
   }
@@ -377,12 +410,12 @@ class _MediaDetailPageState extends State<MediaDetailPage>
           offstage: !_detailExpanded && _animationController.isDismissed,
           child: TickerMode(
               enabled: !(!_detailExpanded && _animationController.isDismissed),
-              child: RichText(
-                  text: TextSpan(
-                      style: TextStyle(color: Colors.grey),
-                      children: <InlineSpan>[
-                    parseHtmlCode(_mediaData.description)
-                  ])))),
+              child: Markdown(
+                padding: EdgeInsets.zero,
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                data: _mediaData.description,
+              ))),
     );
   }
 
@@ -399,23 +432,24 @@ class _MediaDetailPageState extends State<MediaDetailPage>
                     CupertinoIcons.heart_fill,
                     size: 35,
                   ),
-                  Text(L10n.of(context).favorite,
+                  Text(L10n.of(context).video_page_favorite,
                       style: TextStyle(fontSize: 12.5))
                 ],
               ),
               onPressed: () {}),
-          MaterialButton(
-              child: Column(
-                children: [
-                  Icon(
-                    CupertinoIcons.list_bullet,
-                    size: 35,
-                  ),
-                  Text(L10n.of(context).playlists,
-                      style: TextStyle(fontSize: 12.5))
-                ],
-              ),
-              onPressed: () {}),
+          if (_mediaData is VideoData)
+            MaterialButton(
+                child: Column(
+                  children: [
+                    Icon(
+                      CupertinoIcons.list_bullet,
+                      size: 35,
+                    ),
+                    Text(L10n.of(context).video_page_playlist,
+                        style: TextStyle(fontSize: 12.5))
+                  ],
+                ),
+                onPressed: () {}),
           MaterialButton(
               child: Column(
                 children: [
@@ -423,7 +457,8 @@ class _MediaDetailPageState extends State<MediaDetailPage>
                     CupertinoIcons.arrowshape_turn_up_right_fill,
                     size: 35,
                   ),
-                  Text(L10n.of(context).share, style: TextStyle(fontSize: 12.5))
+                  Text(L10n.of(context).video_page_share,
+                      style: TextStyle(fontSize: 12.5))
                 ],
               ),
               onPressed: () {}),
@@ -434,7 +469,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
                     CupertinoIcons.arrow_down_to_line,
                     size: 35,
                   ),
-                  Text(L10n.of(context).download,
+                  Text(L10n.of(context).video_page_download,
                       style: TextStyle(fontSize: 12.5))
                 ],
               ),
@@ -456,7 +491,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
             padding: EdgeInsets.fromLTRB(20, 10, 10, 15),
             alignment: Alignment.centerLeft,
             child: Text(
-              L10n.of(context).more_from_uploader,
+              L10n.of(context).meida_page_more_from_uploader,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
@@ -484,7 +519,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
             padding: EdgeInsets.fromLTRB(20, 10, 10, 15),
             alignment: Alignment.centerLeft,
             child: Text(
-              L10n.of(context).more_like_this,
+              L10n.of(context).meida_page_more_like_this,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
@@ -534,7 +569,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
                   color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.all(Radius.circular(1000))),
               child: Text(
-                L10n.of(context).send_comment,
+                L10n.of(context).comments_send_comment,
                 style: TextStyle(color: Colors.grey),
               ),
             )),
@@ -545,9 +580,9 @@ class _MediaDetailPageState extends State<MediaDetailPage>
   String _getTitle(BuildContext context) {
     switch (widget.type) {
       case MediaType.video:
-        return L10n.of(context).videos;
+        return L10n.of(context).video;
       case MediaType.image:
-        return L10n.of(context).images;
+        return L10n.of(context).image;
     }
   }
 

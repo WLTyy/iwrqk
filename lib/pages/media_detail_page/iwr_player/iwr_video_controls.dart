@@ -322,8 +322,7 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
                       iwrVideoController.valueBeforeRenewing =
                           videoPlayerController.value;
                       iwrVideoController.renew(iwrVideoController
-                          .availableResolutions.values
-                          .toList()[index]);
+                          .availableResolutions[index].viewUrl);
 
                       Navigator.of(context).pop();
                     },
@@ -331,8 +330,7 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
                         alignment: Alignment.center,
                         padding: EdgeInsets.symmetric(vertical: 10),
                         child: Text(
-                          iwrVideoController.availableResolutions.keys
-                              .toList()[index],
+                          iwrVideoController.availableResolutions[index].name,
                           style: TextStyle(
                               color: index ==
                                       iwrVideoController.currentResolutionIndex
@@ -639,8 +637,10 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
             height: barHeight + (iwrVideoController.isFullScreen ? 10 : 0),
             padding: EdgeInsets.only(left: 8, right: 8),
             child: Text(
-              iwrVideoController.availableResolutions.keys
-                  .toList()[iwrVideoController.currentResolutionIndex],
+              iwrVideoController
+                  .availableResolutions[
+                      iwrVideoController.currentResolutionIndex]
+                  .name,
               style: TextStyle(color: Colors.white, fontSize: 17.5),
             ),
           ),
@@ -849,9 +849,8 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
                             iwrVideoController.valueBeforeRenewing =
                                 videoPlayerController.value;
                             iwrVideoController.renew(iwrVideoController
-                                    .availableResolutions.values
-                                    .toList()[
-                                iwrVideoController.currentResolutionIndex]);
+                                    .availableResolutions[
+                                iwrVideoController.currentResolutionIndex].viewUrl);
                           },
                           child: Center(
                             child: Icon(

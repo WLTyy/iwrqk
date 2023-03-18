@@ -28,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
               icon: Icon(CupertinoIcons.back, size: 30)),
           centerTitle: true,
           title: Text(
-            L10n.of(context).settings,
+            L10n.of(context).user_settings,
           )),
       body: SettingsList(
         platform: DevicePlatform.iOS,
@@ -40,15 +40,15 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         sections: [
           SettingsSection(
-            title: Text(L10n.of(context).appearance),
+            title: Text(L10n.of(context).theme_appearance),
             tiles: [
               SettingsTile(
                   title: Text(L10n.of(context).theme),
                   trailing: CupertinoSlidingSegmentedControl(
                     children: <int, Widget>{
-                      0: Text(L10n.of(context).system),
-                      1: Text(L10n.of(context).light_mode),
-                      2: Text(L10n.of(context).dark_mode),
+                      0: Text(L10n.of(context).theme_system),
+                      1: Text(L10n.of(context).theme_light_mode),
+                      2: Text(L10n.of(context).theme_dark_mode),
                     },
                     groupValue: _themeCurrentIndex,
                     onValueChanged: (value) {

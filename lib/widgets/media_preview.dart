@@ -140,13 +140,13 @@ class _MediaPreviewState extends State<MediaPreview> {
           Positioned(
             left: 5,
             right: 5,
-            top: 7.5,
+            top: 5,
             child: _buildViewsAndLikes(),
           ),
           Positioned(
             left: 5,
             right: 5,
-            bottom: 7.5,
+            bottom: 5,
             child: _buildRatingAndGallery(),
           ),
         ],

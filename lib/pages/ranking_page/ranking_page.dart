@@ -57,7 +57,7 @@ class _RankingPageState extends State<RankingPage>
     return IwrAppBar(
       showFilter: false,
       tabList: {
-        L10n.of(context).latest: Container(),
+        L10n.of(context).sort_latest: Container(),
       },
       tabController: _tabController,
     );

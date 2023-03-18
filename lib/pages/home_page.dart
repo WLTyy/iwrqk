@@ -45,23 +45,23 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.rocket, size: 30),
                   activeIcon: Icon(CupertinoIcons.rocket_fill, size: 30),
-                  label: L10n.of(context).explore,
+                  label: L10n.of(context).browse_explore,
                   tooltip: ''),
               BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.chart_bar, size: 30),
                   activeIcon: Icon(CupertinoIcons.chart_bar_fill, size: 30),
-                  label: L10n.of(context).ranking,
+                  label: L10n.of(context).browse_ranking,
                   tooltip: ''),
               BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.play_rectangle, size: 30),
                   activeIcon:
                       Icon(CupertinoIcons.play_rectangle_fill, size: 30),
-                  label: L10n.of(context).videos,
+                  label: L10n.of(context).browse_videos,
                   tooltip: ''),
               BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.photo, size: 30),
                   activeIcon: Icon(CupertinoIcons.photo_fill, size: 30),
-                  label: L10n.of(context).images,
+                  label: L10n.of(context).browse_images,
                   tooltip: ''),
             ],
             currentIndex: _selectedIndex,

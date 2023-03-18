@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iwrqk/common/classes.dart';
+import 'package:iwrqk/l10n.dart';
 import 'package:iwrqk/pages/search_page/search_page.dart';
 import 'package:iwrqk/pages/uploader_profile_page/uploader_profile_page.dart';
 import 'package:iwrqk/pages/media_detail_page/media_detail_page.dart';
@@ -146,7 +147,7 @@ class _IwrAppBarState extends State<IwrAppBar> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 5),
                                     child: Text(
-                                      "Search",
+                                      L10n.of(context).search,
                                       style: TextStyle(
                                           fontSize: 17.5,
                                           color: Colors.grey,

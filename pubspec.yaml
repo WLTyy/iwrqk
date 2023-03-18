@@ -37,7 +37,6 @@ dependencies:
   intl: ^0.17.0
   cupertino_icons: ^1.0.2
   dio: ^5.0.1
-  html: ^0.15.1
   html_unescape: ^2.0.0
   shared_preferences: ^2.0.17
   provider: ^6.0.5
@@ -48,6 +47,7 @@ dependencies:
   wakelock: ^0.6.2
   cached_network_image: ^3.2.3
   photo_view: ^0.14.0
+  flutter_markdown: ^0.6.14
 
 dev_dependencies:
   flutter_test:

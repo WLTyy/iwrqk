@@ -88,35 +88,35 @@ class _UserPageState extends State<UserPage> {
                 margin: EdgeInsets.only(top: 20),
                 child: Column(children: [
                   UserItem(
-                      title: L10n.of(context).friends,
+                      title: L10n.of(context).user_friends,
                       icon: Icon(
                         CupertinoIcons.person_2_fill,
                         size: 30,
                       ),
                       routeName: "/"),
                   UserItem(
-                      title: L10n.of(context).history,
+                      title: L10n.of(context).user_history,
                       icon: Icon(
                         CupertinoIcons.time,
                         size: 30,
                       ),
                       routeName: "/"),
                   UserItem(
-                      title: L10n.of(context).download,
+                      title: L10n.of(context).user_downloads,
                       icon: Icon(
                         CupertinoIcons.arrow_down_to_line,
                         size: 30,
                       ),
                       routeName: "/"),
                   UserItem(
-                      title: L10n.of(context).favorite,
+                      title: L10n.of(context).user_favorites,
                       icon: Icon(
                         CupertinoIcons.heart_fill,
                         size: 30,
                       ),
                       routeName: "/"),
                   UserItem(
-                      title: L10n.of(context).playlists,
+                      title: L10n.of(context).user_playlists,
                       icon: Icon(
                         CupertinoIcons.list_dash,
                         size: 30,
@@ -145,7 +145,7 @@ class _UserPageState extends State<UserPage> {
                                 Container(
                                   margin: EdgeInsets.only(top: 5),
                                   child: Text(
-                                    L10n.of(context).settings,
+                                    L10n.of(context).user_settings,
                                     style: TextStyle(
                                       fontSize: 15,
                                     ),
