@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import '../common/classes.dart';
 
 class Api {
+  static const salt = "_5nFp9kmbNnHdAFhaqMvt";
+
   static List<MediaPreviewData> analyseMediaPreviewsJson(dynamic previews) {
     List<MediaPreviewData> previewDatasList = [];
 
@@ -101,7 +106,16 @@ class Api {
       videoData.fetchUrl = video["fileUrl"];
       List<ResolutionData> resolutions = <ResolutionData>[];
 
-      await getVideoResolutions(videoData.fetchUrl)
+      var vid = RegExp(r'file/(\w+-\w+-\w+-\w+-\w+)\?')
+          .firstMatch(videoData.fetchUrl)
+          ?.group(1);
+      var expires =
+          RegExp(r'expires=(\d+)').firstMatch(videoData.fetchUrl)?.group(1);
+
+      videoData.xversion =
+          sha1.convert(utf8.encode('${vid}_$expires$salt')).toString();
+
+      await getVideoResolutions(videoData.fetchUrl, videoData.xversion)
           .then((value) => resolutions = value);
 
       if (resolutions.isNotEmpty) {
@@ -187,17 +201,20 @@ class Api {
     }
   }
 
-  static Future<List<ResolutionData>> getVideoResolutions(String url) async {
+  static Future<List<ResolutionData>> getVideoResolutions(
+      String url, String xversion) async {
     List<ResolutionData> resolution = [];
 
     try {
-      await Dio().get(url).then((value) {
+      await Dio()
+          .get(url, options: Options(headers: {'x-version': xversion}))
+          .then((value) {
         if (value.data is List) {
           for (var resolutionItem in value.data) {
             resolution.add(ResolutionData(
                 name: resolutionItem["name"],
-                viewUrl: resolutionItem["src"]["view"],
-                downloadUrl: resolutionItem["src"]["download"]));
+                viewUrl: "https:${resolutionItem["src"]["view"]}",
+                downloadUrl: "https:${resolutionItem["src"]["download"]}"));
           }
         }
       });

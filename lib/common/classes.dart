@@ -71,7 +71,7 @@ class MediaPreviewData {
   }
 
   String getCoverUrl() {
-    if (type == MediaType.video) {
+    if (fileId != null) {
       return "https://files.iwara.tv/image/thumbnail/$fileId/thumbnail-00.jpg";
     } else {
       return "https://files.iwara.tv$thumbnailUrl";
@@ -126,6 +126,7 @@ class MediaData {
   late String title;
   late String description;
   late String fetchUrl;
+  late String xversion;
   late int views;
   late int likes;
   List<TagData> tags = <TagData>[];

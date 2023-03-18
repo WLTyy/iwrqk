@@ -303,6 +303,12 @@ class IwrVideoController extends ChangeNotifier {
 
   set renewing(value) => _renewing = value;
 
+  bool _renewed = false;
+
+  bool get renewed => _renewed;
+
+  set renewed(value) => _renewed = value;
+
   IwrVideoController(
       {required this.availableResolutions,
       required this.initResolutionindex,
@@ -314,8 +320,8 @@ class IwrVideoController extends ChangeNotifier {
     if (availableResolutions.isEmpty) return;
     currentResolutionIndex = initResolutionindex;
     try {
-      videoPlayerController =
-          VideoPlayerController.network(availableResolutions[initResolutionindex].viewUrl);
+      videoPlayerController = VideoPlayerController.network(
+          availableResolutions[initResolutionindex].viewUrl);
       await videoPlayerController!.initialize();
     } catch (e) {
       errorMessage = "$e";
@@ -346,6 +352,7 @@ class IwrVideoController extends ChangeNotifier {
       callbackAfterInit.call();
     }
     _renewing = false;
+    _renewed = true;
     disableListener = true;
     notifyListeners();
   }

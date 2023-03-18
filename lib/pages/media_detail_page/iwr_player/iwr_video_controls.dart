@@ -65,7 +65,6 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
   @override
   void dispose() {
     _dispose();
-    _iwrVideoController?.removeListener(_renewListener);
     super.dispose();
   }
 
@@ -84,28 +83,24 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
     if (oldController != _iwrVideoController) {
       _dispose();
       _initialize();
-      _iwrVideoController?.addListener(_renewListener);
     }
 
     super.didChangeDependencies();
   }
 
-  Future<void> _renewListener() async {
-    if (_iwrVideoController!.renewing &
-        videoPlayerController.value.isInitialized) {
-      _dispose();
-      if (iwrVideoController.valueBeforeRenewing != null) {
-        await videoPlayerController
-            .seekTo(iwrVideoController.valueBeforeRenewing!.position);
-        await videoPlayerController.setPlaybackSpeed(iwrVideoController
-            .availablePlaybackSpeedMap.values
-            .toList()[iwrVideoController.currentSpeedIndex]);
-        if (iwrVideoController.valueBeforeRenewing!.isPlaying) {
-          await videoPlayerController.play();
-        }
+  Future<void> _renewPlayer() async {
+    _dispose();
+    if (iwrVideoController.valueBeforeRenewing != null) {
+      await videoPlayerController
+          .seekTo(iwrVideoController.valueBeforeRenewing!.position);
+      await videoPlayerController.setPlaybackSpeed(iwrVideoController
+          .availablePlaybackSpeedMap.values
+          .toList()[iwrVideoController.currentSpeedIndex]);
+      if (iwrVideoController.valueBeforeRenewing!.isPlaying) {
+        await videoPlayerController.play();
       }
-      await _initialize();
     }
+    await _initialize();
   }
 
   Future<void> _initialize() async {
@@ -118,6 +113,8 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
     }
 
     _initTimer = Timer(const Duration(milliseconds: 200), () {
+      if (!mounted) return;
+
       setState(() {
         notifier.hideStuff = false;
       });
@@ -578,8 +575,12 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
   }
 
   Widget _buildPosition() {
-    final position = _latestValue.position;
+    final positionAfterAdjust = _getPositionAfterAdjust();
     final duration = _latestValue.duration;
+    var position = _latestValue.position;
+    if (positionAfterAdjust != null) {
+      position = Duration(milliseconds: positionAfterAdjust);
+    }
 
     return RichText(
       text: TextSpan(
@@ -820,66 +821,70 @@ class _IwrVideoControlState extends State<IwrVideoControl> {
   }
 
   Widget _buildErrorWidget(String message) {
-    return Expanded(
-        child: Container(
-            color: Colors.black.withAlpha(128),
-            child: Stack(children: [
-              if (iwrVideoController.isFullScreen)
-                GestureDetector(
-                    onTap: () {
-                      _onExpandCollapse(context);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(top: 15),
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      child: Icon(
-                        CupertinoIcons.back,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    )),
-              Container(
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                          onTap: () {
-                            iwrVideoController.valueBeforeRenewing =
-                                videoPlayerController.value;
-                            iwrVideoController.renew(iwrVideoController
-                                    .availableResolutions[
-                                iwrVideoController.currentResolutionIndex].viewUrl);
-                          },
-                          child: Center(
-                            child: Icon(
-                              CupertinoIcons.arrow_counterclockwise,
-                              color: Theme.of(context).primaryColor,
-                              size: 42,
-                            ),
-                          )),
-                      Container(
-                        margin: EdgeInsets.only(top: 5),
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: Text(
-                            message,
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
+    return Container(
+        color: Colors.black.withAlpha(128),
+        child: Stack(children: [
+          if (iwrVideoController.isFullScreen)
+            GestureDetector(
+                onTap: () {
+                  _onExpandCollapse(context);
+                },
+                child: Container(
+                  margin: EdgeInsets.only(top: 15),
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: Icon(
+                    CupertinoIcons.back,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                )),
+          Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                      onTap: () {
+                        iwrVideoController.valueBeforeRenewing =
+                            videoPlayerController.value;
+                        iwrVideoController.renew(iwrVideoController
+                            .availableResolutions[
+                                iwrVideoController.currentResolutionIndex]
+                            .viewUrl);
+                      },
+                      child: Center(
+                        child: Icon(
+                          CupertinoIcons.arrow_counterclockwise,
+                          color: Theme.of(context).primaryColor,
+                          size: 42,
                         ),
-                      )
-                    ],
-                  ))
-            ])));
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(top: 5),
+                    child: Container(
+                      margin:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      child: Text(
+                        message,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  )
+                ],
+              ))
+        ]));
   }
 
   @override
   Widget build(BuildContext context) {
+    if (iwrVideoController.renewed) {
+      _renewPlayer();
+      iwrVideoController.renewed = false;
+    }
     if (_latestValue.hasError) {
       iwrVideoController.errorMessage =
           videoPlayerController.value.errorDescription!;

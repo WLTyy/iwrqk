@@ -93,7 +93,8 @@ class _MediaDetailPageState extends State<MediaDetailPage>
     setState(() {
       _refectching = true;
     });
-    await Api.getVideoResolutions((_mediaData as VideoData).fetchUrl)
+    await Api.getVideoResolutions((_mediaData as VideoData).fetchUrl,
+            (_mediaData as VideoData).xversion)
         .then((value) {
       if (value.isNotEmpty) {
         (_mediaData as VideoData).resolutions = value;
