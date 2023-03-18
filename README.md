@@ -5,7 +5,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/FutoTan/iwrqk.svg)](https://github.com/yourusername/yourappname/issues)
 [![GitHub pull-requests](https://img.shields.io/github/issues-pr/FutoTan/iwrqk.svg)](https://github.com/yourusername/yourappname/pulls)
 
-IwrQk是一个基于Flutter、兼容新 Iwara 的跨平台应用。（画饼）
+IwrQk 是一个基于Flutter、兼容新 Iwara 的跨平台应用。（画饼）
 
 ## 功能
 

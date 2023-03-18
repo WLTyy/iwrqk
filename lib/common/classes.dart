@@ -51,7 +51,7 @@ class MediaPreviewData {
   int? galleryLength;
   late UserData uploader;
   bool isPrivate = false;
-  String? youtubeUrl;
+  String? embedUrl;
   int? duration;
   late String ratingType;
   late int views;

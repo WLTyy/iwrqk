@@ -37,9 +37,17 @@ class Api {
       }
 
       if (previewItem["embedUrl"] != null) {
-        previewData.youtubeUrl = previewItem["embedUrl"];
-        var youtubeId = Uri.parse(previewItem["embedUrl"]).pathSegments.first;
-        previewData.thumbnailUrl = "/image/embed/thumbnail/youtube/$youtubeId";
+        previewData.embedUrl = previewItem["embedUrl"];
+        if (previewData.embedUrl!.contains("youtu")) {
+          RegExp regExp = RegExp(
+              r"(?:youtube\.com\/.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]{11})");
+          var match = regExp.firstMatch(previewItem["embedUrl"]);
+          var videoIdWithPrefix = match!.group(0)!;
+          var youtubeId =
+              videoIdWithPrefix.split("/").last.replaceAll("watch?v=", "");
+          previewData.thumbnailUrl =
+              "/image/embed/thumbnail/youtube/$youtubeId";
+        }
       }
 
       var uploader = previewItem["user"];
