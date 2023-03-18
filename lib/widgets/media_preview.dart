@@ -179,8 +179,7 @@ class _MediaPreviewState extends State<MediaPreview> {
                               pageBuilder: (context, animation,
                                       secondaryAnimation) =>
                                   UploaderProfilePage(
-                                      homePageUrl:
-                                          "https://www.iwara.tv/profile/${widget.data.uploader.userName}"),
+                                      userName: widget.data.uploader.userName),
                             ));
                           },
                           child: Row(children: [

@@ -165,16 +165,16 @@ class ImageData extends MediaData {
 }
 
 class UploaderProfileData {
-  late String name;
-  late String avatarUrl;
-  late String joinDate;
-  late String lastLoginTime;
-  late bool moreUploadedVideos;
-  late bool moreUploadedImages;
-  String? description;
-  List<MediaPreviewData> uploadedImages = <MediaPreviewData>[];
-  List<MediaPreviewData> uploadedVideos = <MediaPreviewData>[];
-  List<CommentData> comments = <CommentData>[];
+  late UserData uploader;
+  late bool isFollowedBy;
+  late bool isFollowing;
+  late bool isFriend;
+  late String bannerUrl;
+  late DateTime joinDate;
+  DateTime? lastActiveTime;
+  late String description;
+  late int followers;
+  late int following;
 
   UploaderProfileData();
 }

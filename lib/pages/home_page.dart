@@ -6,8 +6,8 @@ import '../common/global.dart';
 import '../l10n.dart';
 import 'main_pages/images_page.dart';
 import 'main_pages/explore_page.dart';
-import 'ranking_page/ranking_page.dart';
 import 'main_pages/videos_page.dart';
+import 'user_page/user_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,9 +24,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _pageList
       ..add(const ExplorePage())
-      ..add(const RankingPage())
       ..add(const VideosPage())
-      ..add(const ImagesPage());
+      ..add(const ImagesPage())
+      ..add(const UserPage());
 
     super.initState();
   }
@@ -43,14 +43,9 @@ class _HomePageState extends State<HomePage> {
             unselectedFontSize: 13.5,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.rocket, size: 30),
-                  activeIcon: Icon(CupertinoIcons.rocket_fill, size: 30),
+                  icon: Icon(CupertinoIcons.bell, size: 30),
+                  activeIcon: Icon(CupertinoIcons.bell_fill, size: 30),
                   label: L10n.of(context).browse_explore,
-                  tooltip: ''),
-              BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.chart_bar, size: 30),
-                  activeIcon: Icon(CupertinoIcons.chart_bar_fill, size: 30),
-                  label: L10n.of(context).browse_ranking,
                   tooltip: ''),
               BottomNavigationBarItem(
                   icon: Icon(CupertinoIcons.play_rectangle, size: 30),
@@ -62,6 +57,11 @@ class _HomePageState extends State<HomePage> {
                   icon: Icon(CupertinoIcons.photo, size: 30),
                   activeIcon: Icon(CupertinoIcons.photo_fill, size: 30),
                   label: L10n.of(context).browse_images,
+                  tooltip: ''),
+              BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.person, size: 30),
+                  activeIcon: Icon(CupertinoIcons.person_fill, size: 30),
+                  label: L10n.of(context).browse_me,
                   tooltip: ''),
             ],
             currentIndex: _selectedIndex,

@@ -288,8 +288,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
           Navigator.of(context).push(PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
                 UploaderProfilePage(
-              homePageUrl:
-                  "https://www.iwara.tv/profile/${_mediaData.uploader.userName}",
+              userName: _mediaData.uploader.userName,
             ),
           ));
         },
@@ -370,7 +369,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
             color: Colors.grey,
           ),
           Container(
-              margin: EdgeInsets.only(left: 2, right: 15),
+              margin: EdgeInsets.only(left: 5, right: 15),
               child: Text(
                 formatNumberWithCommas(context, _mediaData.views),
                 style: TextStyle(
@@ -384,7 +383,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
             color: Colors.grey,
           ),
           Container(
-              margin: EdgeInsets.only(left: 2),
+              margin: EdgeInsets.only(left: 5),
               child: Text(
                 formatNumberWithCommas(context, _mediaData.likes),
                 style: TextStyle(

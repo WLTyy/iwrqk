@@ -12,9 +12,9 @@ import '../main_pages/media_grid_view.dart';
 import '../media_detail_page/user_comment.dart';
 
 class UploaderProfilePage extends StatefulWidget {
-  final String homePageUrl;
+  final String userName;
 
-  const UploaderProfilePage({Key? key, required this.homePageUrl})
+  const UploaderProfilePage({Key? key, required this.userName})
       : super(key: key);
 
   @override
@@ -22,27 +22,50 @@ class UploaderProfilePage extends StatefulWidget {
 }
 
 class _UploaderProfilePageState extends State<UploaderProfilePage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late TabController _tabController;
   String? _errorInfo;
   bool _isLoading = true;
+  final Animatable<double> _easeInTween = CurveTween(curve: Curves.easeIn);
+  final Animatable<double> _halfTween = Tween<double>(begin: 0.0, end: 0.5);
+  late AnimationController _animationController;
+  late Animation<double> _iconTurn;
+  late Animation<double> _heightFactor;
+  late bool _detailExpanded;
 
   UploaderProfileData _profileData = UploaderProfileData();
 
   @override
   void initState() {
-    _loadData();
-    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    _iconTurn = _animationController.drive(_halfTween.chain(_easeInTween));
+
+    _heightFactor = _animationController.drive(_easeInTween);
+
+    _detailExpanded =
+        PageStorage.maybeOf(context)?.readState(context) as bool? ?? false;
+    if (_detailExpanded) {
+      _animationController.value = 1.0;
+    }
+
     _tabController = TabController(length: 4, vsync: this);
 
     _tabController.addListener(() {
       print(_tabController.index);
     });
+
+    _loadData();
+
+    super.initState();
   }
 
   Future<void> _loadData() async {
-    var profileData; /*
-    await Api.getUploaderProfile(widget.homePageUrl).then((value) {
+    var profileData;
+    await Api.getUploaderProfilePage(widget.userName).then((value) {
       profileData = value;
     });
     if (profileData is UploaderProfileData) {
@@ -56,90 +79,250 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
       setState(() {
         _errorInfo = profileData;
       });
-    }*/
+    }
   }
 
-  Widget _buildUploderFunction() {
-    return Container(
-      color: Theme.of(context).canvasColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildHeader() {
+    return Column(
+      children: [
+        Stack(
+          children: [
+            ReloadableImage(
+              imageUrl: _profileData.bannerUrl,
+              width: double.infinity,
+              height: 150,
+              fit: BoxFit.cover,
+            ),
+            _buildAvatarButton()
+          ],
+        ),
+        Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            color: Theme.of(context).canvasColor,
+            child: Column(
+              children: [
+                _buildUploadName(),
+                _buildDescription(),
+                _buildJoinSeenAtDate()
+              ],
+            ))
+      ],
+    );
+  }
+
+  Widget _buildUploadName() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _detailExpanded = !_detailExpanded;
+
+          if (_detailExpanded) {
+            _animationController.forward();
+          } else {
+            _animationController.reverse().then<void>((void value) {
+              setState(() {});
+            });
+          }
+
+          PageStorage.maybeOf(context)?.writeState(context, _detailExpanded);
+        });
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(children: [
-            ClipOval(
-              child: ReloadableImage(
-                imageUrl: _profileData.avatarUrl,
-                width: 60,
-                height: 60,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              _profileData.name,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ]),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
+          Expanded(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ElevatedButton(
-                onPressed: () {},
-                child: Text(L10n.of(context).profile_follow),
+              Text(
+                _profileData.uploader.nickName,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              ElevatedButton(
-                onPressed: () {},
-                child: Text(L10n.of(context).profile_friend),
-              ),
-              ElevatedButton(
-                onPressed: () {},
-                child: Text(L10n.of(context).profile_message),
+              Text(
+                "@${_profileData.uploader.userName}",
+                maxLines: 1,
+                style: TextStyle(fontSize: 12.5),
               ),
             ],
+          )),
+          Container(
+            padding: EdgeInsets.only(top: 5),
+            alignment: Alignment.topRight,
+            child: RotationTransition(
+              turns: _iconTurn,
+              child: Icon(CupertinoIcons.chevron_down),
+            ),
           )
         ],
       ),
     );
   }
 
-  Widget _buildUploaderDetailTab() {
-    return SingleChildScrollView(
-        child: Container(
-      color: Theme.of(context).cardColor,
-      child: Column(children: [
-        if (_profileData.description != null)
-          Card(
-            margin: EdgeInsets.fromLTRB(15, 20, 15, 10),
-            color: Theme.of(context).canvasColor,
-            child: Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: Markdown(
-                  padding: EdgeInsets.zero,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  data: _profileData.description!,
-                )),
+  Widget _buildDescription() {
+    return AnimatedBuilder(
+      animation: _animationController.view,
+      builder: (_, child) {
+        return Align(
+          alignment: Alignment.centerLeft,
+          heightFactor: _heightFactor.value,
+          child: child,
+        );
+      },
+      child: Offstage(
+          offstage: !_detailExpanded && _animationController.isDismissed,
+          child: TickerMode(
+              enabled: !(!_detailExpanded && _animationController.isDismissed),
+              child: Markdown(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                data: _profileData.description,
+              ))),
+    );
+  }
+
+  Widget _buildJoinSeenAtDate() {
+    Widget? lastActiveWidget;
+
+    if (_profileData.lastActiveTime != null) {
+      Duration difference =
+          DateTime.now().difference(_profileData.lastActiveTime!);
+      if (difference.inMinutes <= 5) {
+        lastActiveWidget = Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              margin: EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.green,
+              ),
+            ),
+            Text(L10n.of(context).profile_online)
+          ],
+        );
+      } else {
+        lastActiveWidget = Text(
+          "${L10n.of(context).profile_last_active_time}：${getDisplayDate(context, _profileData.lastActiveTime!)}",
+          style: TextStyle(fontSize: 12.5),
+        );
+      }
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Text(
+          "${L10n.of(context).profile_join_date}：${getDisplayDate(context, _profileData.joinDate)}",
+          style: TextStyle(fontSize: 12.5),
+        ),
+        if (lastActiveWidget != null) lastActiveWidget
+      ],
+    );
+  }
+
+  Widget _buildAvatarButton() {
+    return Container(
+      margin: EdgeInsets.only(top: 150),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      color: Theme.of(context).canvasColor,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 10, right: 25),
+            child: ClipOval(
+              child: ReloadableImage(
+                imageUrl: _profileData.uploader.avatarUrl,
+                width: 60,
+                height: 60,
+              ),
+            ),
           ),
-        Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text(L10n.of(context).profile_join_date),
-                  subtitle: Text(_profileData.joinDate),
-                ),
-                ListTile(
-                  title: Text(L10n.of(context).profile_last_active_time),
-                  subtitle: Text(_profileData.lastLoginTime),
-                ),
-              ],
-            )),
-      ]),
-    ));
+          Expanded(
+              child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Column(
+                    children: [
+                      Text(compactBigNumber(context, _profileData.following),
+                          style: TextStyle(fontSize: 12.5)),
+                      Text(L10n.of(context).profile_following,
+                          style: TextStyle(color: Colors.grey, fontSize: 12.5))
+                    ],
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    children: [
+                      Text(compactBigNumber(context, _profileData.followers),
+                          style: TextStyle(fontSize: 12.5)),
+                      Text(L10n.of(context).profile_followers,
+                          style: TextStyle(color: Colors.grey, fontSize: 12.5))
+                    ],
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  Flexible(
+                      child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
+                      minimumSize: Size.fromHeight(0),
+                      side: BorderSide(width: 2, color: Colors.blue),
+                    ),
+                    onPressed: () {},
+                    child: Text(
+                      L10n.of(context).profile_follow,
+                    ),
+                  )),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
+                        minimumSize: Size.zero,
+                        side: BorderSide(width: 2, color: Colors.blue),
+                      ),
+                      onPressed: () {},
+                      child: Text(L10n.of(context).profile_friend),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
+                      minimumSize: Size.zero,
+                      side: BorderSide(width: 2, color: Colors.blue),
+                    ),
+                    onPressed: () {},
+                    child: Text(L10n.of(context).profile_message),
+                  ),
+                ],
+              )
+            ],
+          ))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUploaderDetailTab() {
+    return Container();
   }
 
   Widget _buildTabBar() {
@@ -179,33 +362,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
 
   Widget _buildCommentsTab() {
     return Column(
-      children: [
-        Expanded(
-            child: ListView.builder(
-                padding: EdgeInsets.symmetric(vertical: 1),
-                itemBuilder: (BuildContext context, int index) {
-                  return UserComment(commentData: _profileData.comments[index]);
-                },
-                itemCount: _profileData.comments.length)),
-        Container(
-            decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                border: Border(
-                    top: BorderSide(
-                        color: Theme.of(context).cardColor, width: 1))),
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.all(Radius.circular(1000))),
-              child: Text(
-                L10n.of(context).comments_send_comment,
-                style: TextStyle(color: Colors.grey),
-              ),
-            )),
-      ],
+      children: [],
     );
   }
 
@@ -260,7 +417,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
         children: _isLoading
             ? [_buildLoadingWidget()]
             : [
-                _buildUploderFunction(),
+                _buildHeader(),
                 _buildTabBar(),
                 Expanded(
                     child: TabBarView(controller: _tabController, children: [

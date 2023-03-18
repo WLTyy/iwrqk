@@ -30,15 +30,12 @@ class _UserItemState extends State<UserItem> {
         child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: MaterialButton(
-                minWidth: 340,
                 onPressed: () {
                   Navigator.pushNamed(context, widget.routeName);
                 },
                 child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    width: 340,
+                    padding: EdgeInsets.symmetric(vertical: 10),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(

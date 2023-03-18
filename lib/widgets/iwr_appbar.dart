@@ -89,87 +89,42 @@ class _IwrAppBarState extends State<IwrAppBar> {
                 title: FlexibleSpaceBar(
                   titlePadding: EdgeInsets.zero,
                   expandedTitleScale: 1,
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        iconSize: 35,
-                        icon: ClipOval(
-                          child: ReloadableImage(
-                            imageUrl: 'https://picsum.photos/200/300',
-                            aspectRatio: 1,
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).push(PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    const UserPage(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(-1, 0);
-                              const end = Offset.zero;
-                              const curve = Curves.ease;
-
-                              var tween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-
-                              return SlideTransition(
-                                position: animation.drive(tween),
-                                child: child,
-                              );
-                            },
-                          ));
-                        },
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) =>
-                                        SearchPage(),
-                              ));
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 7.5, horizontal: 15),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).cardColor,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15))),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.search,
+                  title: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  SearchPage(),
+                        ));
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.symmetric(horizontal: 15),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 7.5, horizontal: 15),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).cardColor,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                        child: Row(
+                          children: [
+                            Icon(
+                              CupertinoIcons.search,
+                              color: Colors.grey,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 5),
+                              child: Text(
+                                L10n.of(context).search,
+                                style: TextStyle(
+                                    fontSize: 17.5,
                                     color: Colors.grey,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 5),
-                                    child: Text(
-                                      L10n.of(context).search,
-                                      style: TextStyle(
-                                          fontSize: 17.5,
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  )
-                                ],
+                                    fontWeight: FontWeight.w400),
                               ),
-                            )),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 2.5),
-                        child: IconButton(
-                          icon: Icon(
-                            CupertinoIcons.envelope,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {},
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
+                      )),
                 ),
                 bottom: _buildBottomWidget(
                     widget.showFilter, widget.tabList, widget.tabController)),

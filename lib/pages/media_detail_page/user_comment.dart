@@ -29,8 +29,7 @@ class UserComment extends StatelessWidget {
             Navigator.of(context).push(PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
                   UploaderProfilePage(
-                homePageUrl:
-                    "https://www.iwara.tv/profile/${commentData.user.userName}",
+                userName: commentData.user.userName,
               ),
             ));
           },

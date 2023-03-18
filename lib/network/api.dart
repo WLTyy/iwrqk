@@ -143,6 +143,60 @@ class Api {
     }
   }
 
+  static Future<Object> getUploaderProfilePage(String id) async {
+    try {
+      UploaderProfileData profileData = UploaderProfileData();
+      dynamic profile;
+
+      await Dio().get("https://api.iwara.tv/profile/$id").then((value) {
+        profile = value.data;
+      });
+
+      var banner = profile["header"];
+
+      profileData.bannerUrl = banner != null
+          ? "https://files.iwara.tv/image/profileHeader/${profile["header"]["id"]}/${profile["header"]["name"]}"
+          : "https://www.iwara.tv/images/default-background.jpg";
+
+      var uploader = profile["user"];
+
+      profileData.joinDate = DateTime.parse(uploader["createdAt"]);
+      profileData.lastActiveTime = uploader["seenAt"] != null
+          ? DateTime.parse(uploader["seenAt"])
+          : null;
+      profileData.description = profile["body"] ?? "";
+
+      var avatarUrl = uploader["avatar"] == null
+          ? "https://www.iwara.tv/images/default-avatar.jpg"
+          : "https://files.iwara.tv/image/avatar/${uploader["avatar"]["id"]}/${uploader["avatar"]["name"]}";
+
+      profileData.uploader = UserData(
+          id: uploader["id"],
+          userName: uploader["username"],
+          nickName: uploader["name"],
+          avatarUrl: avatarUrl);
+
+      await Dio()
+          .get(
+              "https://api.iwara.tv/user/${profileData.uploader.id}/followers?limit=1")
+          .then((value) {
+        profileData.followers = value.data["count"];
+      });
+
+      await Dio()
+          .get(
+              "https://api.iwara.tv/user/${profileData.uploader.id}/following?limit=1")
+          .then((value) {
+        profileData.following = value.data["count"];
+      });
+
+      return profileData;
+    } catch (e, stackTrace) {
+      print("$stackTrace");
+      return "$e";
+    }
+  }
+
   static Future<Object> getImagePage(String id) async {
     try {
       ImageData imageData = ImageData();
