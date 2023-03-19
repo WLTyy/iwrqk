@@ -1,4 +1,4 @@
-package com.example.iwrqk
+package com.futotan.iwrqk
 
 import io.flutter.embedding.android.FlutterActivity
 

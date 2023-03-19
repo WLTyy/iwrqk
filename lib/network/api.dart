@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
-import 'package:dio/dio.dart';
 import '../common/classes.dart';
+import 'network_util.dart';
 
 class Api {
   static const salt = "_5nFp9kmbNnHdAFhaqMvt";
+  static NetworkUtil networkUtil = NetworkUtil();
 
   static List<MediaPreviewData> analyseMediaPreviewsJson(dynamic previews) {
     List<MediaPreviewData> previewDatasList = [];
@@ -42,11 +43,13 @@ class Api {
           RegExp regExp = RegExp(
               r"(?:youtube\.com\/.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]{11})");
           var match = regExp.firstMatch(previewItem["embedUrl"]);
-          var videoIdWithPrefix = match!.group(0)!;
-          var youtubeId =
-              videoIdWithPrefix.split("/").last.replaceAll("watch?v=", "");
-          previewData.thumbnailUrl =
-              "/image/embed/thumbnail/youtube/$youtubeId";
+          if (match != null) {
+            var videoIdWithPrefix = match.group(0)!;
+            var youtubeId =
+                videoIdWithPrefix.split("/").last.replaceAll("watch?v=", "");
+            previewData.thumbnailUrl =
+                "/image/embed/thumbnail/youtube/$youtubeId";
+          }
         }
       }
 
@@ -79,7 +82,7 @@ class Api {
       VideoData videoData = VideoData();
       dynamic video;
 
-      await Dio().get("https://api.iwara.tv/video/$id").then((value) {
+      await networkUtil.get("/video/$id").then((value) {
         video = value.data;
       });
 
@@ -131,14 +134,15 @@ class Api {
         videoData.resolutions = resolutions;
       }
 
-      await Dio()
-          .get(
-              "https://api.iwara.tv/videos?user=${videoData.uploader.id}&exclude=$id&limit=6")
-          .then((value) {
+      await networkUtil.get("/videos", queryParameters: {
+        "user": videoData.uploader.id,
+        "exclude": id,
+        "limit": 6
+      }).then((value) {
         videoData.moreFromUser = analyseMediaPreviewsJson(value.data);
       });
 
-      await Dio().get("https://api.iwara.tv/video/$id/related").then((value) {
+      await networkUtil.get("/video/$id/related").then((value) {
         videoData.moreLikeThis = analyseMediaPreviewsJson(value.data);
       });
 
@@ -156,7 +160,7 @@ class Api {
       UploaderProfileData profileData = UploaderProfileData();
       dynamic profile;
 
-      await Dio().get("https://api.iwara.tv/profile/$id").then((value) {
+      await networkUtil.get("/profile/$id").then((value) {
         profile = value.data;
       });
 
@@ -184,17 +188,13 @@ class Api {
           nickName: uploader["name"],
           avatarUrl: avatarUrl);
 
-      await Dio()
-          .get(
-              "https://api.iwara.tv/user/${profileData.uploader.id}/followers?limit=1")
-          .then((value) {
+      await networkUtil.get("/user/${profileData.uploader.id}/followers",
+          queryParameters: {"limit": 1}).then((value) {
         profileData.followers = value.data["count"];
       });
 
-      await Dio()
-          .get(
-              "https://api.iwara.tv/user/${profileData.uploader.id}/following?limit=1")
-          .then((value) {
+      await networkUtil.get("/user/${profileData.uploader.id}/following",
+          queryParameters: {"limit": 1}).then((value) {
         profileData.following = value.data["count"];
       });
 
@@ -210,7 +210,7 @@ class Api {
       ImageData imageData = ImageData();
       dynamic image;
 
-      await Dio().get("https://api.iwara.tv/image/$id").then((value) {
+      await networkUtil.get("/image/$id").then((value) {
         image = value.data;
       });
 
@@ -242,14 +242,15 @@ class Api {
             "https://files.iwara.tv/image/large/${imageFile["id"]}/${imageFile["name"]}");
       }
 
-      await Dio()
-          .get(
-              "https://api.iwara.tv/images?user=${imageData.uploader.id}&exclude=$id&limit=6")
-          .then((value) {
+      await networkUtil.get("/images", queryParameters: {
+        "user": imageData.uploader.id,
+        "exclude": id,
+        "limit": 6
+      }).then((value) {
         imageData.moreFromUser = analyseMediaPreviewsJson(value.data);
       });
 
-      await Dio().get("https://api.iwara.tv/image/$id/related").then((value) {
+      await networkUtil.get("/image/$id/related").then((value) {
         imageData.moreLikeThis = analyseMediaPreviewsJson(value.data);
       });
 
@@ -268,9 +269,8 @@ class Api {
     List<ResolutionData> resolution = [];
 
     try {
-      await Dio()
-          .get(url, options: Options(headers: {'x-version': xversion}))
-          .then((value) {
+      await networkUtil
+          .getFullUrl(url, headers: {'x-version': xversion}).then((value) {
         if (value.data is List) {
           for (var resolutionItem in value.data) {
             resolution.add(ResolutionData(
@@ -294,9 +294,8 @@ class Api {
       List<CommentData> commentsList = [];
       dynamic comments;
 
-      String url = "https://api.iwara.tv/${type}/$id/comments?page=$pageNum";
-
-      await Dio().get(url).then((value) {
+      await networkUtil.get("/$type/$id/comments",
+          queryParameters: {"page": pageNum}).then((value) {
         comments = value.data;
       });
 
@@ -304,10 +303,10 @@ class Api {
         CommentData commentData = analyseCommentJson(commentItem);
 
         if (commentData.repliesNum > 0 && isPreview) {
-          await Dio()
-              .get(
-                  "https://api.iwara.tv/${type}/$id/comments?parent=${commentData.id}&limit=2")
-              .then((value) {
+          await networkUtil.get("/$type/$id/comments", queryParameters: {
+            "parent": commentData.id,
+            "limit": 2
+          }).then((value) {
             for (var child in value.data["results"]) {
               commentData.children.add(analyseCommentJson(child));
             }

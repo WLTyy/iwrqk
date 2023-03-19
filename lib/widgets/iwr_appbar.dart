@@ -3,20 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:iwrqk/common/classes.dart';
 import 'package:iwrqk/l10n.dart';
 import 'package:iwrqk/pages/search_page/search_page.dart';
-import 'package:iwrqk/pages/uploader_profile_page/uploader_profile_page.dart';
-import 'package:iwrqk/pages/media_detail_page/media_detail_page.dart';
-import 'package:iwrqk/widgets/reloadable_image.dart';
 
 import '../component/iwr_tab_indicator.dart';
-import '../pages/user_page/user_page.dart';
+import 'filter_dialog.dart';
 
 class IwrAppBar extends StatefulWidget {
   final bool? showFilter;
   final Map<String, Widget> tabList;
   final TabController? tabController;
+  final void Function(String? rating, int? year, int? month)? onFilterApplied;
+  final FilterSetting? lastFilterSetting;
 
   const IwrAppBar(
-      {Key? key, this.showFilter, required this.tabList, this.tabController})
+      {Key? key,
+      this.showFilter,
+      required this.tabList,
+      this.tabController,
+      this.onFilterApplied,
+      this.lastFilterSetting})
       : super(key: key);
 
   @override
@@ -49,7 +53,15 @@ class _IwrAppBarState extends State<IwrAppBar> {
                 icon: Icon(CupertinoIcons.slider_horizontal_3),
                 color: Colors.grey,
                 onPressed: () {
-                  // Do something when filter button is pressed
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return FilterDialog(
+                        onFilterApplied: widget.onFilterApplied!,
+                        lastFilterSetting: widget.lastFilterSetting,
+                      );
+                    },
+                  );
                 },
               ),
             )

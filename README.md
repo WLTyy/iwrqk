@@ -1,15 +1,20 @@
-# IwrQk
+# IwrQk [![GitHub license](https://img.shields.io/github/license/FutoTan/iwrqk.svg)](LICENSE)
 
-[![GitHub license](https://img.shields.io/github/license/FutoTan/iwrqk.svg)](LICENSE)
-[![GitHub release](https://img.shields.io/github/release/FutoTan/iwrqk.svg)](https://github.com/yourusername/yourappname/releases)
-[![GitHub issues](https://img.shields.io/github/issues/FutoTan/iwrqk.svg)](https://github.com/yourusername/yourappname/issues)
-[![GitHub pull-requests](https://img.shields.io/github/issues-pr/FutoTan/iwrqk.svg)](https://github.com/yourusername/yourappname/pulls)
+<img src="./doc/icon.png" alt="logo" width="144" height="144" align="right" />
+
+[English README Here](./doc/README_en.md)
+
 
 IwrQk 是一个基于Flutter、兼容新 Iwara 的跨平台应用。（画饼）
 
 ## 功能
 
 跨平台 iOS + 安卓 ~~然后没了，不然呢（~~
+
+## 截图 
+
+| ![Preview](/doc/1.png) | ![Preview](/doc/2.png) | ![Preview](/doc/3.png) | 
+|:---:|:---:|:---:|
 
 ## 贡献
 

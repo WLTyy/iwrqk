@@ -11,14 +11,36 @@ enum SourceType {
 class SortSetting {
   final SourceType sourceType;
   final String orderType;
-  final String ratingType;
-  SortSetting(
-      {required this.sourceType,
-      required this.orderType,
-      required this.ratingType});
+
+  SortSetting({
+    required this.sourceType,
+    required this.orderType,
+  });
 }
 
-// enum OrderType { date, views, likes, viewsToday, random }
+class FilterSetting {
+  String? ratingType;
+  int? year;
+  int? month;
+
+  @override
+  bool operator ==(other) {
+    bool flag = false;
+    if (other is FilterSetting) {
+      if (other.ratingType == null &&
+          other.year == null &&
+          other.month == null) {
+        return true;
+      }
+      flag = other.ratingType == ratingType &&
+          other.year == year &&
+          other.month == month;
+    }
+    return flag;
+  }
+
+  FilterSetting({this.ratingType, this.year, this.month});
+}
 
 /* Latest, Trending, Popularity, Most views, Most likes */
 
@@ -125,6 +147,7 @@ class MediaData {
   DateTime? updateDate;
   late String title;
   late String description;
+  bool isPrivate = false;
   late String fetchUrl;
   late String xversion;
   late int views;
@@ -139,7 +162,6 @@ class MediaData {
 
 class VideoData extends MediaData {
   late String? youtubeUrl;
-  bool isPrivate = false;
   bool fetchFailed = true;
   List<ResolutionData> resolutions = <ResolutionData>[];
 

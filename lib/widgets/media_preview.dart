@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:iwrqk/common/classes.dart';
 import 'package:iwrqk/common/util.dart';
 import 'package:iwrqk/l10n.dart';
@@ -20,10 +21,34 @@ class MediaPreview extends StatefulWidget {
 }
 
 class _MediaPreviewState extends State<MediaPreview> {
-  Widget _buildRatingAndGallery() {
-    return Row(
+  Widget _buildViewsAndRating() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2.5),
+            color: Colors.black.withAlpha(175),
+          ),
+          height: 25,
+          child: Row(
+            children: [
+              Icon(
+                CupertinoIcons.eye_fill,
+                size: 12.5,
+                color: Colors.white,
+              ),
+              Container(
+                  margin: EdgeInsets.only(left: 2),
+                  child: Text(
+                    compactBigNumber(context, widget.data.views),
+                    style: TextStyle(fontSize: 12.5, color: Colors.white),
+                  ))
+            ],
+          ),
+        ),
         if (widget.data.ratingType == "ecchi")
           Container(
             padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
@@ -37,6 +62,67 @@ class _MediaPreviewState extends State<MediaPreview> {
               "R-18",
               style: TextStyle(fontSize: 12.5, color: Colors.white),
             )),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildLikesAndGallery() {
+    Duration? duration;
+
+    if (widget.data.duration != null) {
+      duration = Duration(seconds: widget.data.duration!);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2.5),
+            color: Colors.black.withAlpha(175),
+          ),
+          height: 25,
+          child: Row(
+            children: [
+              Icon(
+                CupertinoIcons.heart_fill,
+                size: 12.5,
+                color: Colors.white,
+              ),
+              Container(
+                  margin: EdgeInsets.only(left: 2),
+                  child: Text(
+                    compactBigNumber(context, widget.data.likes),
+                    style: TextStyle(fontSize: 12.5, color: Colors.white),
+                  ))
+            ],
+          ),
+        ),
+        if (duration != null)
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2.5),
+              color: Colors.black.withAlpha(175),
+            ),
+            height: 25,
+            child: Row(
+              children: [
+                Icon(
+                  CupertinoIcons.play_fill,
+                  size: 12.5,
+                  color: Colors.white,
+                ),
+                Container(
+                    margin: EdgeInsets.only(left: 2),
+                    child: Text(
+                      "${duration.inMinutes}:${(duration.inSeconds.remainder(60)).toString().padLeft(2, '0')}",
+                      style: TextStyle(fontSize: 12.5, color: Colors.white),
+                    ))
+              ],
+            ),
           ),
         if (widget.data.galleryLength != null)
           if (widget.data.galleryLength! > 1)
@@ -67,63 +153,10 @@ class _MediaPreviewState extends State<MediaPreview> {
     );
   }
 
-  Widget _buildViewsAndLikes() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(2.5),
-            color: Colors.black.withAlpha(175),
-          ),
-          height: 25,
-          child: Row(
-            children: [
-              Icon(
-                CupertinoIcons.eye_fill,
-                size: 12.5,
-                color: Colors.white,
-              ),
-              Container(
-                  margin: EdgeInsets.only(left: 2),
-                  child: Text(
-                    compactBigNumber(context, widget.data.views),
-                    style: TextStyle(fontSize: 12.5, color: Colors.white),
-                  ))
-            ],
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(2.5),
-            color: Colors.black.withAlpha(175),
-          ),
-          height: 25,
-          child: Row(
-            children: [
-              Icon(
-                CupertinoIcons.heart_fill,
-                size: 12.5,
-                color: Colors.white,
-              ),
-              Container(
-                  margin: EdgeInsets.only(left: 2),
-                  child: Text(
-                    compactBigNumber(context, widget.data.likes),
-                    style: TextStyle(fontSize: 12.5, color: Colors.white),
-                  ))
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   List<Widget> _buildFullVerison() {
     return [
       Stack(
+        alignment: Alignment.center,
         children: [
           ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(7.5)),
@@ -137,18 +170,19 @@ class _MediaPreviewState extends State<MediaPreview> {
                       )
                     : AspectRatio(aspectRatio: 16 / 9),
               )),
+          Positioned(left: 5, top: 5, bottom: 5, child: _buildViewsAndRating()),
           Positioned(
-            left: 5,
-            right: 5,
-            top: 5,
-            child: _buildViewsAndLikes(),
-          ),
-          Positioned(
-            left: 5,
-            right: 5,
-            bottom: 5,
-            child: _buildRatingAndGallery(),
-          ),
+              right: 5, top: 5, bottom: 5, child: _buildLikesAndGallery()),
+          if (widget.data.isPrivate)
+            Container(
+              color: Colors.black,
+              alignment: Alignment.center,
+              height: 35,
+              child: Text(
+                L10n.of(context).meida_private,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
         ],
       ),
       Expanded(
@@ -214,6 +248,7 @@ class _MediaPreviewState extends State<MediaPreview> {
           color: Theme.of(context).canvasColor,
           child: Column(children: _buildFullVerison())),
       onTap: () {
+        if (widget.data.isPrivate) return;
         Navigator.of(context).push(PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
               MediaDetailPage(
