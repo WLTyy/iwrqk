@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:iwrqk/widgets/Iwr_progress_indicator.dart';
 
 import '../../common/classes.dart';
 import '../../common/util.dart';
 import '../../component/iwr_tab_indicator.dart';
 import '../../l10n.dart';
 import '../../network/api.dart';
+import '../../widgets/iwr_markdown.dart';
 import '../../widgets/reloadable_image.dart';
 import '../main_pages/media_grid_view.dart';
 import '../media_detail_page/user_comment.dart';
@@ -135,7 +137,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              SelectableText(
                 _profileData.uploader.nickName,
                 maxLines: 1,
                 style: TextStyle(
@@ -143,7 +145,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
+              SelectableText(
                 "@${_profileData.uploader.userName}",
                 maxLines: 1,
                 style: TextStyle(fontSize: 12.5),
@@ -170,10 +172,9 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
       offstage: closed,
       child: TickerMode(
           enabled: !closed,
-          child: Markdown(
+          child: IwrMarkdown(
+            selectable: true,
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
             data: _profileData.description,
           )),
     );
@@ -204,7 +205,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
             Container(
               width: 8,
               height: 8,
-              margin: EdgeInsets.symmetric(horizontal: 4),
+              margin: EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.green,
@@ -283,7 +284,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
               Row(
                 children: [
                   Flexible(
-                      child: ElevatedButton(
+                      child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
@@ -291,7 +292,8 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
                       side: BorderSide(width: 2, color: Colors.blue),
                     ),
                     onPressed: () {},
-                    child: Text(
+                    icon: Icon(CupertinoIcons.add),
+                    label: Text(
                       L10n.of(context).profile_follow,
                     ),
                   )),
@@ -376,7 +378,7 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
     return Expanded(
         child: Center(
             child: _errorInfo == null
-                ? CircularProgressIndicator()
+                ? IwrProgressIndicator()
                 : Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,

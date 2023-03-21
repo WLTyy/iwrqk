@@ -142,6 +142,7 @@ class TagData {
 }
 
 class MediaData {
+  late String id;
   late UserData uploader;
   late DateTime createDate;
   DateTime? updateDate;

@@ -4,6 +4,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:iwrqk/common/classes.dart';
 import 'package:iwrqk/l10n.dart';
 import 'package:iwrqk/pages/uploader_profile_page/uploader_profile_page.dart';
+import 'package:iwrqk/widgets/iwr_markdown.dart';
 
 import '../../common/util.dart';
 import '../../widgets/reloadable_image.dart';
@@ -51,10 +52,8 @@ class UserComment extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
             padding: EdgeInsets.only(top: 5),
-            child: Markdown(
-                padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
+            child: IwrMarkdown(
+                selectable: true,
                 data: commentData.content),
           ),
           Padding(
@@ -68,10 +67,7 @@ class UserComment extends StatelessWidget {
   }
 
   Widget _repliesBuilder(BuildContext context, int index) {
-    return Markdown(
-        padding: EdgeInsets.zero,
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
+    return IwrMarkdown(
         data:
             "[${commentData.children[index].user.nickName}](iwrqk://user/${commentData.children[index].user.userName})：${commentData.children[index].content}");
   }
@@ -85,6 +81,7 @@ class UserComment extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 5),
               child: Markdown(
+                  selectable: true,
                   padding: EdgeInsets.zero,
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,

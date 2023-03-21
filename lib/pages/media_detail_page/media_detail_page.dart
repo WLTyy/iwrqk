@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:iwrqk/common/util.dart';
+import 'package:iwrqk/widgets/iwr_markdown.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../../common/classes.dart';
@@ -58,7 +61,9 @@ class _MediaDetailPageState extends State<MediaDetailPage>
     }
     if (mediaData is VideoData) {
       _mediaData = mediaData;
-      _initializePlayerController();
+      if ((_mediaData as VideoData).embedUrl == null) {
+        _initializePlayerController();
+      }
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -224,12 +229,30 @@ class _MediaDetailPageState extends State<MediaDetailPage>
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    CupertinoIcons.xmark,
-                    color: Colors.white,
-                    size: 42,
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 5),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          CupertinoIcons.info_circle_fill,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text("外部链接视频")
+                      ],
+                    ),
                   ),
-                  ElevatedButton(onPressed: () {}, child: Text("外部链接")),
+                  ElevatedButton.icon(
+                      onPressed: () {
+                        launchUrl(
+                            Uri.parse((_mediaData as VideoData).embedUrl!));
+                      },
+                      icon: Icon(CupertinoIcons.arrowshape_turn_up_right_fill),
+                      label: Text("Open")),
                 ],
               )
             ],
@@ -320,6 +343,8 @@ class _MediaDetailPageState extends State<MediaDetailPage>
         children: [
           Text(
             _mediaData.uploader.nickName,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(
@@ -328,10 +353,12 @@ class _MediaDetailPageState extends State<MediaDetailPage>
           ),
         ],
       ),
-      trailing: ElevatedButton(
-        onPressed: () {},
-        child: Text(L10n.of(context).profile_follow),
-      ),
+      trailing: ElevatedButton.icon(
+          onPressed: () {},
+          icon: Icon(CupertinoIcons.add),
+          label: Text(
+            L10n.of(context).profile_follow,
+          )),
     );
   }
 
@@ -357,7 +384,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Text(
+            child: SelectableText(
               _mediaData.title,
               maxLines: _detailExpanded ? null : 1,
               style: TextStyle(
@@ -425,10 +452,7 @@ class _MediaDetailPageState extends State<MediaDetailPage>
       offstage: closed,
       child: TickerMode(
           enabled: !closed,
-          child: Markdown(
-            padding: EdgeInsets.zero,
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
+          child: IwrMarkdown(
             data: _mediaData.description,
           )),
     );
@@ -489,7 +513,13 @@ class _MediaDetailPageState extends State<MediaDetailPage>
                       style: TextStyle(fontSize: 12.5))
                 ],
               ),
-              onPressed: () {}),
+              onPressed: () {
+                if (_mediaData is VideoData) {
+                  Share.share("https://www.iwara.tv/video/${_mediaData.id}");
+                } else if (_mediaData is ImageData) {
+                  Share.share("https://www.iwara.tv/image/${_mediaData.id}");
+                }
+              }),
           MaterialButton(
               child: Column(
                 children: [

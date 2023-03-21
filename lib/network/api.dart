@@ -93,10 +93,7 @@ class Api {
         video = value.data;
       });
 
-      if (video["embedUrl"] != null) {
-        videoData.embedUrl = video["embedUrl"];
-      }
-
+      videoData.id = id;
       videoData.createDate = DateTime.parse(video["createdAt"]);
       videoData.updateDate = DateTime.parse(video["updatedAt"]);
       videoData.title = video["title"];
@@ -111,24 +108,29 @@ class Api {
         videoData.tags.add(TagData(tag["id"], tag["type"]));
       }
 
-      videoData.fetchUrl = video["fileUrl"];
-      List<ResolutionData> resolutions = <ResolutionData>[];
-
-      var vid = RegExp(r'file/(\w+-\w+-\w+-\w+-\w+)\?')
-          .firstMatch(videoData.fetchUrl)
-          ?.group(1);
-      var expires =
-          RegExp(r'expires=(\d+)').firstMatch(videoData.fetchUrl)?.group(1);
-
-      videoData.xversion =
-          sha1.convert(utf8.encode('${vid}_$expires$salt')).toString();
-
-      await getVideoResolutions(videoData.fetchUrl, videoData.xversion)
-          .then((value) => resolutions = value);
-
-      if (resolutions.isNotEmpty) {
+      if (video["embedUrl"] != null) {
         videoData.fetchFailed = false;
-        videoData.resolutions = resolutions;
+        videoData.embedUrl = video["embedUrl"];
+      } else {
+        videoData.fetchUrl = video["fileUrl"];
+        List<ResolutionData> resolutions = <ResolutionData>[];
+
+        var vid = RegExp(r'file/(\w+-\w+-\w+-\w+-\w+)\?')
+            .firstMatch(videoData.fetchUrl)
+            ?.group(1);
+        var expires =
+            RegExp(r'expires=(\d+)').firstMatch(videoData.fetchUrl)?.group(1);
+
+        videoData.xversion =
+            sha1.convert(utf8.encode('${vid}_$expires$salt')).toString();
+
+        await getVideoResolutions(videoData.fetchUrl, videoData.xversion)
+            .then((value) => resolutions = value);
+
+        if (resolutions.isNotEmpty) {
+          videoData.fetchFailed = false;
+          videoData.resolutions = resolutions;
+        }
       }
 
       await networkUtil.get("/videos", queryParameters: {
@@ -203,6 +205,7 @@ class Api {
         image = value.data;
       });
 
+      imageData.id = id;
       imageData.createDate = DateTime.parse(image["createdAt"]);
       imageData.updateDate = DateTime.parse(image["updatedAt"]);
       imageData.title = image["title"];
