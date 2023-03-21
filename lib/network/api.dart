@@ -6,7 +6,24 @@ import 'network_util.dart';
 
 class Api {
   static const salt = "_5nFp9kmbNnHdAFhaqMvt";
+  static const defaultAvatarUrl =
+      "https://www.iwara.tv/images/default-avatar.jpg";
+  static const defaultBannerUrl =
+      "https://www.iwara.tv/images/default-background.jpg";
+
   static NetworkUtil networkUtil = NetworkUtil();
+
+  static UserData analyseUserJson(dynamic user) {
+    var avatarUrl = user["avatar"] == null
+        ? defaultAvatarUrl
+        : "https://files.iwara.tv/image/avatar/${user["avatar"]["id"]}/${user["avatar"]["name"]}";
+
+    return UserData(
+        id: user["id"],
+        userName: user["username"],
+        nickName: user["name"],
+        avatarUrl: avatarUrl);
+  }
 
   static List<MediaPreviewData> analyseMediaPreviewsJson(dynamic previews) {
     List<MediaPreviewData> previewDatasList = [];
@@ -53,17 +70,7 @@ class Api {
         }
       }
 
-      var uploader = previewItem["user"];
-
-      var avatarUrl = uploader["avatar"] == null
-          ? "/images/default-avatar.jpg"
-          : "/image/avatar/${uploader["avatar"]["id"]}/${uploader["avatar"]["name"]}";
-
-      previewData.uploader = UserData(
-          id: uploader["id"],
-          userName: uploader["username"],
-          nickName: uploader["name"],
-          avatarUrl: avatarUrl);
+      previewData.uploader = analyseUserJson(previewItem["user"]);
 
       previewData.galleryLength = previewItem["numImages"];
 
@@ -87,7 +94,7 @@ class Api {
       });
 
       if (video["embedUrl"] != null) {
-        videoData.youtubeUrl = video["embedUrl"];
+        videoData.embedUrl = video["embedUrl"];
       }
 
       videoData.createDate = DateTime.parse(video["createdAt"]);
@@ -98,17 +105,7 @@ class Api {
       videoData.views = video["numViews"];
       videoData.isPrivate = video["private"];
 
-      var uploader = video["user"];
-
-      var avatarUrl = uploader["avatar"] == null
-          ? "https://www.iwara.tv/images/default-avatar.jpg"
-          : "https://files.iwara.tv/image/avatar/${uploader["avatar"]["id"]}/${uploader["avatar"]["name"]}";
-
-      videoData.uploader = UserData(
-          id: uploader["id"],
-          userName: uploader["username"],
-          nickName: uploader["name"],
-          avatarUrl: avatarUrl);
+      videoData.uploader = analyseUserJson(video["user"]);
 
       for (var tag in video["tags"]) {
         videoData.tags.add(TagData(tag["id"], tag["type"]));
@@ -168,7 +165,7 @@ class Api {
 
       profileData.bannerUrl = banner != null
           ? "https://files.iwara.tv/image/profileHeader/${profile["header"]["id"]}/${profile["header"]["name"]}"
-          : "https://www.iwara.tv/images/default-background.jpg";
+          : defaultBannerUrl;
 
       var uploader = profile["user"];
 
@@ -178,15 +175,7 @@ class Api {
           : null;
       profileData.description = profile["body"] ?? "";
 
-      var avatarUrl = uploader["avatar"] == null
-          ? "https://www.iwara.tv/images/default-avatar.jpg"
-          : "https://files.iwara.tv/image/avatar/${uploader["avatar"]["id"]}/${uploader["avatar"]["name"]}";
-
-      profileData.uploader = UserData(
-          id: uploader["id"],
-          userName: uploader["username"],
-          nickName: uploader["name"],
-          avatarUrl: avatarUrl);
+      profileData.uploader = analyseUserJson(uploader);
 
       await networkUtil.get("/user/${profileData.uploader.id}/followers",
           queryParameters: {"limit": 1}).then((value) {
@@ -221,17 +210,7 @@ class Api {
       imageData.description = image["body"] ?? "";
       imageData.views = image["numViews"];
 
-      var uploader = image["user"];
-
-      var avatarUrl = uploader["avatar"] == null
-          ? "https://www.iwara.tv/images/default-avatar.jpg"
-          : "https://files.iwara.tv/image/avatar/${uploader["avatar"]["id"]}/${uploader["avatar"]["name"]}";
-
-      imageData.uploader = UserData(
-          id: uploader["id"],
-          userName: uploader["username"],
-          nickName: uploader["name"],
-          avatarUrl: avatarUrl);
+      imageData.uploader = analyseUserJson(image["user"]);
 
       for (var tag in image["tags"]) {
         imageData.tags.add(TagData(tag["id"], tag["type"]));
@@ -323,19 +302,9 @@ class Api {
   }
 
   static CommentData analyseCommentJson(dynamic commentItem) {
-    var user = commentItem["user"];
-
-    var avatarUrl = user["avatar"] == null
-        ? "https://www.iwara.tv/images/default-avatar.jpg"
-        : "https://files.iwara.tv/image/avatar/${user["avatar"]["id"]}/${user["avatar"]["name"]}";
-
     CommentData commentData = CommentData(
         id: commentItem["id"],
-        user: UserData(
-            id: user["id"],
-            userName: user["username"],
-            nickName: user["name"],
-            avatarUrl: avatarUrl),
+        user: analyseUserJson(commentItem["user"]),
         createDate: DateTime.parse(commentItem["createdAt"]),
         content: commentItem["body"]);
 

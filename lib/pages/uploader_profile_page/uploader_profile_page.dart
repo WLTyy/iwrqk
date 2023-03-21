@@ -164,25 +164,31 @@ class _UploaderProfilePageState extends State<UploaderProfilePage>
   }
 
   Widget _buildDescription() {
+    final bool closed = !_detailExpanded && _animationController.isDismissed;
+
+    final Widget result = Offstage(
+      offstage: closed,
+      child: TickerMode(
+          enabled: !closed,
+          child: Markdown(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            data: _profileData.description,
+          )),
+    );
+
     return AnimatedBuilder(
       animation: _animationController.view,
       builder: (_, child) {
-        return Align(
-          alignment: Alignment.centerLeft,
-          heightFactor: _heightFactor.value,
-          child: child,
+        return ClipRect(
+          child: Align(
+            heightFactor: _heightFactor.value,
+            child: child,
+          ),
         );
       },
-      child: Offstage(
-          offstage: !_detailExpanded && _animationController.isDismissed,
-          child: TickerMode(
-              enabled: !(!_detailExpanded && _animationController.isDismissed),
-              child: Markdown(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                data: _profileData.description,
-              ))),
+      child: closed ? null : result,
     );
   }
 

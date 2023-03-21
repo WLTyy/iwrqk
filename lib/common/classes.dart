@@ -161,7 +161,7 @@ class MediaData {
 }
 
 class VideoData extends MediaData {
-  late String? youtubeUrl;
+  late String? embedUrl;
   bool fetchFailed = true;
   List<ResolutionData> resolutions = <ResolutionData>[];
 

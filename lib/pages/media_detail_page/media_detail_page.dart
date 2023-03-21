@@ -178,46 +178,68 @@ class _MediaDetailPageState extends State<MediaDetailPage>
   }
 
   Widget _buildPlayer() {
-    return AspectRatio(
-        aspectRatio: 16 / 9,
-        child: !(_mediaData as VideoData).fetchFailed
-            ? IwrVideoPlayer(
-                controller: _iwrVideoController!,
+    Widget child;
+    if ((_mediaData as VideoData).fetchFailed) {
+      child = Container(
+          color: Colors.black,
+          child: Stack(
+            children: [
+              Center(
+                  child: _refectching
+                      ? IwrProgressIndicator()
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                                onTap: () {
+                                  _refectchVideos();
+                                },
+                                child: Center(
+                                  child: Icon(
+                                    CupertinoIcons.arrow_counterclockwise,
+                                    color: Theme.of(context).primaryColor,
+                                    size: 42,
+                                  ),
+                                )),
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: Text(
+                                L10n.of(context).error_fetch_failed,
+                                style: TextStyle(color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          ],
+                        ))
+            ],
+          ));
+    } else if ((_mediaData as VideoData).embedUrl != null) {
+      child = Container(
+          color: Colors.black,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    CupertinoIcons.xmark,
+                    color: Colors.white,
+                    size: 42,
+                  ),
+                  ElevatedButton(onPressed: () {}, child: Text("外部链接")),
+                ],
               )
-            : Container(
-                color: Colors.black,
-                child: Stack(
-                  children: [
-                    Center(
-                        child: _refectching
-                            ? IwrProgressIndicator()
-                            : Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  GestureDetector(
-                                      onTap: () {
-                                        _refectchVideos();
-                                      },
-                                      child: Center(
-                                        child: Icon(
-                                          CupertinoIcons.arrow_counterclockwise,
-                                          color: Theme.of(context).primaryColor,
-                                          size: 42,
-                                        ),
-                                      )),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 10),
-                                    child: Text(
-                                      L10n.of(context).error_fetch_failed,
-                                      style: TextStyle(color: Colors.white),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  )
-                                ],
-                              ))
-                  ],
-                )));
+            ],
+          ));
+    } else {
+      child = IwrVideoPlayer(
+        controller: _iwrVideoController!,
+      );
+    }
+    return AspectRatio(aspectRatio: 16 / 9, child: child);
   }
 
   Widget _buildGallery() {
@@ -397,25 +419,31 @@ class _MediaDetailPageState extends State<MediaDetailPage>
   }
 
   Widget _buildVideoDescription() {
+    final bool closed = !_detailExpanded && _animationController.isDismissed;
+
+    final Widget result = Offstage(
+      offstage: closed,
+      child: TickerMode(
+          enabled: !closed,
+          child: Markdown(
+            padding: EdgeInsets.zero,
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            data: _mediaData.description,
+          )),
+    );
+
     return AnimatedBuilder(
       animation: _animationController.view,
       builder: (_, child) {
-        return Align(
-          alignment: Alignment.centerLeft,
-          heightFactor: _heightFactor.value,
-          child: child,
+        return ClipRect(
+          child: Align(
+            heightFactor: _heightFactor.value,
+            child: child,
+          ),
         );
       },
-      child: Offstage(
-          offstage: !_detailExpanded && _animationController.isDismissed,
-          child: TickerMode(
-              enabled: !(!_detailExpanded && _animationController.isDismissed),
-              child: Markdown(
-                padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                data: _mediaData.description,
-              ))),
+      child: closed ? null : result,
     );
   }
 
